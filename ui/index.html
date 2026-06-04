@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OPSWAT Account Map</title>
+    <link rel="stylesheet" href="/assets/styles.css?v=5" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">OPSWAT</div>
+          <div class="brand-sub">ACCOUNT MAP</div>
+        </div>
+        <nav class="nav">
+          <button class="nav-item active" type="button" data-view="workspace">
+            <span class="nav-icon">□</span>
+            Workspace
+          </button>
+          <button class="nav-item" type="button" data-view="library">
+            <span class="nav-icon">▤</span>
+            Library
+          </button>
+          <button class="nav-item" type="button" data-view="products">
+            <span class="nav-icon">◇</span>
+            Products
+          </button>
+          <button class="nav-item" type="button" data-view="evidence">
+            <span class="nav-icon">⌕</span>
+            Evidence
+          </button>
+        </nav>
+        <div class="sidebar-status">
+          <span class="status-dot"></span>
+          <span id="healthText">Checking API</span>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-left">
+            <label for="environment">Environment</label>
+            <select id="environment">
+              <option>Local prototype</option>
+            </select>
+          </div>
+          <div class="topbar-right">
+            <span id="modelName">Claude Opus</span>
+            <button id="newWorkspace" class="secondary-button" type="button">New Workspace</button>
+            <button id="refreshLibrary" class="icon-button" type="button" title="Refresh library">↻</button>
+          </div>
+        </header>
+
+        <section class="workspace" id="workspaceView">
+          <section class="control-band">
+            <form id="generateForm" class="generate-form">
+              <div class="field target-field">
+                <label for="target">Account</label>
+                <input id="target" name="target" type="text" value="SSE energy company" autocomplete="off" />
+              </div>
+              <div class="field focus-field">
+                <label for="focus">Focus</label>
+                <input
+                  id="focus"
+                  name="focus"
+                  type="text"
+                  value="UK energy utility, OT security, NIS2, secure file movement into operational sites"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="field small-field">
+                <label for="useCases">Use cases</label>
+                <input id="useCases" name="useCases" type="number" min="1" max="8" value="5" />
+              </div>
+              <label class="toggle">
+                <input id="dryRun" type="checkbox" />
+                <span>Dry run</span>
+              </label>
+              <button id="generateButton" class="primary-button" type="submit">Generate</button>
+            </form>
+          </section>
+
+          <section class="summary-grid">
+            <div class="metric">
+              <span class="metric-label">Use cases</span>
+              <strong id="metricUseCases">0</strong>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Signals</span>
+              <strong id="metricSignals">0</strong>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Sources</span>
+              <strong id="metricSources">0</strong>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Products</span>
+              <strong id="metricProducts">0</strong>
+            </div>
+          </section>
+
+          <section class="account-header">
+            <div>
+              <p class="eyebrow">Current account</p>
+              <h1 id="accountName">No account loaded</h1>
+              <p id="accountSector" class="sector"></p>
+            </div>
+            <div class="account-actions">
+              <button id="pptxButton" class="secondary-button disabled" type="button">Export PPTX</button>
+              <a id="jsonLink" class="secondary-button disabled" href="#" target="_blank" rel="noreferrer">JSON</a>
+              <a id="mdLink" class="secondary-button disabled" href="#" target="_blank" rel="noreferrer">Markdown</a>
+            </div>
+          </section>
+
+          <p id="accountSummary" class="account-summary"></p>
+
+          <section class="content-grid">
+            <div class="panel large-panel">
+              <div class="panel-header">
+                <h2>Recommended Use Cases</h2>
+                <span id="generationStatus" class="badge">Ready</span>
+              </div>
+              <div id="useCaseList" class="use-case-list"></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Account Signals</h2>
+              </div>
+              <div id="signalList" class="signal-list"></div>
+            </div>
+          </section>
+
+          <section class="content-grid">
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Buyer Map</h2>
+              </div>
+              <div id="buyerList" class="buyer-list"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Outreach</h2>
+              </div>
+              <div id="outreachBlock" class="outreach-block"></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Research Evidence</h2>
+            </div>
+            <div id="evidenceList" class="evidence-list"></div>
+          </section>
+        </section>
+      </main>
+
+      <aside class="library" id="libraryPanel">
+        <div class="panel-header">
+          <h2>Saved Maps</h2>
+        </div>
+        <div id="savedMaps" class="saved-list"></div>
+      </aside>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay hidden" role="status" aria-live="polite">
+      <div class="loading-card">
+        <div class="spinner"></div>
+        <div>
+          <strong id="loadingTitle">Working</strong>
+          <p id="loadingDetail">Preparing the workspace.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="/assets/app.js?v=5"></script>
+  </body>
+</html>

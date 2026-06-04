@@ -1,0 +1,4035 @@
+{
+  "metadata": {
+    "generated_from": {
+      "non_core_chunks": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/chunks.jsonl",
+      "core_chunks": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/core_mdcore_chunks.jsonl",
+      "core_source_folder": "/Users/lewis/Documents/opswat_docs_full/core_v5_19_0"
+    },
+    "notes": [
+      "MetaDefender Core is loaded from core_mdcore_chunks.jsonl, not the thin mdcore_v5_19_0 folder inside opswat_docs_downloads.",
+      "This is a v1 sales/account-mapping capability map. Use it to constrain generation, then improve rows as field feedback arrives."
+    ],
+    "product_count": 20
+  },
+  "products": [
+    {
+      "slug": "mdcore",
+      "product": "MetaDefender Core",
+      "family": "MetaDefender Platform",
+      "priority": 1,
+      "confidence": "high",
+      "chunk_count": 3408,
+      "what_it_protects": "Files, archives, payloads, and content entering critical workflows.",
+      "deployment_zones": [
+        "DMZ",
+        "Corporate IT",
+        "Cloud",
+        "OT transfer boundary"
+      ],
+      "best_fit_use_cases": [
+        "Scan and sanitize files before they enter sensitive networks",
+        "Provide central file-analysis services for Kiosk, ICAP, MFT, storage, and custom integrations",
+        "Detect malware, spoofed file types, sensitive data, vulnerable components, and suspicious behavior"
+      ],
+      "buyer_problems": [
+        "Untrusted files move between users, vendors, cloud apps, and operational environments",
+        "Single-engine malware detection is not enough for critical file ingress points",
+        "Security teams need one inspection platform reusable across many transfer paths"
+      ],
+      "threat_paths": [
+        "Weaponized attachments and uploads",
+        "Malware hidden in archives",
+        "Spoofed file extensions",
+        "Sensitive data leakage",
+        "Unknown malware requiring sandbox detonation"
+      ],
+      "capabilities": [
+        "Multiscanning",
+        "Deep CDR",
+        "Proactive DLP",
+        "Adaptive Sandbox",
+        "File Type Verification",
+        "File-Based Vulnerability Assessment",
+        "Threat Intelligence",
+        "Country of Origin",
+        "YARA Detection",
+        "SBOM Analysis"
+      ],
+      "protocols_and_integrations": [
+        "REST API",
+        "ICAP",
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "Energy",
+        "Manufacturing",
+        "Government",
+        "Defence",
+        "Healthcare",
+        "Finance"
+      ],
+      "compliance_drivers": [
+        "NIS2",
+        "IEC 62443",
+        "NERC CIP",
+        "NIST CSF",
+        "ISO 27001"
+      ],
+      "account_triggers": [
+        "OT file transfer",
+        "secure upload portal",
+        "regulated data",
+        "air-gapped workflows"
+      ],
+      "evidence": [
+        {
+          "title": "File Type Verification Engine",
+          "category": "utilities-engines",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/core_v5_19_0/utilities-engines/437777-file-type-engine.md",
+          "header_path": "/",
+          "snippet": "#### Configuration: **Fallback file type detection to current extension if needed**: if this configuration is enabled, Deep CDR, Proactive DLP, Archive Extraction modules and Blocklist/Allowlist features will use the true file type from the file type engine to perform its job first; if it is failed, these modules and features will use the file extension as...",
+          "matched_capabilities": [
+            "Deep CDR",
+            "File Type Verification",
+            "Proactive DLP"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 123
+        },
+        {
+          "title": "Deep CDR Details",
+          "category": "deep-cdr",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/core_v5_19_0/deep-cdr/437295-deep-cdr-details.md",
+          "header_path": "/",
+          "snippet": "Together with an error message, Deep CDR module also returns forensic info to describe what happened during the process in the case file was successfully sanitized. json ... \"post_processing\": { \"actions_failed\": \"\", \"actions_ran\": \"Sanitized\", \"converted_destination\": \"\", \"converted_to\": \"\", \"copy_move_destination\": \"\", \"sanitization_details\": {...",
+          "matched_capabilities": [
+            "Deep CDR",
+            "File Type Verification"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 120
+        },
+        {
+          "title": "Supported File Types",
+          "category": "deep-cdr",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/core_v5_19_0/deep-cdr/437275-supported-file-types.md",
+          "header_path": "/",
+          "snippet": "## Single / Multiple Output File If target contains only one file, it will be not zipped and treat as single output file. For example, If a PDF file has only one page, converts to JPG will be JPG. If a PDF file has more than one page, there will be multiple JPG files and will result in a ZIP file. The following sanitization result in potentially multiple...",
+          "matched_capabilities": [
+            "Deep CDR",
+            "File Type Verification",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [],
+          "score": 119
+        },
+        {
+          "title": "Enhancing Threat Detection with YARA & MetaDefender Aether for Core (Adaptive Sandbox)",
+          "category": "adaptive-sandbox",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/core_v5_19_0/adaptive-sandbox/437869-enhancing-threat-detection-with-yara-adaptive-sandbox.md",
+          "header_path": "/",
+          "snippet": "## Setup Adaptive Sandbox YARA trigger Under **Workflow Management -> Workflows -> (Name of the workflow) -> Adaptive Sandbox -> Advanced configuration,** there is an option \"Enable for Adaptive Sandbox YARA rules\":",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Storage Scanning",
+            "YARA Detection"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS"
+          ],
+          "score": 117
+        },
+        {
+          "title": "Country of Origin",
+          "category": "country-of-origin",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/core_v5_19_0/country-of-origin/437889-country-of-origin.md",
+          "header_path": "/",
+          "snippet": "OPSWAT Country of Origin (COO) engine enables instant detection of a file's geographic source. It analyzes digital fingerprints, metadata to identify restricted locations and vendors automatically. This allows precise filtering that blocks unauthorized data access based on origin while ensuring cross-region regulatory compliance. **Detect and block by...",
+          "matched_capabilities": [
+            "Country of Origin",
+            "File Type Verification",
+            "Industrial Protocol Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API",
+            "S7"
+          ],
+          "score": 110
+        },
+        {
+          "title": "MetaDefender MetaScan Engine Packages",
+          "category": "metascan-engines",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/core_v5_19_0/metascan-engines/437796-metascan-engine-package.md",
+          "header_path": "/",
+          "snippet": "Windows Packages: | Packages | List of Engines | | ---- | ---- | | Metadefender 8 Engines | AhnLab, Avira, Bitdefender, ClamAv, Eset, QuickHeal, K7 and Vir.IT | | Metadefender 12 Engines | AhnLab, Avira, Bitdefender, ClamAv, Eset, QuickHeal, K7, Vir.IT, Varist, Ikarus, Emsisoft and Tachyon | | Metadefender 16 Engines | AhnLab, Avira, Bitdefender, ClamAv,...",
+          "matched_capabilities": [
+            "Multiscanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 110
+        },
+        {
+          "title": "Scan result codes and explanations",
+          "category": "integration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/core_v5_19_0/integration/437876-description-of-scan-result-codes.md",
+          "header_path": "/",
+          "snippet": "These are the possible values returned for file scans. These values appear in _scan_all_result_i_ and _scan_all_result_a_: > This article explains how to obtain the possible scan results: How can I run tests to see the different scan results on MetaDefender Core? | Code | Scan result | Relation | Description | | ---- | ---- | ---- | ---- | | 0 | No Threat...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Central Management",
+            "Country of Origin",
+            "Deep CDR",
+            "File Type Verification",
+            "File-Based Vulnerability Assessment",
+            "Multiscanning",
+            "Proactive DLP",
+            "SBOM Analysis",
+            "Threat Intelligence",
+            "YARA Detection"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 106
+        },
+        {
+          "title": "Detect sensitive information",
+          "category": "proactive-dlp",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/core_v5_19_0/proactive-dlp/437702-detect-sensitive-information.md",
+          "header_path": "/",
+          "snippet": "The main feature of the Proactive DLP engine is to detect and block sensitive data in files, including credit card numbers and social security numbers. The engine supports a wide range of file types, including Microsoft Office documents and PDF.",
+          "matched_capabilities": [
+            "File Type Verification",
+            "Proactive DLP"
+          ],
+          "matched_protocols": [],
+          "score": 106
+        }
+      ]
+    },
+    {
+      "slug": "mdkiosk",
+      "product": "MetaDefender Kiosk",
+      "family": "MetaDefender Platform",
+      "priority": 1,
+      "confidence": "high",
+      "chunk_count": 1101,
+      "what_it_protects": "Physical media and removable-device ingress points.",
+      "deployment_zones": [
+        "Site entrance",
+        "DMZ",
+        "OT staging area",
+        "Air-gapped boundary"
+      ],
+      "best_fit_use_cases": [
+        "Inspect USB and removable media before files reach OT or secure enclaves",
+        "Create a controlled media-validation station for vendors, engineers, and contractors"
+      ],
+      "buyer_problems": [
+        "Contractors and engineers need to move files into restricted environments",
+        "Removable media remains a practical malware path into OT and air-gapped sites"
+      ],
+      "threat_paths": [
+        "USB-borne malware",
+        "Unauthorized executable files",
+        "Infected engineering project files"
+      ],
+      "capabilities": [
+        "Removable Media Control",
+        "Multiscanning",
+        "Deep CDR",
+        "File Type Verification"
+      ],
+      "protocols_and_integrations": [
+        "USB/Removable Media",
+        "HTTP/HTTPS",
+        "REST API"
+      ],
+      "industries": [
+        "Energy",
+        "Manufacturing",
+        "Defence",
+        "Transport",
+        "Pharma"
+      ],
+      "compliance_drivers": [
+        "IEC 62443",
+        "NERC CIP",
+        "NIS2",
+        "NIST CSF"
+      ],
+      "account_triggers": [
+        "USB policy",
+        "contractor access",
+        "plant floor updates",
+        "air-gapped network"
+      ],
+      "evidence": [
+        {
+          "title": "Overview",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdkiosk_v4_8_2/operating/436129-user_guide.md",
+          "header_path": "/",
+          "snippet": "## Encrypted USB devices MetaDefender Kiosk can unlock encrypted USB devices with a given password and process its contents. Kiosk supports the following encrypted USB devices: | Device | Software Version | Firmware Version | Scanning | Wipe | File Handling | Notes | | ---- | ---- | ---- | ---- | ---- | ---- | ---- | | Aegis Padlock 3 | A25-3PL128-XXXX | |...",
+          "matched_capabilities": [
+            "Endpoint Posture",
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "USB/Removable Media"
+          ],
+          "score": 56
+        },
+        {
+          "title": "Viewing the Kiosk Session Summary",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdkiosk_v4_8_2/operating/436154-viewing_the_session_summary.md",
+          "header_path": "/",
+          "snippet": "## Data Included in the Kiosk Session Log File After scanning is complete, button [Copy&Print] or [Print] might appear, depending on settings in the workflow. The picture below shows the KIOSK Session Summary: When the user performs the \"Print\" or \"Copy & Print\" action on the KIOSK UI, the KIOSK scan results are printed as a PDF on the active printer,...",
+          "matched_capabilities": [
+            "File Type Verification",
+            "Managed File Transfer",
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API",
+            "USB/Removable Media"
+          ],
+          "score": 56
+        },
+        {
+          "title": "OPSWAT Media Validation Agent",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdkiosk_v4_8_2/operating/436158-opswat_media_validation_agent.md",
+          "header_path": "/",
+          "snippet": "## OMVA Tool Run OPSWAT-OMVA-Tool.exe obtained from the Kiosk Resources page before installing OMVA on endpoints. Enter in the new password to configure. Click Generate to create a new filename for the OMVA installer. Download the new OMVA installer from the Resources page. Copy the New File Name and rename the installer. Installing this renamed file on all...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "USB/Removable Media"
+          ],
+          "score": 55
+        },
+        {
+          "title": "Recommended Deployment of MetaDefender Kiosk(s) in Secure Facilities",
+          "category": "advanced_deployment",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdkiosk_v4_8_2/advanced_deployment/435969-recommended_deployment_of_metadefender_kiosk_s_in_secure_facili.md",
+          "header_path": "/",
+          "snippet": "## Common Questions about MetaDefender Kiosk 1. **How many MetaDefender Kiosk systems are needed in a deployment?** 1. We believe that the appropriate number of units would be the number required to give end users a chance to scan media however and wherever they are bringing it into a secure area. So, if there are three entrances a kiosk can be located at...",
+          "matched_capabilities": [
+            "Central Management",
+            "Managed File Transfer",
+            "Multiscanning",
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "REST API",
+            "USB/Removable Media"
+          ],
+          "score": 52
+        },
+        {
+          "title": "How to encrypt a USB with Trellix and use it with a Kiosk (formerly McAfee)",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdkiosk_v4_8_2/knowledge_base/436127-how_to_encrypt_a_usb_with_trellix_formerly_mcafee_and_scan_wit.md",
+          "header_path": "/Configuration/I. Install Trellix Files and Removable Media Protection (FRP) extension and client/",
+          "snippet": "#### Install FRP Extension to ePO Go to ☰ → Software → Extensions → Install Extension. Choose the downloaded Extension package → OK",
+          "matched_capabilities": [
+            "File Type Verification",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "USB/Removable Media"
+          ],
+          "score": 52
+        },
+        {
+          "title": "MetaDefender Kiosk Hardened Image deployment",
+          "category": "hardened_image",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdkiosk_v4_8_2/hardened_image/436168-guideline_deploying_kiosk_hardened_image.md",
+          "header_path": "/",
+          "snippet": "Follow the steps to create a bootable flash drive containing the hardened Kiosk image to facilitate the efficient deployment of MetaDefender Kiosk on various Kiosk hardware models Requirements: - An OPSWAT Kiosk device: Tower, Desktop, Mobile or Mini - A USB v3.2 flash drive with a storage capacity of at least 32GB. > The new version of Deployment Tool is...",
+          "matched_capabilities": [
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API",
+            "USB/Removable Media"
+          ],
+          "score": 51
+        },
+        {
+          "title": "Offline update Core engine via Kiosk UI",
+          "category": "advanced_deployment",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdkiosk_v4_8_2/advanced_deployment/435983-offline_update_core_engine_via_kiosk_ui.md",
+          "header_path": "/",
+          "snippet": "## Offline engines via Kiosk UI | Step | Description | | ---- | ---- | | Initiate offline engine update process | Click on the Engine Status > Offline Engine Update; ; | | Insert USB with engine packages | Insert the USB with engine packages stored in USB:\\OSPWAT folder. Click Deploy Offline Engine; ; | | Deploy engine package | Kiosk automatically detects...",
+          "matched_capabilities": [
+            "Central Management",
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "USB/Removable Media"
+          ],
+          "score": 50
+        },
+        {
+          "title": "How do I set up and use the Media Manifest feature in MetaDefender Kiosk with MD Core certificate?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdkiosk_v4_8_2/knowledge_base/436026-how_do_i_set_up_a_media_manifest.md",
+          "header_path": "/",
+          "snippet": "## Setting up the certificate for digital signing (via MetaDefender Core) 1. Go to your **MetaDefender Core Management Console>Inventory>Certificates** to add a certificate that will be used for digital signing. > **Note:**> OPSWAT does **not** issue certificates directly to customers for use with OMVA or Media Manifest signing.> > Customers have two...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 50
+        }
+      ]
+    },
+    {
+      "slug": "mdicap",
+      "product": "MetaDefender ICAP Server",
+      "family": "MetaDefender Platform",
+      "priority": 1,
+      "confidence": "high",
+      "chunk_count": 1555,
+      "what_it_protects": "Web, proxy, gateway, and application file-transfer paths using ICAP.",
+      "deployment_zones": [
+        "DMZ",
+        "Corporate IT",
+        "Cloud",
+        "Secure web gateway"
+      ],
+      "best_fit_use_cases": [
+        "Scan files moving through web proxies and secure web gateways",
+        "Insert malware and CDR controls into application upload/download flows"
+      ],
+      "buyer_problems": [
+        "Users and external parties upload files through web workflows",
+        "Existing proxy controls need content-level inspection and sanitization"
+      ],
+      "threat_paths": [
+        "Malicious web uploads",
+        "Drive-by downloads",
+        "Partner portal file ingress"
+      ],
+      "capabilities": [
+        "ICAP Integration",
+        "Multiscanning",
+        "Deep CDR",
+        "Proactive DLP",
+        "File Type Verification"
+      ],
+      "protocols_and_integrations": [
+        "ICAP",
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "Finance",
+        "Energy",
+        "Government",
+        "Healthcare",
+        "SaaS"
+      ],
+      "compliance_drivers": [
+        "NIST CSF",
+        "ISO 27001",
+        "SOC 2",
+        "NIS2"
+      ],
+      "account_triggers": [
+        "proxy",
+        "secure web gateway",
+        "file upload",
+        "ICAP",
+        "web app"
+      ],
+      "evidence": [
+        {
+          "title": "Symantec Blue Coat ProxySG",
+          "category": "integrations",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdicap_v5_14_0/integrations/439900-symantec_blue_coat_proxysg.md",
+          "header_path": "/Prerequisites/",
+          "snippet": "### Adding RESPMOD Service (Download Mode) 1. Within the 'Configuration' tab, navigate to 'External Services'->'ICAP' 2. Click 'New' 3. Enter a service name for the Metascan service (in this example we use 'MetascanRespmod') and click 'OK' 4. In the services list, select 'MetascanReqmod' and click 'Edit' 5. Update the following values 1. In ICAP Service 1....",
+          "matched_capabilities": [
+            "Central Management",
+            "ICAP Integration",
+            "Multiscanning"
+          ],
+          "matched_protocols": [
+            "ICAP"
+          ],
+          "score": 74
+        },
+        {
+          "title": "Configuration file",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdicap_v5_14_0/configuration/439801-configuration_file.md",
+          "header_path": "/Linux/",
+          "snippet": "### [global] section | parameter | default value | required | description | | ---- | ---- | ---- | ---- | | icapaddress | 0.0.0.0 | required | One of the IP addresses of the computer that runs the product to serve ICAP interface; ; Note:; ; ; ; - *** ->** means all interface for both IPV4 and IPv6; - **0.0.0.0** -> means all interface of IPv4 only; -...",
+          "matched_capabilities": [
+            "ICAP Integration"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "ICAP",
+            "REST API"
+          ],
+          "score": 68
+        },
+        {
+          "title": "Web traffic redirection",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdicap_v5_14_0/configuration/439836-web_traffic_redirection.md",
+          "header_path": "/",
+          "snippet": "## Example In case of Squid proxy installed on the same machine as ICAP Server the following configuration must be appended to the squid.conf file: none Sqiud example icap_enable on icap_send_client_ip on icap_preview_enable on icap_preview_size 0 icap_service_failure_limit -1 icap_service metascan_req reqmod_precache bypass=0...",
+          "matched_capabilities": [
+            "ICAP Integration",
+            "Multiscanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "ICAP"
+          ],
+          "score": 68
+        },
+        {
+          "title": "FILEMOD",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdicap_v5_14_0/operating/439989-filemod.md",
+          "header_path": "/",
+          "snippet": "Besides the standard REQMOD and RESPMOD, ICAP Server supports the FILEMOD (file modification) ICAP methods. FILEMOD lets the client to pass a file name and path to the ICAP Server so that it can scan the file in place (rather than streaming the file to the ICAP Server through TCP for scanning). The FILEMOD method deviates from the ICAP 1.0 specification...",
+          "matched_capabilities": [
+            "File Type Verification",
+            "ICAP Integration"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "ICAP"
+          ],
+          "score": 68
+        },
+        {
+          "title": "ICAP Dashboard",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdicap_v5_14_0/operating/439986-icap_dashboard.md",
+          "header_path": "/",
+          "snippet": "## ICAP history The ICAP history shows information on ICAP events in the system. On the ICAP history page you can search for ACTION, RESULT, HTTP URI, CLIENT IP, PROXY IP, HOST, CORE RULE or ICAP RULE. Also you can filter the list by ACTION. > Due to usability reasons the ICAP history list is not updated automatically. Click the Refresh icon to update. >...",
+          "matched_capabilities": [
+            "Central Management",
+            "ICAP Integration"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "ICAP"
+          ],
+          "score": 66
+        },
+        {
+          "title": "Connecting ICAP Client from Outside Kubernetes",
+          "category": "advanced_deployment",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdicap_v5_14_0/advanced_deployment/440068-connecting_icap_client_from_outside_kubernetes.md",
+          "header_path": "/Option 1: using NGINX Ingress/",
+          "snippet": "#### Setup NGINX ingress: 1. get ingress-nginx javascript git clone https://github.com/kubernetes/ingress-nginx.git 2. append below to values.yml javascript # Need to update it because default Nginx Ingress doesn't support TCP protocol tcp: 1344: \"default/md-icapsrv:1344\" #Exposing TCP service, is the namespace install md-icapsrv 11344:...",
+          "matched_capabilities": [
+            "Central Management",
+            "ICAP Integration",
+            "Multiscanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "ICAP",
+            "REST API"
+          ],
+          "score": 64
+        },
+        {
+          "title": "Connect the ICAP Client outside K8s to ICAP on K8s",
+          "category": "container_deployment",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdicap_v5_14_0/container_deployment/440080-how_to_connect_the_proxy_to_icap_k8s_on_premise.md",
+          "header_path": "/Option 1: using NGINX Ingress/",
+          "snippet": "#### Setup NGINX ingress: 1. get ingress-nginx javascript git clone https://github.com/kubernetes/ingress-nginx.git 2. append below to values.yml javascript # Need to update it because default Nginx Ingress doesn't support TCP protocol tcp: 1344: \"default/md-icapsrv:1344\" #Exposing TCP service, is the namespace install md-icapsrv 11344:...",
+          "matched_capabilities": [
+            "Central Management",
+            "ICAP Integration",
+            "Multiscanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "ICAP",
+            "REST API"
+          ],
+          "score": 64
+        },
+        {
+          "title": "Connect the ICAP Client outside K8s to ICAP on K8s",
+          "category": "installation",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdicap_v5_14_0/installation/439863-how_to_connect_the_proxy_to_icap_k8s_on_premise_steps.md",
+          "header_path": "/Option 1: using NGINX Ingress/",
+          "snippet": "#### Setup NGINX ingress: 1. get ingress-nginx javascript git clone https://github.com/kubernetes/ingress-nginx.git 2. append below to values.yml javascript # Need to update it because default Nginx Ingress doesn't support TCP protocol tcp: 1344: \"default/md-icapsrv:1344\" #Exposing TCP service, is the namespace install md-icapsrv 11344:...",
+          "matched_capabilities": [
+            "Central Management",
+            "ICAP Integration",
+            "Multiscanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "ICAP",
+            "REST API"
+          ],
+          "score": 64
+        }
+      ]
+    },
+    {
+      "slug": "mdmft",
+      "product": "MetaDefender Managed File Transfer",
+      "family": "MetaDefender Platform",
+      "priority": 1,
+      "confidence": "high",
+      "chunk_count": 1298,
+      "what_it_protects": "Business-to-business and internal managed file exchange.",
+      "deployment_zones": [
+        "DMZ",
+        "Corporate IT",
+        "Partner exchange",
+        "Cloud"
+      ],
+      "best_fit_use_cases": [
+        "Secure inbound and outbound partner file transfer",
+        "Add malware scanning and sanitization to SFTP-style file exchange workflows"
+      ],
+      "buyer_problems": [
+        "Third parties need to exchange files safely and audibly",
+        "File-transfer workflows need security controls without breaking operations"
+      ],
+      "threat_paths": [
+        "Partner-supplied malware",
+        "Outbound sensitive data movement",
+        "Supply-chain file exchange"
+      ],
+      "capabilities": [
+        "Managed File Transfer",
+        "Multiscanning",
+        "Deep CDR",
+        "Proactive DLP"
+      ],
+      "protocols_and_integrations": [
+        "SFTP",
+        "FTP",
+        "SMB/CIFS",
+        "HTTP/HTTPS",
+        "REST API"
+      ],
+      "industries": [
+        "Energy",
+        "Manufacturing",
+        "Healthcare",
+        "Finance",
+        "Government"
+      ],
+      "compliance_drivers": [
+        "ISO 27001",
+        "NIST CSF",
+        "NIS2",
+        "SOC 2"
+      ],
+      "account_triggers": [
+        "SFTP",
+        "third party",
+        "supplier file exchange",
+        "secure transfer"
+      ],
+      "evidence": [
+        {
+          "title": "SFTP - Pull Files",
+          "category": "file_transfer_automation",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmft_v3_11_4/file_transfer_automation/439511-sftp_pull_files.md",
+          "header_path": "/",
+          "snippet": "## Example I want to pull files from my remote Ubuntu 20.04 host into MetaDefender Managed File Transfer. I only want to pull files located in my home folder, and I want this to occur every Monday at 10 AM. My username is _teodor_ and my password is _pass%123!_. My Ubuntu host is accessible through the FQDN _lnx.home.io_, where the SSH server is running on...",
+          "matched_capabilities": [
+            "Managed File Transfer"
+          ],
+          "matched_protocols": [
+            "FTP",
+            "HTTP/HTTPS",
+            "RDP/SSH",
+            "SFTP"
+          ],
+          "score": 81
+        },
+        {
+          "title": "SFTP - Push Files",
+          "category": "file_transfer_automation",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmft_v3_11_4/file_transfer_automation/439512-sftp_push_files.md",
+          "header_path": "/",
+          "snippet": "## Configuration **Credential Input Type** Two types of authentication can be used: - **Manual**: username and password - **SSH Key**: username and selecting previously stored private SSH key (see: My Credentials) --- **Target SFTP Username** The username to authenticate via SFTP on the selected host. --- **Target SFTP Password** The password to...",
+          "matched_capabilities": [
+            "Central Management",
+            "Managed File Transfer",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "RDP/SSH",
+            "SFTP"
+          ],
+          "score": 72
+        },
+        {
+          "title": "Multi-Scanning and Data Sanitization",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmft_v3_11_4/operating/439437-multi_scanning_and_data_sanitization.md",
+          "header_path": "/",
+          "snippet": "## Data Loss Prevention (DLP) The Proactive DLP engine detects and blocks sensitive data, such as credit card numbers and social security numbers. It supports a wide range of file types, including Microsoft Office documents and PDFs. For more information, refer to the MetaDefender Core documentation. The user can download a redacted file with sensitive...",
+          "matched_capabilities": [
+            "Deep CDR",
+            "Email Attachment Security",
+            "File Type Verification",
+            "Industrial Protocol Control",
+            "Managed File Transfer",
+            "Multiscanning",
+            "OT Asset Visibility",
+            "Proactive DLP",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "SMTP"
+          ],
+          "score": 68
+        },
+        {
+          "title": "Integration with MetaDefender Core",
+          "category": "integrations",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmft_v3_11_4/integrations/439346-metadefender_core_integration.md",
+          "header_path": "/",
+          "snippet": "## Configuration 1. Go to \"Settings\" and select \"Core Integration.\" 2. Select \"Add MetaDefender Core.\" Fill out the required information on the \"Configuration\" page: - **REST URL:** used to enable communication between MetaDefender Managed File Transfer™ and MetaDefender Core™. It should point to the machine where Metadefender Core is installed. (i.e.,...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "Managed File Transfer",
+            "Multiscanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 64
+        },
+        {
+          "title": "SFTP Integration",
+          "category": "integrations",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmft_v3_11_4/integrations/439352-sftp.md",
+          "header_path": "/",
+          "snippet": "Hosts reachable via SFTP can be integrated with MetaDefender Managed File Transfer for various use cases, such as file transfer automation. For more information, visit the Introduction to File Transfer Automation section. To manage integration instances, go to \"Settings\" _**→**_ \"Integrations\" **→** \"SFTP.\" SFTP integrations are globally shared, meaning...",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "Managed File Transfer"
+          ],
+          "matched_protocols": [
+            "FTP",
+            "HTTP/HTTPS",
+            "S7",
+            "SFTP"
+          ],
+          "score": 64
+        },
+        {
+          "title": "Will MFT Pull Job Retrieve Incomplete Files via SFTP?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmft_v3_11_4/knowledge_base/439394-will_mft_pull_job_retrieve_incomplete_files_via_sftp.md",
+          "header_path": "/**Test File Execution**/",
+          "snippet": "#### **Issue – Scenario 2: File Still Being Written** When a file is still being written to (e.g., ongoing upload to SFTP), MFT detects it as **incomplete** or **in use**. - **Result:** MFT will **not retrieve** the file. Only fully written, unmodified files are pulled. - **Job Logs:** Reflect skipped or untransferred files. > In this scenario...",
+          "matched_capabilities": [
+            "Managed File Transfer"
+          ],
+          "matched_protocols": [
+            "FTP",
+            "HTTP/HTTPS",
+            "SFTP"
+          ],
+          "score": 62
+        },
+        {
+          "title": " What is the latest MetaDefender Managed File Transfer version?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmft_v3_11_4/knowledge_base/439417-what_is_the_latest_metadefender_managed_file_transfer_version.md",
+          "header_path": "/",
+          "snippet": "> This article applies to all MetaDefender Managed File Transfer V3 releases deployed on Windows systems. Browse MetaDefender Managed File Transfer Release Notes for details on the latest version, version history, version comparisons and release notes. Alternatively, go directly through the My OPSWAT for a list of available downloads.: 1. Login to My OPSWAT...",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "Managed File Transfer"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "S7"
+          ],
+          "score": 62
+        },
+        {
+          "title": "Available Job Types",
+          "category": "file_transfer_automation",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmft_v3_11_4/file_transfer_automation/439510-job_types.md",
+          "header_path": "/",
+          "snippet": "MetaDefender Managed File Transfer offers a growing set of predefined job types to automate recurring tasks, replacing manual processes with well-configured, automatically executed jobs. --- SFTP - Pull Files Automatically pull files from remote source using SFTP into MetaDefender MFT. SFTP - Push Files Automatically push files to a remote host using SFTP...",
+          "matched_capabilities": [
+            "Managed File Transfer",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "FTP",
+            "HTTP/HTTPS",
+            "SFTP",
+            "SMB/CIFS",
+            "SharePoint"
+          ],
+          "score": 61
+        }
+      ]
+    },
+    {
+      "slug": "mdss",
+      "product": "MetaDefender Storage Security",
+      "family": "MetaDefender Platform",
+      "priority": 1,
+      "confidence": "high",
+      "chunk_count": 1158,
+      "what_it_protects": "Cloud and enterprise storage repositories.",
+      "deployment_zones": [
+        "Cloud",
+        "Corporate IT",
+        "Storage layer"
+      ],
+      "best_fit_use_cases": [
+        "Scan files landing in object storage and shared repositories",
+        "Prevent malware persistence in enterprise storage buckets and collaboration platforms"
+      ],
+      "buyer_problems": [
+        "Storage is a landing zone for partner, customer, and employee files",
+        "Malware can persist in storage and be downloaded by trusted users later"
+      ],
+      "threat_paths": [
+        "Malicious storage uploads",
+        "Dormant malware in buckets",
+        "Shared repository contamination"
+      ],
+      "capabilities": [
+        "Storage Scanning",
+        "Multiscanning",
+        "Deep CDR",
+        "Proactive DLP",
+        "Adaptive Sandbox"
+      ],
+      "protocols_and_integrations": [
+        "AWS S3",
+        "Azure Blob",
+        "SharePoint",
+        "SMB/CIFS",
+        "SFTP",
+        "REST API"
+      ],
+      "industries": [
+        "Finance",
+        "Healthcare",
+        "SaaS",
+        "Government",
+        "Energy"
+      ],
+      "compliance_drivers": [
+        "SOC 2",
+        "ISO 27001",
+        "HIPAA",
+        "NIST CSF"
+      ],
+      "account_triggers": [
+        "S3",
+        "Azure Blob",
+        "SharePoint",
+        "storage bucket",
+        "object storage"
+      ],
+      "evidence": [
+        {
+          "title": "Windows Installation",
+          "category": "installation",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdss_4_4_2/installation/435932-windows_installation.md",
+          "header_path": "/",
+          "snippet": "## Windows package using Command Line (.msi) From the command line interface, it is possible to install the product by executing powershell PS>msiexec /i metadefender-storage-security.msi where the possible keys and their default values are the following: | **Key** | **Description** | | ---- | ---- | | /quiet or /passive | Suppress the installation wizard |...",
+          "matched_capabilities": [
+            "Managed File Transfer",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "Azure Blob",
+            "FTP",
+            "HTTP/HTTPS",
+            "REST API",
+            "SFTP",
+            "SMB/CIFS",
+            "SharePoint"
+          ],
+          "score": 70
+        },
+        {
+          "title": "Event-based handling",
+          "category": "configuration_and_management",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdss_4_4_2/configuration_and_management/435729-event_based_handling.md",
+          "header_path": "/",
+          "snippet": "> Event-based real-time processing triggers scans immediately upon file creation or modification notifications. > > This method is supported for the following storage units: **Amazon S3**, **S3 Compatible**, **Azure Blob**, **Alibaba Cloud**, **Google Cloud**, **Box**, **SMB Compatible**, **NFS**, **SFTP, FTP**, **SharePoint Online** and **NetApp ONTAP**.",
+          "matched_capabilities": [
+            "Managed File Transfer",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "Azure Blob",
+            "FTP",
+            "SFTP",
+            "SMB/CIFS",
+            "SharePoint"
+          ],
+          "score": 68
+        },
+        {
+          "title": "How to Enable Specific Modules in the Configuration?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdss_4_4_2/knowledge_base/435845-how_to_enable_specific_modules_in_the_configuration.md",
+          "header_path": "/",
+          "snippet": "## Enabling Modules During the installation it is advisable to activate only those modules you intend to use, as a measure to conserve resources. For instance, if your purpose is to scan Amazon S3 buckets, then you should only have the amazonsdk module enabled in ENABLED_MODULES environment variable inside the customer.env file. bash...",
+          "matched_capabilities": [
+            "Managed File Transfer",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "REST API",
+            "SFTP",
+            "SMB/CIFS"
+          ],
+          "score": 68
+        },
+        {
+          "title": "Service Instance Scaling on Linux",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdss_4_4_2/knowledge_base/440929-service_instance_scaling_on_linux.md",
+          "header_path": "/What you can scale/",
+          "snippet": "### 2. Storage connectors (per integration) Each storage type you connect to has its own connector container. You can scale each one independently, so you can add capacity only where you need it: | Setting | Storage type | | ---- | ---- | | AMAZONSDK_ADDITIONAL_INSTANCES | Amazon S3 | | AZUREBLOB_ADDITIONAL_INSTANCES | Azure Blob Storage | |...",
+          "matched_capabilities": [
+            "Managed File Transfer",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "Azure Blob",
+            "FTP",
+            "SFTP",
+            "SMB/CIFS",
+            "SharePoint"
+          ],
+          "score": 68
+        },
+        {
+          "title": "AWS Lambda with S3 Trigger for MDSS Real-Time Processing",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdss_4_4_2/knowledge_base/437163-aws_lambda_with_s3_trigger_for_mdss_real_time_processing.md",
+          "header_path": "/",
+          "snippet": "> Before proceeding with the Lambda function creation, ensure the following requirements are met: 1. IAM User Permissions - The IAM user you are using for Lambda creation must have the following permissions, if you are using an admin user then ignore this: - Create Lambda functions - Assign IAM roles - Configure S3 triggers - Access the target S3 buckets 2....",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "File Type Verification",
+            "Industrial Protocol Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "REST API",
+            "S7"
+          ],
+          "score": 67
+        },
+        {
+          "title": "Integrations",
+          "category": "integrations",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdss_4_4_2/integrations/435783-storage_units.md",
+          "header_path": "/",
+          "snippet": "## Cloud Object Storages | Storage Name | Integration Type | Tagging | Event-Based | Metadata * Copy | | ---- | ---- | ---- | ---- | ---- | | Amazon S3 | Native | Yes | Yes | Yes | | Wasabi | S3 Compatible | Yes | Yes | No | | Cloudian® | S3 Compatible | Yes | Yes | No | | Oracle Cloud | S3 Compatible | Yes | Yes | No | | Oracle Cloud | Native | No | Yes |...",
+          "matched_capabilities": [
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "Azure Blob",
+            "HTTP/HTTPS"
+          ],
+          "score": 64
+        },
+        {
+          "title": "Release notes",
+          "category": "release_notes",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdss_4_4_2/release_notes/435843-release_notes.md",
+          "header_path": "/",
+          "snippet": "| **MetaDefender Storage Security v4.4.2**; ; ; **Release Date: May 14, 2026**; ; ; ; **Version supported until November 14, 2027** | | ---- | | **Maintenance Release (v4.4.2)**; ; ; - **SFTP scan reliability.** Fixed an issue where SFTP scans could fail with repeated connection errors against servers that limit concurrent sessions.; - **Windows upgrade...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Central Management",
+            "Managed File Transfer",
+            "Multiscanning",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "Azure Blob",
+            "FTP",
+            "HTTP/HTTPS",
+            "REST API",
+            "SFTP",
+            "SharePoint"
+          ],
+          "score": 64
+        },
+        {
+          "title": "Add An Amazon S3 Storage",
+          "category": "integrations",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdss_4_4_2/integrations/435786-add_an_amazon_s3_storage.md",
+          "header_path": "/",
+          "snippet": "### Using IAM role for Amazon S3 integration On S3 integration with IAM, the role configured on the EC2 machine will be used to authenticate. With the optional field of Assume Role ARN, MetaDefender Storage Security allows integration with other buckets that are in different accounts from the current AWS account. This is possible by configuring Assume Role...",
+          "matched_capabilities": [
+            "Endpoint Posture",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 63
+        }
+      ]
+    },
+    {
+      "slug": "mdemail",
+      "product": "MetaDefender Email Gateway Security",
+      "family": "MetaDefender Platform",
+      "priority": 1,
+      "confidence": "high",
+      "chunk_count": 906,
+      "what_it_protects": "Inbound and outbound email content and attachments.",
+      "deployment_zones": [
+        "Email perimeter",
+        "DMZ",
+        "Cloud mail"
+      ],
+      "best_fit_use_cases": [
+        "Scan, sanitize, and control email attachments before users receive them",
+        "Reduce phishing and malware exposure from email-borne files"
+      ],
+      "buyer_problems": [
+        "Email remains a high-volume malware and phishing path",
+        "Attachments need content-level controls beyond basic mail filtering"
+      ],
+      "threat_paths": [
+        "Phishing attachments",
+        "Malicious documents",
+        "Sensitive data leaving by email"
+      ],
+      "capabilities": [
+        "Email Attachment Security",
+        "Multiscanning",
+        "Deep CDR",
+        "Proactive DLP"
+      ],
+      "protocols_and_integrations": [
+        "SMTP",
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "Finance",
+        "Healthcare",
+        "Government",
+        "Energy",
+        "Manufacturing"
+      ],
+      "compliance_drivers": [
+        "ISO 27001",
+        "NIST CSF",
+        "HIPAA",
+        "SOC 2",
+        "NIS2"
+      ],
+      "account_triggers": [
+        "email gateway",
+        "attachment",
+        "phishing",
+        "Microsoft 365"
+      ],
+      "evidence": [
+        {
+          "title": "Policy",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdemail_6_4_0/configuration/435289-policy.md",
+          "header_path": "/Security rule configuration/Security policy/",
+          "snippet": "#### Anti-phishing and anti-spam Email Gateway Security provides cutting edge anti-spam and anti-phishing protection. Spam and phishing are handled by the same component so the settings are quite similar. For specific settings see the two subsections at the end of this section. **Probability level** The anti-spam and anti-phishing component use the...",
+          "matched_capabilities": [
+            "Central Management",
+            "Deep CDR",
+            "Email Attachment Security",
+            "Multiscanning",
+            "Proactive DLP",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "SMTP"
+          ],
+          "score": 84
+        },
+        {
+          "title": "Translation support",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdemail_6_4_0/configuration/435303-translation_support.md",
+          "header_path": "/Notification, alert and report emails/Translation/",
+          "snippet": "#### Conditional options Content and/or subjects can also be translated/altered based on email classifications. In the next example, the subject of a blocked notification can be different, depending on the classifications applied to the email. > | The following classification constants are available when creating conditions in the XSLT | | ---- | |...",
+          "matched_capabilities": [
+            "Deep CDR",
+            "Email Attachment Security",
+            "Industrial Protocol Control",
+            "Managed File Transfer",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning",
+            "YARA Detection"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SFTP",
+            "SMB/CIFS",
+            "SMTP",
+            "USB/Removable Media"
+          ],
+          "score": 83
+        },
+        {
+          "title": "Disclaimers",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdemail_6_4_0/configuration/435290-disclaimers.md",
+          "header_path": "/Disclaimer variables/Available variables/",
+          "snippet": "#### Context specific variables **Emails with encrypted attachments** The following variables are available for _disclaimers to emails with encrypted attachments_ only: **rescan_link_url** Replaced by the **Settings > General / Configuration / Public server name** (see Configuration/Settings). If the _Public server name_ is not set then the \"_Your...",
+          "matched_capabilities": [
+            "Central Management",
+            "Deep CDR",
+            "Email Attachment Security",
+            "Industrial Protocol Control",
+            "Managed File Transfer",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "SBOM Analysis",
+            "Storage Scanning",
+            "YARA Detection"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "SMTP",
+            "USB/Removable Media"
+          ],
+          "score": 72
+        },
+        {
+          "title": "Alert, notification and quarantine report emails",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdemail_6_4_0/configuration/435299-alert_notification_and_quarantine_report_emails.md",
+          "header_path": "/",
+          "snippet": "## Alerts Email alerts can be configured so that certain users can instantly be notified about the occurrence of certain system events. | **SMTP server not responding ** | An alert is sent if the inbound SMTP server is not responding as expected | | ---- | ---- | | **SMTP relay not responding ** | An alert is sent if an SMTP relay configured in a server...",
+          "matched_capabilities": [
+            "Central Management",
+            "Deep CDR",
+            "Email Attachment Security",
+            "Endpoint Posture",
+            "Managed File Transfer"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "SMTP"
+          ],
+          "score": 69
+        },
+        {
+          "title": "Email classifications",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdemail_6_4_0/operating/435368-email_classifications.md",
+          "header_path": "/Negative classifications/",
+          "snippet": "### Emails with problems Most of he emails classified according to the classes below are blocked by default as they expose the organization to significant risk (the exceptions are marked below). | **Classification** | **Description** | | ---- | ---- | | Scan failure | Anti-malware scan of the _Advanced Threat Detection_ capability failed. | | Malware...",
+          "matched_capabilities": [
+            "Central Management",
+            "Email Attachment Security",
+            "Multiscanning",
+            "Proactive DLP",
+            "YARA Detection"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "SMTP"
+          ],
+          "score": 69
+        },
+        {
+          "title": "Additional email headers",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdemail_6_4_0/configuration/435291-additional_email_headers.md",
+          "header_path": "/",
+          "snippet": "## Actions and statuses with additional headers Additional headers can be assigned to emails in case of the following actions or statuses, for each rule: | **Action or status** | **Location** | **Description** | | ---- | ---- | ---- | | Allowed emails | SCAN / Allowed actions | These headers will be applied to emails that are allowed (i.e. have no threat...",
+          "matched_capabilities": [
+            "Central Management",
+            "Deep CDR",
+            "Email Attachment Security"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "SMTP"
+          ],
+          "score": 67
+        },
+        {
+          "title": "Email tags",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdemail_6_4_0/configuration/435292-email_tags.md",
+          "header_path": "/",
+          "snippet": "## Tag-able actions and statuses Tags can be assigned to emails in case of the following actions or statuses, for each rule: | **Action or status** | **Location** | **Description** | | ---- | ---- | ---- | | Allowed emails | SCAN / Allowed actions | These tags will be applied to emails that are allowed (i.e. have no threat detected, have no DLP violation,...",
+          "matched_capabilities": [
+            "Central Management",
+            "Deep CDR",
+            "Email Attachment Security"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "SMTP"
+          ],
+          "score": 67
+        },
+        {
+          "title": "How anti-spam and anti-phishing works?",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdemail_6_4_0/operating/435364-how_anti_spam_and_anti_phishing_works.md",
+          "header_path": "/",
+          "snippet": "## Content disarm & reconstruction Content Disarm & Reconstruction (CDR) , also known as data sanitization, is a computer security technology that removes potentially malicious code from files. CDR assumes all files are malicious and sanitizes and rebuilds each file ensuring full usability with safe content. Unlike malware analysis, CDR technology does not...",
+          "matched_capabilities": [
+            "Deep CDR",
+            "Email Attachment Security",
+            "File Type Verification"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "SMTP"
+          ],
+          "score": 67
+        }
+      ]
+    },
+    {
+      "slug": "netwall",
+      "product": "MetaDefender Security Gateway",
+      "family": "OT and Network Security",
+      "priority": 1,
+      "confidence": "high",
+      "chunk_count": 533,
+      "what_it_protects": "Network boundaries between IT, DMZ, and OT zones.",
+      "deployment_zones": [
+        "IT/OT boundary",
+        "DMZ",
+        "OT Level 3",
+        "Industrial perimeter"
+      ],
+      "best_fit_use_cases": [
+        "Segment and control traffic crossing industrial network boundaries",
+        "Add protocol-aware inspection and gateway controls at IT/OT choke points"
+      ],
+      "buyer_problems": [
+        "Flat or poorly controlled IT/OT connectivity increases blast radius",
+        "Industrial traffic needs controlled paths, not generic firewall assumptions"
+      ],
+      "threat_paths": [
+        "IT-to-OT lateral movement",
+        "Unsafe remote/vendor paths",
+        "Uncontrolled industrial protocol flows"
+      ],
+      "capabilities": [
+        "Industrial Protocol Control",
+        "Network Segmentation",
+        "IT/OT Boundary Control"
+      ],
+      "protocols_and_integrations": [
+        "Modbus",
+        "OPC UA",
+        "DNP3",
+        "S7",
+        "BACnet"
+      ],
+      "industries": [
+        "Energy",
+        "Manufacturing",
+        "Water",
+        "Transport",
+        "Oil and Gas"
+      ],
+      "compliance_drivers": [
+        "IEC 62443",
+        "NERC CIP",
+        "NIS2",
+        "NIST CSF"
+      ],
+      "account_triggers": [
+        "Purdue",
+        "SCADA",
+        "IT OT",
+        "segmentation",
+        "industrial firewall"
+      ],
+      "evidence": [
+        {
+          "title": "OPC DA/AE Connector",
+          "category": "opc_da_connector",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwall_v5_13_2/opc_da_connector/433180-netwall_opc_connector.md",
+          "header_path": "/Configure OPC Client/",
+          "snippet": "### Add server This procedure describes how to add an OPC source server to the data collection. 1. Select **Add Server** from the **Servers** menu. The _Select OPC Server_ pane displays. 2. Select the type of server you want to install from the dropdown list. 3. Click **Browse for Servers** to locate available customer-owned servers of the selected type....",
+          "matched_capabilities": [
+            "Email Attachment Security",
+            "ICAP Integration",
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning",
+            "YARA Detection"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "DNP3",
+            "FTP",
+            "HTTP/HTTPS",
+            "ICAP",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "SMTP",
+            "USB/Removable Media"
+          ],
+          "score": 71
+        },
+        {
+          "title": "Configuration",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwall_v5_13_2/configuration/433122-configuration.md",
+          "header_path": "/",
+          "snippet": "In this page you will learn how to configure several aspects of NetWall. You will learn: - Initial Configuration: How to configure your management IP, DNS and NTP servers - Security Dongles: How the dongles work and how you can register them - File Transfer: How to configure FTP, SFTP and Windows File Share to transfer files from BLUE to RED - Managed File...",
+          "matched_capabilities": [
+            "Central Management",
+            "Email Attachment Security",
+            "Industrial Protocol Control",
+            "Managed File Transfer"
+          ],
+          "matched_protocols": [
+            "DNP3",
+            "FTP",
+            "HTTP/HTTPS",
+            "Modbus",
+            "OPC UA",
+            "REST API",
+            "SFTP",
+            "SMTP",
+            "Syslog"
+          ],
+          "score": 53
+        },
+        {
+          "title": "OPSWAT NetWall Unidirectional Security Gateway USG-100 Common Criteria Evaluated Configuration Guide",
+          "category": "opswat_netwall_unilateral_security_gateway_usg_100_common_criteria_evaluated_configuration_guide",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwall_v5_13_2/opswat_netwall_unilateral_security_gateway_usg_100_common_criteria_evaluated_configuration_guide/433185-opswat_netwall_usg_100_common_criteria_evaluated_configuration_g.md",
+          "header_path": "/USG-100 Setup/Installation procedure/",
+          "snippet": "#### Connect servers to you system The following graphic shows the rear view of the server. Use the following table to connect both servers to your system. You will not need all of the connections for the NetWall USG-100 installation. | Port Number | Description | NetWall connection | | ---- | ---- | ---- | | 1 | Power supply Unit | Connect NetWall BLUE and...",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "Removable Media Control",
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "S7",
+            "USB/Removable Media"
+          ],
+          "score": 46
+        },
+        {
+          "title": "MetaDefender Security Gateway Introduction",
+          "category": "information",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwall_v5_13_2/information/433119-netwall_intro.md",
+          "header_path": "/",
+          "snippet": "MetaDefender Security Gateway provides unilateral or bilateral inter-zone data transfer and streaming across the zones. The zones are referred to as BLUE (inner) and RED (outer) and are joined by a PCI cable. This cable facilitates the transfer of non-routable data between the zones. No direct network connection exists and no pertinent network information...",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning",
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "USB/Removable Media"
+          ],
+          "score": 45
+        },
+        {
+          "title": "OPC UA Connector",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwall_v5_13_2/configuration/433136-opc_ua_connector.md",
+          "header_path": "/Security Gateway BLUE/",
+          "snippet": "### Initial Configuration On the OPC UA section, click on Edit and fill in the following fields: 1. **UA Server IP**: Type the IP address of the customer’s OPC UA server in the UA Server IP box. 2. **Port**: Type the port number of the customer’s OPC UA server in the Port Number box. 3. **Click the Browse button**. MetaDefender Security Gateway BLUE...",
+          "matched_capabilities": [
+            "Central Management",
+            "Industrial Protocol Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "OPC UA",
+            "REST API"
+          ],
+          "score": 43
+        },
+        {
+          "title": "MQTT Connector",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwall_v5_13_2/configuration/433141-mqtt_connector.md",
+          "header_path": "/",
+          "snippet": "### Security Gateway BLUE > To configure MQTT Connector, a security dongle should be inserted in the BLUE server. 1. Login into MetaDefender Security Gateway BLUE. 2. Go to MQTT menu deploy Action button and select Add Subscriber. 3. Type values in the following boxes: 1. **Channel #:** 2. **Broker IP or Hostname:** Include here the Broker IP address or the...",
+          "matched_capabilities": [
+            "Email Attachment Security",
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "SMTP",
+            "USB/Removable Media"
+          ],
+          "score": 43
+        },
+        {
+          "title": "MODBUS Connector",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwall_v5_13_2/configuration/433135-modbus_connector.md",
+          "header_path": "/",
+          "snippet": "The Modbus Connector enables transfer of Modbus data unidirectionally across the MetaDefender Security Gateway USG/BSG (hereinafter Security Gateway). The Modbus Connector is configured on the Security Gateway on both the BLUE and RED sides. Configuring the Modbus Connector on Security Gateway BLUE creates a Modbus client on the BLUE side and a Modbus...",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "Modbus"
+          ],
+          "score": 41
+        },
+        {
+          "title": "Aspentech IP.21 Historian Replication with MSMQ.",
+          "category": "aspentech_ip_21_historian_replication_ms_mq",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwall_v5_13_2/aspentech_ip_21_historian_replication_ms_mq/433181-aspentech_ip_21_historian_replication.md",
+          "header_path": "/[**Configuration**](**Configuration**)/",
+          "snippet": "### **Configure streaming point parameters** Follow the instructions in the MetaDefender Security Gateway _User Guide_ to configure the streaming point parameters. These parameters connect the MetaDefender Security Gatewayl BLUE and RED nodes to the Aspentech databases and determine replication. After you complete your configuration, the connections should...",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "Managed File Transfer",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SFTP",
+            "SMB/CIFS",
+            "USB/Removable Media"
+          ],
+          "score": 39
+        }
+      ]
+    },
+    {
+      "slug": "netwalldiode",
+      "product": "MetaDefender Optical Diode",
+      "family": "OT and Network Security",
+      "priority": 1,
+      "confidence": "high",
+      "chunk_count": 511,
+      "what_it_protects": "High-assurance one-way data transfer boundaries.",
+      "deployment_zones": [
+        "Air gap",
+        "OT/IT boundary",
+        "High-security enclave"
+      ],
+      "best_fit_use_cases": [
+        "Move operational data out of secure networks without allowing inbound connectivity",
+        "Support monitoring and analytics while preserving one-way separation"
+      ],
+      "buyer_problems": [
+        "Operations teams need outbound data visibility without exposing control networks",
+        "Critical environments require hardware-enforced separation"
+      ],
+      "threat_paths": [
+        "Inbound command path into OT",
+        "Bidirectional remote access risk",
+        "Data exfiltration policy breach"
+      ],
+      "capabilities": [
+        "Unidirectional Transfer",
+        "Industrial Boundary Protection"
+      ],
+      "protocols_and_integrations": [
+        "OPC UA",
+        "Modbus",
+        "FTP",
+        "SFTP",
+        "Syslog"
+      ],
+      "industries": [
+        "Energy",
+        "Defence",
+        "Water",
+        "Nuclear",
+        "Transport"
+      ],
+      "compliance_drivers": [
+        "NERC CIP",
+        "IEC 62443",
+        "NIS2",
+        "NIST CSF"
+      ],
+      "account_triggers": [
+        "diode",
+        "unidirectional",
+        "air gap",
+        "historian replication"
+      ],
+      "evidence": [
+        {
+          "title": "TCP Streaming with MetaDefender Optical Diode",
+          "category": "tcp_streaming_with_metadefender_optical_diode",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwalldiode_v1_13_2/tcp_streaming_with_metadefender_optical_diode/433090-tcp_streaming_with_netwall_diode.md",
+          "header_path": "/",
+          "snippet": "## TCP in a one-way environment The Trusted (BLUE) side of MetaDefender Optical Diode establishes a Read TCP connection with the specified data source on the Trusted network and reads data from the data source. That data is transmitted across the fiber optic link in a proprietary non-routable packet format to the UnTrusted (RED) side of the Data Diode. The...",
+          "matched_capabilities": [
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 48
+        },
+        {
+          "title": "Streams (TCP, UDP, Syslog, HTTP)",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwalldiode_v1_13_2/configuration/433046-diode_tcpupd_config.md",
+          "header_path": "/",
+          "snippet": "## Introduction The TCP protocol guarantees delivery and avoids data loss. But TCP Protocol handshaking and control requires bi-directional communications between the initiating TCP Data Sender and the responding TCP Data Receiver. This bi-directional communication is not possible with the MetaDefender Optical Diode (hereinafter Optical diode) because a...",
+          "matched_capabilities": [
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "Syslog"
+          ],
+          "score": 43
+        },
+        {
+          "title": "MetaDefender Optical Diode Examples",
+          "category": "metadefender_optical_diode_examples",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwalldiode_v1_13_2/metadefender_optical_diode_examples/433089-diode_examples.md",
+          "header_path": "/",
+          "snippet": "## Unidirectional Streaming Streaming is used to transfer UDP (unicast and multicast) or TCP data from the BLUE zone to the RED zone. The following example shows TCP streaming for a syslog. This example configures a UNIX machine in the BLUE zone to send syslog data to a UNIX machine in the RED zone. The TCP Streaming Configuration for MetaDefender Optical...",
+          "matched_capabilities": [
+            "Storage Scanning",
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "Syslog"
+          ],
+          "score": 39
+        },
+        {
+          "title": "What are the differences between MetaDefender Optical Diode Back-to-Back and the Bilateral Security Gateway functionality?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwalldiode_v1_13_2/knowledge_base/433115-what_are_the_differences_between_metadefender_optical_diode_back.md",
+          "header_path": "/",
+          "snippet": "> This article applies to MetaDefender Optical Diode version 1.11.0 or higher. This document provides a summary of the main differences between BSG and Optical Diode back-to-back functionality. | | **Optical Diode**; ; ; ; **Back-to-back** | **Bilateral Security Gateway** | | ---- | ---- | ---- | | Connections | Allows connections to be initiated from...",
+          "matched_capabilities": [
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "RDP/SSH",
+            "REST API"
+          ],
+          "score": 38
+        },
+        {
+          "title": "MetaDefender Optical Diode Introduction",
+          "category": "metadefender_optical_diode_introduction",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwalldiode_v1_13_2/metadefender_optical_diode_introduction/433040-diode_introduction.md",
+          "header_path": "/",
+          "snippet": "MetaDefender Optical Diode (hereinafter Optical Diode) provides unidirectional data transfer between networks of differing security classifications (zones). The zones are referred to as BLUE (source) and RED (destination) and are joined by an optic fiber. This fiber facilitates the transfer of non-routable data between the zones. No direct network...",
+          "matched_capabilities": [
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 36
+        },
+        {
+          "title": "MetaDefender Optical Diode Initial Configuration",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwalldiode_v1_13_2/configuration/433043-diode_initial_config.md",
+          "header_path": "/",
+          "snippet": "## OPSWAT Central Management Integration Central Management is a centralized console that you can perform global operations such as manage MetaDefender products and OPSWAT Client, view managed anti-malware engines, manage virus definition and engine updates, and check licensing status. For more information, please visit https://docs.opswat.com/ocm To...",
+          "matched_capabilities": [
+            "Central Management",
+            "Multiscanning",
+            "Storage Scanning",
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 33
+        },
+        {
+          "title": "Modbus Connector",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwalldiode_v1_13_2/configuration/433059-modbus_connector.md",
+          "header_path": "/",
+          "snippet": "The Modbus Connector enables transfer of Modbus data unidirectionally across the MetaDefender Optical Diode (hereinafter Optical Diode). The Modbus Connector is configured on the Optical Diode on both the BLUE and RED sides. Configuring the Modbus Connector on Optical Diode BLUE creates a Modbus client on the BLUE side and a Modbus server on the RED side....",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "Modbus"
+          ],
+          "score": 31
+        },
+        {
+          "title": "SMTP Connector",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/netwalldiode_v1_13_2/configuration/433060-smtp_connector.md",
+          "header_path": "/",
+          "snippet": "The SMTP Connector allows you to transfer SMTP email data unidirectionally across the MetaDefender Optical Diode (hereinafter Optical Diode). There is a built in SMTP server on Optical Diode BLUE that receives email from SMTP clients on the BLUE network. SMTP traffic is transferred from Optical Diode BLUE to Optical Diode RED, where a built in SMTP client...",
+          "matched_capabilities": [
+            "Email Attachment Security",
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "SMTP"
+          ],
+          "score": 31
+        }
+      ]
+    },
+    {
+      "slug": "ot",
+      "product": "MetaDefender OT Security",
+      "family": "OT and Network Security",
+      "priority": 1,
+      "confidence": "high",
+      "chunk_count": 724,
+      "what_it_protects": "Industrial assets, control networks, and OT security posture.",
+      "deployment_zones": [
+        "OT Level 3",
+        "OT Level 2",
+        "Industrial network"
+      ],
+      "best_fit_use_cases": [
+        "Discover and monitor OT assets and communications",
+        "Identify OT cyber risk and support segmentation and vulnerability reduction"
+      ],
+      "buyer_problems": [
+        "OT teams often lack accurate asset inventory and risk visibility",
+        "Security teams need industrial context for vulnerabilities and communication flows"
+      ],
+      "threat_paths": [
+        "Unknown OT assets",
+        "Unsafe industrial communications",
+        "Unmanaged vulnerabilities"
+      ],
+      "capabilities": [
+        "OT Asset Visibility",
+        "OT Risk Monitoring",
+        "Vulnerability Visibility"
+      ],
+      "protocols_and_integrations": [
+        "Modbus",
+        "OPC UA",
+        "DNP3",
+        "S7",
+        "BACnet"
+      ],
+      "industries": [
+        "Energy",
+        "Manufacturing",
+        "Water",
+        "Transport",
+        "Oil and Gas"
+      ],
+      "compliance_drivers": [
+        "IEC 62443",
+        "NERC CIP",
+        "NIS2",
+        "NIST CSF"
+      ],
+      "account_triggers": [
+        "OT",
+        "SCADA",
+        "PLC",
+        "HMI",
+        "asset discovery"
+      ],
+      "evidence": [
+        {
+          "title": "Smart Asset Profiling",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/ot_v4_0_0/operating/435583-smart_asset_profiling.md",
+          "header_path": "/Main features/",
+          "snippet": "### Detect the configuration and security status of Siemens PLC devices **MD OT Security** can scan Siemens Programmable Logic Controllers (PLCs) using **S7COMM - Extended** profile to detect their configuration settings and assess the **security status**. By conducting a comprehensive scan, it retrieves detailed information about the device’s current setup...",
+          "matched_capabilities": [
+            "Central Management",
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "REST API",
+            "S7"
+          ],
+          "score": 70
+        },
+        {
+          "title": "Site dashboard",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/ot_v4_0_0/operating/435614-site_dashboard.md",
+          "header_path": "/",
+          "snippet": "## Main dashboard widgets (Site scope) | Widget | Purpose | | ---- | ---- | | **Asset Status** | Shows total assets in the selected site and the active/inactive breakdown by asset type. | | **Active Connection Status (Today)** | Shows current active connection count and trend for today. | | **Active Connections by Sensor/Network Segment** | Shows active...",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning",
+            "YARA Detection"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "USB/Removable Media"
+          ],
+          "score": 66
+        },
+        {
+          "title": "Network Map",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/ot_v4_0_0/operating/435575-network_map_visualization.md",
+          "header_path": "/",
+          "snippet": "## Device node A device node can represent either a single machine in the network, such as an HMI, PLC, SCADA, or switch, server…Users can see device information by clicking on the device node. On the left side, user can see more onboarded time and discovery agent information. On the right side there are 5 tabs contained related device information:...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "OT Asset Visibility"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 56
+        },
+        {
+          "title": "Enterprise dashboard",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/ot_v4_0_0/operating/435613-enterprise_dashboard.md",
+          "header_path": "/",
+          "snippet": "## Main widgets (typical layout) What you see can vary slightly by product version and your role. Typical widgets include: | Widget | What it shows | | ---- | ---- | | **Protocols (Today)** | Industrial and IT protocols observed today, often as a chart over time. | | **Connection Alert Matrix (Today)** | How **connection** alerts line up by severity and...",
+          "matched_capabilities": [
+            "Email Attachment Security",
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "SMTP",
+            "USB/Removable Media"
+          ],
+          "score": 55
+        },
+        {
+          "title": "Sensor Dashboard",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/ot_v4_0_0/operating/435574-sensor_dashboard.md",
+          "header_path": "/",
+          "snippet": "## Main areas (sensor scope, including Built-in sensor) When the header scope is a **sensor** (such as **Built-in sensor**), the dashboard emphasizes that sensor’s traffic and alerts. The exact tiles can vary by version and role; a typical layout includes: | Section | What it shows | | ---- | ---- | | **Asset types / asset summary** | Counts for major...",
+          "matched_capabilities": [
+            "Endpoint Posture",
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "USB/Removable Media"
+          ],
+          "score": 54
+        },
+        {
+          "title": "Asset Management",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/ot_v4_0_0/operating/435577-asset_manipulation.md",
+          "header_path": "/",
+          "snippet": "## Asset detail - Vulnerability The open port/protocol tab indicates all CVEs that the asset is being/may be unpatched. - **Unpatched:** the CVEs that asset is not patched. - **Patched:** the CVEs that asset have resolved. - **Potential:** the CVEs that asset may not be patched. You can see more information by click on the CVE. - CVSS version 3.x or 2.0 -...",
+          "matched_capabilities": [
+            "OT Asset Visibility"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 52
+        },
+        {
+          "title": "Vulnerability",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/ot_v4_0_0/operating/435597-vulnerability.md",
+          "header_path": "/",
+          "snippet": "The **Vulnerability** violation is accessible under **Policies** → **Asset Policies** → **Vulnerabilities.** The vulnerability page contains a list of assets with CVSS V3 score range policies that is not allowed in the system. Any policies that are listed in this page will make MetaDefender OT Security trigger alert alerting when the asset is in CVSS V3...",
+          "matched_capabilities": [
+            "Central Management"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 52
+        },
+        {
+          "title": "Enterprise - Application",
+          "category": "settings",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/ot_v4_0_0/settings/435620-enterprise_application.md",
+          "header_path": "/2\\. Dashboard & sites map/",
+          "snippet": "### 2.4 Typical workflows from here - **Sites and sensors** are not added from the enterprise Dashboard in current releases; the map reflects inventory that was registered through your deployment workflow. - Drill into **Assets**, **Network Map**, or **Alerts** from the sidebar for detail.",
+          "matched_capabilities": [
+            "Central Management",
+            "ICAP Integration",
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "ICAP",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "USB/Removable Media"
+          ],
+          "score": 52
+        }
+      ]
+    },
+    {
+      "slug": "diode_x",
+      "product": "MetaDefender Diode X",
+      "family": "OT and Network Security",
+      "priority": 2,
+      "confidence": "high",
+      "chunk_count": 198,
+      "what_it_protects": "High-assurance unidirectional data exchange for secure environments.",
+      "deployment_zones": [
+        "Air gap",
+        "OT/IT boundary",
+        "Secure enclave"
+      ],
+      "best_fit_use_cases": [
+        "Transfer data across highly restricted boundaries with one-way enforcement",
+        "Support regulated OT data sharing without opening inbound routes"
+      ],
+      "buyer_problems": [
+        "Security teams need a stronger control than firewall policy for critical boundaries",
+        "Operations need outbound visibility from isolated sites"
+      ],
+      "threat_paths": [
+        "Inbound connectivity to isolated networks",
+        "Misconfigured bidirectional transfer paths"
+      ],
+      "capabilities": [
+        "Unidirectional Transfer",
+        "Industrial Boundary Protection"
+      ],
+      "protocols_and_integrations": [
+        "FTP",
+        "SFTP",
+        "Syslog",
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "Defence",
+        "Energy",
+        "Nuclear",
+        "Transport",
+        "Government"
+      ],
+      "compliance_drivers": [
+        "NERC CIP",
+        "IEC 62443",
+        "NIS2"
+      ],
+      "account_triggers": [
+        "diode x",
+        "data diode",
+        "unidirectional",
+        "air gap"
+      ],
+      "evidence": [
+        {
+          "title": "Streams (Legacy)",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/diode_x_v1_9_2_2_4_2/configuration/433213-5_tcp_udp_streams.md",
+          "header_path": "/",
+          "snippet": "## Introduction Under normal (non-Diode) circumstances, TCP protocol guarantees delivery and avoids data loss. But TCP Protocol handshaking and control requires bi-directional communications between the initiating TCP Data Sender and the responding TCP Data Receiver. This bi-directional communication is not possible in MetaDefender Transfer Guard because a...",
+          "matched_capabilities": [
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "Syslog"
+          ],
+          "score": 43
+        },
+        {
+          "title": "Streams (TCP, UDP, Syslog, HTTP)",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/diode_x_v1_9_2_2_4_2/configuration/433218-t.md",
+          "header_path": "/",
+          "snippet": "## Introduction The TCP protocol guarantees delivery and avoids data loss. But TCP Protocol handshaking and control requires bi-directional communications between the initiating TCP Data Sender and the responding TCP Data Receiver. This bi-directional communication is not possible with the MetaDefender Diode X because a Data Diode, by definition, implements...",
+          "matched_capabilities": [
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "Syslog"
+          ],
+          "score": 43
+        },
+        {
+          "title": "MetaDefender Diode X Introduction",
+          "category": "metadefender_diode_x_introduction",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/diode_x_v1_9_2_2_4_2/metadefender_diode_x_introduction/433221-1_metadefender_tg_introduction.md",
+          "header_path": "/",
+          "snippet": "> Please note that the process to update from 1.9.X to 2.4.X is different than the normal process explained in the Updates section. Please, refer to support in order to update to version 2.0.0. MetaDefender Diode X ensures uncompromising security for file transfers between networks of different security classifications, providing a secure file scanning and...",
+          "matched_capabilities": [
+            "Central Management",
+            "Deep CDR",
+            "Storage Scanning",
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS"
+          ],
+          "score": 40
+        },
+        {
+          "title": "MetaDefender Diode X Initial Configuration",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/diode_x_v1_9_2_2_4_2/configuration/433207-1_metadefender_optical_diode_initial_configuration.md",
+          "header_path": "/",
+          "snippet": "## OPSWAT Central Management Integration Central Management is a centralized console that provides basic health information for MetaDefender diode X and other NetWall models. In addition, you can perform global operations such as manage MetaDefender products and OPSWAT Client, view managed anti-malware engines, manage virus definition and engine updates,...",
+          "matched_capabilities": [
+            "Central Management",
+            "Multiscanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 30
+        },
+        {
+          "title": "Back to Back Mode",
+          "category": "back_to_back_mode",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/diode_x_v1_9_2_2_4_2/back_to_back_mode/433234-back_to_back_mode.md",
+          "header_path": "/",
+          "snippet": "Back-to-Back MetaDefender Diode X requires two Diode X appliances that point in opposite directions. One Diode X is used to send data South-North and the other Diode X is used to send data North-South. > Two Diode X appliances are required to configure Back-to-Back Mode. The purpose of this feature is to utilize unidirectional existing TCP streams and allow...",
+          "matched_capabilities": [
+            "Unidirectional Transfer"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 26
+        },
+        {
+          "title": "MetaDefender Diode X Setup",
+          "category": "metadefender_diode_x_setup",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/diode_x_v1_9_2_2_4_2/metadefender_diode_x_setup/433223-1_metadefender_optical_diode_setup.md",
+          "header_path": "/Installation Procedure/",
+          "snippet": "### Connect Servers to System The following graphic shows the rear view of the server. Use the following table to connect both servers to your system. You will not need all of the connections for the MetaDefender Diode X installation. | Port Number | Description | MetaDefender Diode X Connection | | ---- | ---- | ---- | | 1 | **Power supply Unit** | Connect...",
+          "matched_capabilities": [
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "USB/Removable Media"
+          ],
+          "score": 25
+        },
+        {
+          "title": "Configuration",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/diode_x_v1_9_2_2_4_2/configuration/433205-1_configuration.md",
+          "header_path": "/",
+          "snippet": "In this page you will learn how to configure several aspects of MetaDefender Diode X. You will learn: - Initial Configuration: How to configure your management IP, DNS and NTP servers - Transfer Guard dongles: How the dongles work and how you can register them - File Transfer: How to configure FTP and Windows File Share to transfer files from BLUE to RED -...",
+          "matched_capabilities": [
+            "Central Management",
+            "Managed File Transfer"
+          ],
+          "matched_protocols": [
+            "FTP",
+            "HTTP/HTTPS",
+            "REST API",
+            "Syslog"
+          ],
+          "score": 22
+        },
+        {
+          "title": "File Transfer",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/diode_x_v1_9_2_2_4_2/configuration/433212-3_file_transfer.md",
+          "header_path": "/",
+          "snippet": "## SFTP > SFTP must be configured on both the BLUE and RED sides . Each side has its own management UI. You can define several SFTP servers in the Diode X UI to send files from BLUE to RED. To do so, just follow the instructions bellow. Go to the management UI and insert user and password to login. Click the File Transfer link, select the SFTP label and...",
+          "matched_capabilities": [
+            "Managed File Transfer"
+          ],
+          "matched_protocols": [
+            "FTP",
+            "HTTP/HTTPS",
+            "SFTP"
+          ],
+          "score": 20
+        }
+      ]
+    },
+    {
+      "slug": "metadefender_ot_access",
+      "product": "MetaDefender OT Access",
+      "family": "OT and Network Security",
+      "priority": 2,
+      "confidence": "high",
+      "chunk_count": 330,
+      "what_it_protects": "Remote and privileged access paths into OT environments.",
+      "deployment_zones": [
+        "OT access broker",
+        "DMZ",
+        "Vendor access path"
+      ],
+      "best_fit_use_cases": [
+        "Control and broker remote vendor access into operational environments",
+        "Reduce standing access and improve oversight of OT remote sessions"
+      ],
+      "buyer_problems": [
+        "Vendors need access, but persistent remote paths create OT risk",
+        "OT teams need visibility and control over privileged remote work"
+      ],
+      "threat_paths": [
+        "Compromised vendor access",
+        "Unmonitored remote sessions",
+        "Standing credentials into OT"
+      ],
+      "capabilities": [
+        "OT Remote Access Control",
+        "Vendor Access Control",
+        "Session Oversight"
+      ],
+      "protocols_and_integrations": [
+        "RDP/SSH",
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "Energy",
+        "Manufacturing",
+        "Water",
+        "Transport"
+      ],
+      "compliance_drivers": [
+        "IEC 62443",
+        "NERC CIP",
+        "NIS2"
+      ],
+      "account_triggers": [
+        "remote access",
+        "vendor access",
+        "ot access",
+        "jump server"
+      ],
+      "evidence": [
+        {
+          "title": "OPSWAT Secure OT Access (MetaDefender Endpoint Secure OT Access) Installation and Administration Guide",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/metadefender_ot_access_2_3_0/knowledge_base/414099-opswat_secure_ot_access_metadefender_endpoint_secure_ot_access.md",
+          "header_path": "/",
+          "snippet": "## 1. Introduction Secure OT Access™ is a remote access tool that provides a platform for publishing and monitoring connections between Remote Users and industrial assets. The software contains built-in tools for security and manageability. Secure OT Access features include: - The ability to deploy in the Cloud or onsite - The Cloud deployment has no...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 49
+        },
+        {
+          "title": "MetaDefender OT Access Management Console Guide; On premise deployment",
+          "category": "management_console_guide_on_premise_deployment",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/metadefender_ot_access_2_3_0/management_console_guide_on_premise_deployment/414102-management_console_guide.md",
+          "header_path": "/",
+          "snippet": "## Introduction MetaDefender OT Access is a remote access tool that provides a platform for publishing and monitoring connections between Remote Users and industrial assets. The software contains built-in tools for security and manageability. MetaDefender OT Access features include: - The ability to deploy in the Cloud or onsite - The Cloud deployment has...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 49
+        },
+        {
+          "title": "MetaDefender OT Access Installation and Administration Guide",
+          "category": "metadefender_ot_access_installation_and_administration_guide",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/metadefender_ot_access_2_3_0/metadefender_ot_access_installation_and_administration_guide/414103-metadefender_ot_access_installation_and_administration_guide.md",
+          "header_path": "/",
+          "snippet": "## Introduction MetaDefender OT Access™ is a remote access tool that provides a platform for publishing and monitoring connections between Remote Users and industrial assets. The software contains built-in tools for security and manageability. MetaDefender OT Access features include: - The ability to deploy in the Cloud or onsite - The Cloud deployment has...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 49
+        },
+        {
+          "title": "Introduction",
+          "category": "overview",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/metadefender_ot_access_2_3_0/overview/414093-overview.md",
+          "header_path": "/",
+          "snippet": "MetaDefender OT Access™ is a remote access tool that provides a platform for facilitating and monitoring connections between remote users and industrial assets. The software contains built-in tools for security and manageability. MetaDefender OT Access features include: - The ability to deploy in the Cloud or onsite - The Cloud deployment has no required...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 43
+        },
+        {
+          "title": "Management Console Guide",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/metadefender_ot_access_2_3_0/knowledge_base/414098-management_console_guide.md",
+          "header_path": "/",
+          "snippet": "## 2 Introduction Secure OT Access (MetaDefender Endpoint Secure OT Access) is a remote access tool that provides a platform for publishing and monitoring connections between Remote Users and industrial assets. The software contains built-in tools for security and manageability. Secure OT Access features include: - The ability to deploy in the Cloud or...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 39
+        },
+        {
+          "title": "How to upgrade \"MetaAccess OT Console\" to \"MetaDefender Endpoint\"",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/metadefender_ot_access_2_3_0/knowledge_base/414096-how_to_upgrade_metaaccess_ot_console_to_metadefender_endpoint.md",
+          "header_path": "/",
+          "snippet": "Prior to 1.7.24, the native client used to provide and consume OT serveries for MetaAccess OT was \"MetaAccess OT Console\", screenshotted below. Starting with 1.7.24, as part of the effort to merge the features of MetaAccess OT into the larger MetaDefender IT-OT Access platform, all features supported by \"MetaAccess OT Console\" have now been incorporated in...",
+          "matched_capabilities": [
+            "Email Attachment Security",
+            "Endpoint Posture",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "SMTP"
+          ],
+          "score": 30
+        },
+        {
+          "title": "How to setup SIEM (Splunk Cloud) integration for OT Access On-premise?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/metadefender_ot_access_2_3_0/knowledge_base/414100-how_to_setup_siem_splunk_cloud_integration_for_ot_access_on_pr.md",
+          "header_path": "/",
+          "snippet": "### Preparing Splunk on Cloud - Step 1: Login to your Splunk Cloud instance. - Step 2: Go to Settings > Data Input (we will create a new data input for OT Access) - Step 3: You need to select correct Input type (HEC - HTTP Event Collector) - Then, you need to input to the field as example below. - After finish creating, you can back to HTTP Event Collector...",
+          "matched_capabilities": [
+            "Industrial Protocol Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "S7"
+          ],
+          "score": 25
+        },
+        {
+          "title": "MFT Integration – Secure File Transfer via RDP",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/metadefender_ot_access_2_3_0/knowledge_base/434170-mft_integration_secure_file_transfer_with_rdp.md",
+          "header_path": "/",
+          "snippet": "## **Overview** This guide explains how to integrate **MetaDefender OT Access** with **OPSWAT MFT** to enable secure file transfer during Remote Desktop (RDP) sessions. By completing this setup, users can securely transfer files to remote hosts using controlled and authenticated access.",
+          "matched_capabilities": [],
+          "matched_protocols": [
+            "RDP/SSH"
+          ],
+          "score": 25
+        }
+      ]
+    },
+    {
+      "slug": "mdmediafirewall",
+      "product": "MetaDefender Media Firewall",
+      "family": "MetaDefender Platform",
+      "priority": 2,
+      "confidence": "high",
+      "chunk_count": 81,
+      "what_it_protects": "Media-transfer workflows into restricted environments.",
+      "deployment_zones": [
+        "OT staging area",
+        "Air-gapped boundary",
+        "Secure enclave"
+      ],
+      "best_fit_use_cases": [
+        "Control and inspect media-based file movement into sensitive networks",
+        "Bridge operational file transfer needs with malware prevention controls"
+      ],
+      "buyer_problems": [
+        "Physical or semi-offline file movement is hard to govern consistently",
+        "Sites need a repeatable process for safe media transfer"
+      ],
+      "threat_paths": [
+        "Malicious removable media",
+        "Unauthorized file movement",
+        "Unscanned operational updates"
+      ],
+      "capabilities": [
+        "Removable Media Control",
+        "Multiscanning",
+        "Deep CDR"
+      ],
+      "protocols_and_integrations": [
+        "USB/Removable Media",
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "Energy",
+        "Manufacturing",
+        "Defence",
+        "Transport"
+      ],
+      "compliance_drivers": [
+        "IEC 62443",
+        "NERC CIP",
+        "NIS2"
+      ],
+      "account_triggers": [
+        "media firewall",
+        "removable media",
+        "air gap",
+        "offline transfer"
+      ],
+      "evidence": [
+        {
+          "title": "Using Media Firewall",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmediafirewall_v4_0_1/operating/350724-using_media_firewall.md",
+          "header_path": "/",
+          "snippet": "## Secure Data Write (Copy Files from Host to Media) After MMF completes scanning, files can be written back to the original media by copying files to the mounted drive, Firewall. When a user copies files to the Firewall mounted drive, the indicator light on the media port will flash CYAN while files are copied to the original media. After files are copied,...",
+          "matched_capabilities": [
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "USB/Removable Media"
+          ],
+          "score": 65
+        },
+        {
+          "title": "Report Schema",
+          "category": "reports",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmediafirewall_v4_0_1/reports/350726-report_schema.md",
+          "header_path": "/",
+          "snippet": "### **result_set** JSON object containing objects for individual file results - key is the **full path to the file** - **av_info**: (optional) JSON object containing onboard AV scan engine results for the file (if it was scanned) - **scan_result_i**: integer of the scan result - **scan_time**: time taken to scan (in seconds) - **threat_found**: name of...",
+          "matched_capabilities": [
+            "Proactive DLP"
+          ],
+          "matched_protocols": [
+            "RDP/SSH"
+          ],
+          "score": 38
+        },
+        {
+          "title": "Overview",
+          "category": "setup",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmediafirewall_v4_0_1/setup/350722-overview.md",
+          "header_path": "/",
+          "snippet": "OPSWAT’s MetaDefender Media Firewall works in conjunction with MetaDefender Kiosk acting as a simple, plug-and-play firewall appliance to secure host systems from the threats of removable media-borne cyberattacks. The Media Firewall ensures file contents of inserted portable media are inspected, audited, and approved prior to use.",
+          "matched_capabilities": [
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "USB/Removable Media"
+          ],
+          "score": 38
+        },
+        {
+          "title": "Reporting",
+          "category": "reports",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmediafirewall_v4_0_1/reports/350725-reporting.md",
+          "header_path": "/Session Report/",
+          "snippet": "### JSON The session-report.json is the full report from Media Firewall. This format provides all of the information from the media scan and is intended to be used with a JSON parser to access specific information. A full breakdown of the attributes in this report is found on the next page, Report Schema.",
+          "matched_capabilities": [],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 37
+        },
+        {
+          "title": "Getting Started",
+          "category": "setup",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmediafirewall_v4_0_1/setup/350723-getting_started.md",
+          "header_path": "/",
+          "snippet": "## Setup Steps 1. Setup Media Manifest usage 1. Windows Kiosk (Core + Kiosk sections only) 2. Linux Kiosk 2. Unpack the MMF 1. connect the power cable 2. connect the MMF to a host system via the COMP port 3. Power on the MMF - it will immediately start in Setup Mode 1. Power indicator shows solid GREEN and the USB-A indicator shows flashing RED 2....",
+          "matched_capabilities": [
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API",
+            "USB/Removable Media"
+          ],
+          "score": 28
+        },
+        {
+          "title": "Troubleshooting",
+          "category": "troubleshooting",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmediafirewall_v4_0_1/troubleshooting/350729-troubleshooting.md",
+          "header_path": "/",
+          "snippet": "## Support Package A support package contains essential information regarding the Media Firewall system’s operation. For any issues encountered with the Media Firewall, please generate a support package and provide it when reaching out to Customer Support. **Creating the package** 1. Prepare a USB with a folder named Gather OPSWAT support package at the...",
+          "matched_capabilities": [
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "USB/Removable Media"
+          ],
+          "score": 25
+        },
+        {
+          "title": "Release Notes",
+          "category": "release_notes",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdmediafirewall_v4_0_1/release_notes/350727-release_notes.md",
+          "header_path": "/",
+          "snippet": "## 4.0.1 | 20 May, 2026 | Release focused on My OPSWAT Central Management support, Port Alarm Protection and bug fixes | | ---- | ---- | | **New Features** | | | Remote Management via CM10 | Enables the Media Firewall to be configured remotely through My OPSWAT Central Management (CM10). This includes support for remote configuration upload, writeback and...",
+          "matched_capabilities": [
+            "Central Management",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "Syslog",
+            "USB/Removable Media"
+          ],
+          "score": 9
+        }
+      ]
+    },
+    {
+      "slug": "mddrive",
+      "product": "MetaDefender Drive",
+      "family": "Endpoint and Incident Response",
+      "priority": 2,
+      "confidence": "high",
+      "chunk_count": 355,
+      "what_it_protects": "Endpoints and systems that need offline or out-of-band malware assessment.",
+      "deployment_zones": [
+        "Endpoint",
+        "Incident response",
+        "Field site"
+      ],
+      "best_fit_use_cases": [
+        "Scan endpoints without installing a persistent agent",
+        "Support incident response and forensics triage on suspect systems"
+      ],
+      "buyer_problems": [
+        "Responders need a portable way to assess systems quickly",
+        "Some environments cannot accept persistent endpoint agents"
+      ],
+      "threat_paths": [
+        "Compromised endpoint",
+        "Unknown malware on field systems",
+        "Pre-connection device risk"
+      ],
+      "capabilities": [
+        "Offline Endpoint Scanning",
+        "Incident Response Triage",
+        "Multiscanning"
+      ],
+      "protocols_and_integrations": [
+        "USB/Removable Media"
+      ],
+      "industries": [
+        "Energy",
+        "Government",
+        "Healthcare",
+        "Manufacturing"
+      ],
+      "compliance_drivers": [
+        "NIST CSF",
+        "ISO 27001",
+        "NIS2"
+      ],
+      "account_triggers": [
+        "offline scan",
+        "portable scan",
+        "incident response",
+        "drive"
+      ],
+      "evidence": [
+        {
+          "title": "Perform a Pre-Boot Scan",
+          "category": "introduction",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mddrive_v4_4_5/introduction/436540-boot_from_metadefender_drive.md",
+          "header_path": "/",
+          "snippet": "## **Engines** - MetaDefender Drive will automatically update the engines if an active internet connection is enabled. - You may see the message _Required engines are initializing_ right below the engines list. MetaDefender Drive requires a minimum subset of initiated engines to function. As a result, it is required to wait for the engines initialization to...",
+          "matched_capabilities": [
+            "Central Management",
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "USB/Removable Media"
+          ],
+          "score": 62
+        },
+        {
+          "title": "Configure MetaDefender Drive and Perform Pre-Boot Scans",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mddrive_v4_4_5/operating/436550-processing_your_device_with_metadefender_drive.md",
+          "header_path": "/",
+          "snippet": "## Perform the Scan During a MetaDefender Drive scan, each file is run through the embedded MetaDefender system to be scanned and analyzed with multiple antivirus, vulnerability, and utility engines. Users can track the scan progress, with an estimated completion percentage on the progress bar. The displayed **Time Remaining** value is estimated based on...",
+          "matched_capabilities": [
+            "Central Management",
+            "Country of Origin",
+            "Proactive DLP"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 54
+        },
+        {
+          "title": "For MetaDefender Drive",
+          "category": "maintenance",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mddrive_v4_4_5/maintenance/436616-offline_update_for_metadefender_drive.md",
+          "header_path": "/",
+          "snippet": "## Offline Engine Updates for MetaDefender Drive If you don't have access to MetaDefender Drive Toolkit, follow these steps to add the downloaded engine definition packages directly to MetaDefender Drive: 1. Download the MetaDefender Drive engine package files from Update Downloader. 2. Open the NTFS partition MetaDefender Drive and extract the _.zip_ files...",
+          "matched_capabilities": [
+            "Central Management",
+            "File Type Verification",
+            "Industrial Protocol Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API",
+            "S7"
+          ],
+          "score": 52
+        },
+        {
+          "title": "Centralized Scanning Profile",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mddrive_v4_4_5/configuration/436521-centralized_scanning_profile.md",
+          "header_path": "/**Administrator Provisioning**/",
+          "snippet": "### Enrollment and Lock MetaDefender Drive After booting MetaDefender Drive to be enrolled, the administrators open MetaDefender Drive Toolkit. 1. Go to **Settings tab** 2. Select **Lock MD Drive Software** 3. Click **Set up Lock** Install **Google Authenticator, Microsoft Authenticator** or **Okta Verify** 2-factor authentication applications (to generate...",
+          "matched_capabilities": [],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 51
+        },
+        {
+          "title": "Getting Started with MetaDefender Drive Smart Touch",
+          "category": "introduction",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mddrive_v4_4_5/introduction/436538-getting_started_with_metadefender_drive_smart_touch.md",
+          "header_path": "/Check for Updates/",
+          "snippet": "### Perform System, Image, and Engine Updates The experience is almost the same for the three types of updates: 1. Select **System Update** screen, noticing that there are updates available, tap **System**, **MetaDefender Drive Image**, or **Engines**, then tap **Download** or **Install**, and wait for the new version of the application to be downloaded. 2....",
+          "matched_capabilities": [
+            "Central Management",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 51
+        },
+        {
+          "title": "Update Engines In Air-Gapped Environment",
+          "category": "advanced_usages",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mddrive_v4_4_5/advanced_usages/436496-update_engines_in_airgapped_environment.md",
+          "header_path": "/",
+          "snippet": "## Offline Update Engines for MetaDefender Drive This to be done only when you don't have MetaDefender Drive Toolkit and want to keep the engines of MetaDefender Drive up to date - Download the appropriate .zip from Update Downloader for MetaDefender Drive - Extract this .zip into /update/defs/ folder on the NTFS partition MetaDefender Drive. Make sure to...",
+          "matched_capabilities": [
+            "Central Management"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 50
+        },
+        {
+          "title": "Perform an In-Session Scan",
+          "category": "introduction",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mddrive_v4_4_5/introduction/436541-scan_from_metadefender_drive_in_session.md",
+          "header_path": "/",
+          "snippet": "## Run MetaDefender Drive In-Session 1. While your device OS is running, insert your OPSWAT MetaDefender Drive into the device's USB Type-A port. 2. Navigate to the _**root**_ folder inside the MetaDefender Drive partition and locate the _**MetaDefender Drive In-Sesion Scan.exe**_ file 3. In-Session will init with a splashing screen > Engines for In-Session...",
+          "matched_capabilities": [
+            "Central Management",
+            "Removable Media Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "USB/Removable Media"
+          ],
+          "score": 50
+        },
+        {
+          "title": "Why is the free disk space different between MD Drive UI and Windows Explorer?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mddrive_v4_4_5/knowledge_base/436640-why_is_the_free_disk_space_different_between_md_drive_ui_and_win.md",
+          "header_path": "/",
+          "snippet": "MetaDefender Drive USB has a total capacity of 64 GB, which is divided into **two equal partitions**:: 1. **NTFS partition**: This partition is used to store the scan reports and logs. It is visible and accessible in Windows Explorer, where it appears as a regular drive. 2. **Ext4 partition**: This partition contains the MetaDefender Drive's Linux operating...",
+          "matched_capabilities": [
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "USB/Removable Media"
+          ],
+          "score": 50
+        }
+      ]
+    },
+    {
+      "slug": "mdendpoint",
+      "product": "MetaDefender Endpoint",
+      "family": "Endpoint and Access Security",
+      "priority": 2,
+      "confidence": "high",
+      "chunk_count": 628,
+      "what_it_protects": "Endpoint posture, compliance, and device-risk signals.",
+      "deployment_zones": [
+        "Endpoint",
+        "Remote workforce",
+        "Access control"
+      ],
+      "best_fit_use_cases": [
+        "Assess device compliance before access to sensitive systems",
+        "Improve endpoint visibility and posture enforcement"
+      ],
+      "buyer_problems": [
+        "Remote and unmanaged devices create access risk",
+        "Security teams need posture signals before granting access"
+      ],
+      "threat_paths": [
+        "Non-compliant endpoint access",
+        "Compromised remote device",
+        "Unmanaged software risk"
+      ],
+      "capabilities": [
+        "Endpoint Posture",
+        "Device Compliance",
+        "Access Risk Signals"
+      ],
+      "protocols_and_integrations": [
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "Finance",
+        "Healthcare",
+        "Government",
+        "SaaS",
+        "Energy"
+      ],
+      "compliance_drivers": [
+        "SOC 2",
+        "ISO 27001",
+        "NIST CSF",
+        "HIPAA"
+      ],
+      "account_triggers": [
+        "endpoint",
+        "posture",
+        "device compliance",
+        "remote workforce"
+      ],
+      "evidence": [
+        {
+          "title": "How do I turn on/off the compliance check function in the OPSWAT Central Management console?",
+          "category": "endpoint_management",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdendpoint_v2605/endpoint_management/438029-how_do_i_turn_on_off_the_compliance_check_function_in_the_my_ops.md",
+          "header_path": "/",
+          "snippet": "> This article applies to OCM V7.5+ and all MetaDefender Endpoint releases deployed on Windows, macOS, Linux, iOS and Android systems. OPSWAT Central Management’s optional **Perform compliance check** setting allows administrators to **Enable**/**Disable** MetaDefender Endpoint’s compliance check function on all managed devices. To access this setting,...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "SNMP",
+            "USB/Removable Media"
+          ],
+          "score": 80
+        },
+        {
+          "title": "How do I use SCCM/MECM to solve Missing OS Patch issues on MetaDefender Endpoint/MetaDefender IT-OT Access managed Windows devices?",
+          "category": "endpoint_management",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdendpoint_v2605/endpoint_management/438066-how_do_i_use_sccm_mecm_to_solve_missing_os_patch_issues_on_metad.md",
+          "header_path": "/",
+          "snippet": "> This article applies to the Microsoft Endpoint Configuration Manager, the current MetaDefender IT-OT Access Console and API, and all MetaDefender Endpoint releases deployed on Windows systems. Users running MetaDefender Endpoint on one or more Windows devices may occasionally see MetaDefender IT-OT Access device compliance warnings/flags related to...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "Industrial Protocol Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "REST API",
+            "S7"
+          ],
+          "score": 72
+        },
+        {
+          "title": "How do I solve Missing OS Patch issues on MetaDefender Endpoint/MetaDefender IT-OT Access managed macOS devices?",
+          "category": "endpoint_management",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdendpoint_v2605/endpoint_management/438067-how_do_i_solve_missing_os_patch_issues_on_mde.md",
+          "header_path": "/",
+          "snippet": "> This article applies to the current MetaDefender IT-OT Access Console and API, and all MetaDefender Endpoint releases deployed on macOS systems. Users running MetaDefender Endpoint on one or more macOS devices may occasionally see MetaDefender IT-OT Access device compliance warnings/flags related to **Missing OS Patches**. These warnings/flags are...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "Industrial Protocol Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "REST API",
+            "S7"
+          ],
+          "score": 72
+        },
+        {
+          "title": "How do I hide the Patch Management and Vulnerable Applications features on MetaDefender Endpoint UI?",
+          "category": "endpoint_management",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdendpoint_v2605/endpoint_management/438030-how_do_i_hide_the_patch_management_and_vulnerable_applications_f.md",
+          "header_path": "/",
+          "snippet": "> This article applies to OPSWAT Central Management V7.5+ and all MetaDefender Endpoint releases including and subsequent to V7.6.474.deployed on Windows, macOS, Linux, iOS and Android systems. As of **OPSWAT Central Management** **V7.6.474.0**, endpoint users can now benefit from a Client **User Interface** (**UI**) with which users can interact to learn...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS"
+          ],
+          "score": 69
+        },
+        {
+          "title": "How do I use Windows Update Agent to solve Missing OS Patch issues on MetaDefender Endpoint/MetaDefender IT-OT Access managed Windows devices?",
+          "category": "endpoint_management",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdendpoint_v2605/endpoint_management/438065-how_do_i_use_windows_update_agent_to_solve_missing_os_patch_issu.md",
+          "header_path": "/",
+          "snippet": "## Windows 10/11 1. Open the Windows **Start** menu, search for **Services** and then **Open** it. 2. In the **Services** app, search for **Windows Update** service and, when you find it, double-click on it. 3. In the pop-up window, adjust the **Startup type** to **Automatic**, then click **Apply**. 4. Open the Windows **Start** menu, search for **Windows...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 68
+        },
+        {
+          "title": "How do I solve missing OS patch issues on MetaDefender Endpoint/MetaDefender IT-OT Access devices?",
+          "category": "endpoint_management",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdendpoint_v2605/endpoint_management/438083-how_do_i_solve_missing_os_patch_issues_on_metaendpoint.md",
+          "header_path": "/",
+          "snippet": "> This article applies to the current MetaDefender IT-OT Access Console and API, and all MetaDefender Endpoint releases deployed on Windows, macOS and Linux systems. Users running MetaDefender Endpoint on one or more Windows, macOS or Linux devices may occasionally see MetaDefender IT-OT Access device compliance warnings/flags related to **Missing OS...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 68
+        },
+        {
+          "title": "How do I upgrade MetaDefender Endpoint on one or more of my managed endpoints via the OPSWAT Central Management Console?",
+          "category": "endpoint_management",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdendpoint_v2605/endpoint_management/438027-how_do_i_upgrade_metadefender_endpoint_on_one_or_more_of_my_mana.md",
+          "header_path": "/",
+          "snippet": "> This article applies to all My OPSWAT V7.5.0+ releases deployed on Windows or Linux systems, and all MetaDefender Endpoint releases deployed on Windows, macOS, Linux, iOS and Android systems. There is no way to force an upgrade on managed endpoints via the **My OPSWAT Console**. I.e. there is no way to manually upgrade endpoint Clients via the **My OPSWAT...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 67
+        },
+        {
+          "title": "How do I enable agent auto-update feature?",
+          "category": "endpoint_management",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdendpoint_v2605/endpoint_management/438042-how_do_i_enable_agent_auto_update_feature.md",
+          "header_path": "/",
+          "snippet": "## The MetaDefender Endpoint device upgrade timeline - For any end-point that is online with these auto-upgrade settings enabled, the MetaDefender Endpoint will perform version checks every 60 minutes, with 60 minutes being the maximum allowed time between version checks. This means every 60 minutes the agent will check if there is a new version or not. If...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 67
+        }
+      ]
+    },
+    {
+      "slug": "filescan",
+      "product": "MetaDefender Aether",
+      "family": "Advanced Malware Analysis",
+      "priority": 2,
+      "confidence": "high",
+      "chunk_count": 745,
+      "what_it_protects": "Unknown and suspicious files requiring dynamic analysis.",
+      "deployment_zones": [
+        "Security operations",
+        "File-analysis workflow",
+        "Cloud or private sandbox"
+      ],
+      "best_fit_use_cases": [
+        "Detonate suspicious files for behavioral analysis",
+        "Augment file scanning with dynamic malware analysis"
+      ],
+      "buyer_problems": [
+        "Static detection may miss evasive or unknown malware",
+        "Analysts need richer behavioral evidence for suspicious files"
+      ],
+      "threat_paths": [
+        "Unknown malware",
+        "Evasive payloads",
+        "Suspicious attachments and uploads"
+      ],
+      "capabilities": [
+        "Adaptive Sandbox",
+        "Dynamic Malware Analysis",
+        "Behavioral Analysis"
+      ],
+      "protocols_and_integrations": [
+        "REST API",
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "Finance",
+        "Government",
+        "Energy",
+        "Healthcare",
+        "Manufacturing"
+      ],
+      "compliance_drivers": [
+        "NIST CSF",
+        "ISO 27001",
+        "SOC 2"
+      ],
+      "account_triggers": [
+        "sandbox",
+        "detonation",
+        "unknown malware",
+        "aether"
+      ],
+      "evidence": [
+        {
+          "title": "MetaDefender Aether for Core",
+          "category": "overview",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/filescan_3_1_1/overview/440329-metadefender_aether_for_coreo9z.md",
+          "header_path": "/",
+          "snippet": "**MetaDefender Aether for Core** is an advanced threat detection and analysis module for the MetaDefender Core platform. It provides a powerful layer of security by integrating a dynamic, emulation-based adaptive sandbox that performs behavioral analysis on files to detect and prevent zero-day threats and sophisticated evasive malware. Designed for seamless...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Central Management",
+            "Deep CDR",
+            "Email Attachment Security",
+            "File Type Verification",
+            "ICAP Integration",
+            "Managed File Transfer",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "ICAP",
+            "REST API",
+            "SMTP"
+          ],
+          "score": 74
+        },
+        {
+          "title": "MetaDefender Aether",
+          "category": "overview",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/filescan_3_1_1/overview/440285-why_opswat_filescan.md",
+          "header_path": "/",
+          "snippet": "## Key features include **Reputation Service** ▪ Scans IP Addresses, URLs, and domains using up to 30 Providers ▪ Correlates hashes to millions of known applications and CVEs ▪ Continuously updates its Threat Intelligence Database ▪ Supports bulk and individual searches via REST API ▪ Enhances visibility with comprehensive intelligence **Dynamic Analysis**...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Central Management",
+            "Email Attachment Security",
+            "File Type Verification",
+            "Threat Intelligence",
+            "YARA Detection"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 70
+        },
+        {
+          "title": "MetaDefender Aether for Cloud",
+          "category": "overview",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/filescan_3_1_1/overview/440330-metadefender_aether_for_corek7w.md",
+          "header_path": "/",
+          "snippet": "#### **Core Technologies** - **Adaptive Sandbox Analysis:** At its core, Aether for Cloud uses a dynamic sandbox to detonate files in an isolated cloud environment. It performs deep behavioral analysis to identify malicious activities, evasive maneuvers, and indicators of compromise (IOCs) characteristic of advanced threats like ransomware and targeted...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Deep CDR",
+            "File Type Verification",
+            "File-Based Vulnerability Assessment",
+            "Multiscanning"
+          ],
+          "matched_protocols": [],
+          "score": 67
+        },
+        {
+          "title": "Web & Phishing",
+          "category": "overview",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/filescan_3_1_1/overview/440291-web_phishing.md",
+          "header_path": "/",
+          "snippet": "## #4 ClickFix, a trending social engineering technique **Detection Spotlight:** AI detection emulation ClickFix is an emerging web-based threat that leverages social engineering to silently trick users into executing malicious commands. Unlike traditional phishing, ClickFix operates through deceptive UX elements and clipboard manipulation rather than file...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Email Attachment Security",
+            "Industrial Protocol Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "S7"
+          ],
+          "score": 57
+        },
+        {
+          "title": "Aether Tags",
+          "category": "overview",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/filescan_3_1_1/overview/440300-sandbox_tags.md",
+          "header_path": "/",
+          "snippet": "Tags are automatically generated based on the sample's analysis, providing a concise summary of key findings. Tags are color-coded based on their severity context, with common colors like mediatype, high risk or confirmed thread, and no threat detected or low risk. Some tags are dynamically derived from sandbox components or external sources, including: -...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Email Attachment Security",
+            "File Type Verification",
+            "Proactive DLP",
+            "YARA Detection"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "SMB/CIFS"
+          ],
+          "score": 57
+        },
+        {
+          "title": "MITRE MBC Coverage",
+          "category": "overview",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/filescan_3_1_1/overview/440304-mitre_mbc_coverage.md",
+          "header_path": "/",
+          "snippet": "### **MITRE ATT&CK Coverage in Our MetaDefender Aether Solution** While our sandbox already maps malicious behaviors to the MITRE ATT&CK framework, we decided to incorporate MITRE MBC (Malware Behavior Catalog) to complement ATT&CK and enhance the depth of our behavioral analysis. ATT&CK excels at describing adversary tactics and techniques at an...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Storage Scanning",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "FTP",
+            "HTTP/HTTPS"
+          ],
+          "score": 57
+        },
+        {
+          "title": "URL Analysis",
+          "category": "overview",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/filescan_3_1_1/overview/440315-url_analysis.md",
+          "header_path": "/",
+          "snippet": "MetaDefender Aether provides organizations with advanced tools to combat evolving web-based threats through dynamic URL analysis, machine learning-driven web threat detection, and offline threat assessment. 1. **Comprehensive URL Analysis & Real-Time IOC Detection**: The sandbox engine captures critical details about certificates, GET/POST requests, and...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Email Attachment Security",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 57
+        },
+        {
+          "title": "File Analysis & Deep Extraction",
+          "category": "overview",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/filescan_3_1_1/overview/440289-file_analysis_deep_extraction.md",
+          "header_path": "/",
+          "snippet": "## #1 Synthetic (fabricated) sample **Detection Spotlight:** deep staticunpackingemulationmalware config This sample stands as a purpose-built example to highlight the diverse capabilities of **MetaDefender Sandbox** (previously known as OPSWAT Filescan Sandbox). Crafted to show-off real-world cyber threats, embedding multiple files and file-types into each...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Email Attachment Security",
+            "File Type Verification"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 55
+        }
+      ]
+    },
+    {
+      "slug": "cm",
+      "product": "My OPSWAT Central Management",
+      "family": "Management and Operations",
+      "priority": 2,
+      "confidence": "high",
+      "chunk_count": 2199,
+      "what_it_protects": "Operational management of OPSWAT deployments and estate-wide visibility.",
+      "deployment_zones": [
+        "Management plane",
+        "SOC",
+        "Operations"
+      ],
+      "best_fit_use_cases": [
+        "Centrally manage OPSWAT products, policies, inventory, and updates",
+        "Give security operations visibility into distributed deployments"
+      ],
+      "buyer_problems": [
+        "Distributed sites need consistent policy and update management",
+        "Security teams need operational visibility across product estate"
+      ],
+      "threat_paths": [
+        "Policy drift",
+        "Outdated security engines",
+        "Unmanaged distributed deployments"
+      ],
+      "capabilities": [
+        "Central Management",
+        "Policy Management",
+        "Inventory",
+        "Monitoring"
+      ],
+      "protocols_and_integrations": [
+        "HTTP/HTTPS",
+        "REST API",
+        "Syslog"
+      ],
+      "industries": [
+        "Energy",
+        "Manufacturing",
+        "Government",
+        "Healthcare",
+        "Finance"
+      ],
+      "compliance_drivers": [
+        "ISO 27001",
+        "NIST CSF",
+        "NIS2"
+      ],
+      "account_triggers": [
+        "central management",
+        "multiple sites",
+        "inventory",
+        "updates"
+      ],
+      "evidence": [
+        {
+          "title": "What is a Critical Issue on a policy?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/cm_10_7_2606/knowledge_base/440858-what_is_a_critical_issue_on_a_policy.md",
+          "header_path": "/",
+          "snippet": "MetaDefender Endpoint reports a wide range of information from managed endpoint devices to My OPSWAT Central Management, and while certain compliance, contamination and vulnerability issues may be reported as critical by My OPSWAT Central Management alone, what constitutes a critical issue is largely dictated by administrator settings and configured policy....",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "ICAP Integration",
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "ICAP",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "SNMP",
+            "USB/Removable Media"
+          ],
+          "score": 76
+        },
+        {
+          "title": "Can I exempt a device from a My OPSWAT Central Management Access Policy?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/cm_10_7_2606/knowledge_base/440841-can_i_exempt_a_device_from_a_my_opswat_central_management_access.md",
+          "header_path": "/",
+          "snippet": "## Filter exempted devices > To streamline device management, diagnostics and threat response, the My OPSWAT Central Management Console’s **Filter** feature allows administrators to filter the devices displayed in their inventory for a wide range of characteristics, with categories including:> > - Malware detection> - Compliance issues> - Issue severity> -...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 61
+        },
+        {
+          "title": "Migration Plan: Upgrading from CM8 to CM10",
+          "category": "deployment",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/cm_10_7_2606/deployment/440492-upgrading_from_cm8_to_cm10.md",
+          "header_path": "/",
+          "snippet": "### Plan Detail **Step 1:** Identify the use case and required features Review the products currently in use and their usage. - Using _____ MetaDefender Endpoint - Using _____ MetaDefender Kiosk (Hardware / Software) - Using _____ MetaDefender Core - Using _____ MetaDefende ICAP - Using _____ MetaDefende MFT - Using _____ MetaDefende Drive - Using _____...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Central Management",
+            "Email Attachment Security",
+            "Endpoint Posture",
+            "ICAP Integration",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "ICAP",
+            "SMTP"
+          ],
+          "score": 58
+        },
+        {
+          "title": "How do I uninstall Antivirus software from a managed endpoint?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/cm_10_7_2606/knowledge_base/440863-how_do_i_uninstall_antivirus_software_from_a_managed_endpoint.md",
+          "header_path": "/",
+          "snippet": "My OPSWAT Central Management empowers administrators to remotely uninstall antivirus software from their managed endpoint devices To enable antivirus software detection and removal from all devices linked to a policy, please follow the steps below. 1. Log into your **Console** and navigate to Policy **Management>Policies**. 2. Click on the policy associated...",
+          "matched_capabilities": [
+            "Central Management",
+            "Email Attachment Security",
+            "Endpoint Posture",
+            "Industrial Protocol Control",
+            "Multiscanning",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "SMTP",
+            "USB/Removable Media"
+          ],
+          "score": 54
+        },
+        {
+          "title": "How do I uninstall firewall software from a management endpoint?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/cm_10_7_2606/knowledge_base/440862-how_do_i_uninstall_firewall_software_from_a_management_endpoint.md",
+          "header_path": "/",
+          "snippet": "My OPSWAT Central Management empowers administrators to remotely uninstall Firewall software from their managed endpoint devices, via the My OPSWAT Central Management **Console**. To enable firewall software detection and removal from all devices linked to a policy, please follow the steps below. 1. Log into your **My OPSWAT Central Management Console** and...",
+          "matched_capabilities": [
+            "Central Management",
+            "Email Attachment Security",
+            "Endpoint Posture",
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Removable Media Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "OPC UA",
+            "RDP/SSH",
+            "REST API",
+            "S7",
+            "SMB/CIFS",
+            "SMTP",
+            "USB/Removable Media"
+          ],
+          "score": 53
+        },
+        {
+          "title": "Where are the install directories for My OPSWAT Central Management v10?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/cm_10_7_2606/knowledge_base/440892-where_are_the_install_directories_for_my_opswat_central_manageme.md",
+          "header_path": "/",
+          "snippet": "## **Windows:** **“C:\\Program Files\\OPSWAT\\MOCM”** - Main installation directory containing the application used to generate support packages, along with other required startup components. **“C:\\Program Files\\OPSWAT\\MOCM\\apps”** - Contains connected applications such as _MetaDefender Core_ and _MetaDefender ICAP_, required for system operation and...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "ICAP Integration",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "ICAP"
+          ],
+          "score": 52
+        },
+        {
+          "title": "How can My OPSWAT Central Management check for specific versions of an operation system?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/cm_10_7_2606/knowledge_base/440851-how_can_my_opswat_central_management_check_for_specific_versions.md",
+          "header_path": "/",
+          "snippet": "> This article applies to the current My OPSWAT Central Management Console and all MetaDefender Endpoint releases deployed on Windows, macOS and Linux systems. My OPSWAT Central Management offers administrators the option to check their device inventory for specific, administrator-approved operating system versions. To set up this feature, please follow the...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "Industrial Protocol Control"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "S7"
+          ],
+          "score": 51
+        },
+        {
+          "title": "How can I synchronize devices from Active Directory to My OPSWAT Central Management account?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/cm_10_7_2606/knowledge_base/440864-how_can_i_synchronize_devices_from_active_directory_to_my_opswat.md",
+          "header_path": "/",
+          "snippet": "> This article applies to all My OPSWAT Central Management products deployed on Windows systems. > Administrators who have Active Directory Domain Services installed have the option to synchronize those devices to their My OPSWAT Central Management account, enabling them to see which of their managed endpoints have the MetaDefender Endpoint installed, and...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS"
+          ],
+          "score": 51
+        }
+      ]
+    },
+    {
+      "slug": "supply_chain",
+      "product": "MetaDefender Software Supply Chain",
+      "family": "Software Supply Chain Security",
+      "priority": 2,
+      "confidence": "high",
+      "chunk_count": 311,
+      "what_it_protects": "Source, build, container, and software package pipelines.",
+      "deployment_zones": [
+        "DevSecOps",
+        "CI/CD",
+        "Container registry",
+        "Cloud"
+      ],
+      "best_fit_use_cases": [
+        "Inspect software packages and container images before release or deployment",
+        "Support SBOM and software supply-chain risk reduction"
+      ],
+      "buyer_problems": [
+        "Software artifacts can carry malware, vulnerable components, or risky dependencies",
+        "Engineering and security teams need artifact-level trust before deployment"
+      ],
+      "threat_paths": [
+        "Compromised package",
+        "Malicious container image",
+        "Vulnerable dependency"
+      ],
+      "capabilities": [
+        "SBOM Analysis",
+        "Container Image Inspection",
+        "Package Risk Analysis"
+      ],
+      "protocols_and_integrations": [
+        "REST API",
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "SaaS",
+        "Finance",
+        "Government",
+        "Manufacturing",
+        "Energy"
+      ],
+      "compliance_drivers": [
+        "NIST CSF",
+        "ISO 27001",
+        "SOC 2"
+      ],
+      "account_triggers": [
+        "SBOM",
+        "container",
+        "CI/CD",
+        "software supply chain"
+      ],
+      "evidence": [
+        {
+          "title": "Exports",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/supply_chain_v3_3_1/operating/438918-exports.md",
+          "header_path": "/",
+          "snippet": "### **Export Types** This page provides an overview of the export capabilities available in MetaDefender Software Supply Chain and how to use them to extract analysis results and related data. The following export types are available: - **PDF exports.** Generate and download reports in PDF format, including: - **All scans report** for a consolidated view...",
+          "matched_capabilities": [
+            "SBOM Analysis"
+          ],
+          "matched_protocols": [],
+          "score": 65
+        },
+        {
+          "title": "User Guide",
+          "category": "installation",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/supply_chain_v3_3_1/installation/438866-user_guide.md",
+          "header_path": "/",
+          "snippet": "### Service integrations | **Service Category** | **Service Vendor** | | ---- | ---- | | Source Code Services | GitHub & GitHub Enterprise | | | Bitbucket Cloud & Bitbucket Data Center | | | GitLab | | | Gitea | | | SVN | | | Azure DevOps | | Container Services | DockerHub | | | JFrog Containers | | | Amazon Elastic Container Registry (ECR) | | | Quay | | |...",
+          "matched_capabilities": [
+            "Central Management",
+            "Multiscanning",
+            "Proactive DLP",
+            "SBOM Analysis",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS"
+          ],
+          "score": 55
+        },
+        {
+          "title": "Repositories",
+          "category": "operating",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/supply_chain_v3_3_1/operating/438916-repository_scan_results.md",
+          "header_path": "/",
+          "snippet": "Firstly after navigating to the _Reports_ page you will see the _Repositories_ that were scanned. Here are some actions that are available for you: - You can filter by _Vulnerability Status, License Risk, Verdict, Scan Status, Trigger Event_ and _Workflow,_ all from the left side filters. - Filtering is also possible by using the top section right above the...",
+          "matched_capabilities": [
+            "SBOM Analysis",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS"
+          ],
+          "score": 44
+        },
+        {
+          "title": "Standalone License",
+          "category": "licensing",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/supply_chain_v3_3_1/licensing/438936-standalone_license.md",
+          "header_path": "/",
+          "snippet": "The Standalone option is tailored for gateway deployments and offers maximum flexibility to meet specific security needs. This packaging allows MetaDefender Software Supply Chain to function as a connector that integrates with your preferred software vendors. Operating on a pay-as-you-need model, the Standalone license model enables you to configure...",
+          "matched_capabilities": [
+            "Multiscanning",
+            "Proactive DLP",
+            "SBOM Analysis"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 40
+        },
+        {
+          "title": "Per User License",
+          "category": "licensing",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/supply_chain_v3_3_1/licensing/438935-per_user_license.md",
+          "header_path": "/",
+          "snippet": "This package supports large development teams that requires integration of security solutions into your CI/CD pipelines. The Per User license option simplifies budgeting by aligning costs directly with the number of active users. **This Packaging Option is Ideal for:** - Teams with at least 100 developers with active code commits - Organizations using...",
+          "matched_capabilities": [
+            "Multiscanning",
+            "Proactive DLP",
+            "SBOM Analysis"
+          ],
+          "matched_protocols": [],
+          "score": 39
+        },
+        {
+          "title": "System requirements for Unix-based deployments",
+          "category": "installation",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/supply_chain_v3_3_1/installation/438868-system_requirements_for_unix_based_deployments.md",
+          "header_path": "/",
+          "snippet": "### Installation details MetaDefender Software Supply Chain default installation path is using the **/etc/mdssc** folder for storing resources. The package requires the following dependencies that are automatically installed if they don’t already exist on the system: | **Debian / Ubuntu** | **Red Hat Enterprise / CentOS** | | ---- | ---- | | - curl; -...",
+          "matched_capabilities": [
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 38
+        },
+        {
+          "title": "Workflows",
+          "category": "configuration",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/supply_chain_v3_3_1/configuration/438905-workflow_creation.md",
+          "header_path": "/",
+          "snippet": "### Step 5 out of 6 Step 5 allows configuration of remediation actions (what to do after a scan is finished). If there is no SMTP server configured that the framework can use, then on this page an error will be displayed and no email type remediations can be configured. The same applies to Jira remediation, if there is no Jira Connection added. This can be...",
+          "matched_capabilities": [
+            "Central Management",
+            "Email Attachment Security",
+            "Industrial Protocol Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "S7",
+            "SMTP"
+          ],
+          "score": 36
+        },
+        {
+          "title": "Add An Azure Container Registry Service",
+          "category": "integrations",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/supply_chain_v3_3_1/integrations/438884-add_an_azure_container_registry_service.md",
+          "header_path": "/",
+          "snippet": "In order to integrate **Azure Container Registry** with MetaDefender Software Supply Chain, please follow these steps: 1. From the left side menu, navigate to **Inventory** and choose **Azure ACR**. 2. Give your connection a name so you can easily identify it later. 3. Enter your **Application ID**. Scroll to the end of this page for more details. 4. Enter...",
+          "matched_capabilities": [
+            "Central Management"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 36
+        }
+      ]
+    },
+    {
+      "slug": "mdif4p",
+      "product": "MetaDefender Industrial Firewall",
+      "family": "OT and Network Security",
+      "priority": 2,
+      "confidence": "high",
+      "chunk_count": 279,
+      "what_it_protects": "Industrial device and cell/zone network connectivity.",
+      "deployment_zones": [
+        "OT Level 1",
+        "OT Level 2",
+        "Industrial cell zone"
+      ],
+      "best_fit_use_cases": [
+        "Protect industrial devices and production cells with ruggedized network controls",
+        "Reduce lateral movement at the device or cell level"
+      ],
+      "buyer_problems": [
+        "Industrial assets need network controls suited to plant environments",
+        "Cell-level segmentation is difficult with generic enterprise tooling"
+      ],
+      "threat_paths": [
+        "PLC/HMI lateral movement",
+        "Unsafe industrial protocol access",
+        "Cell-zone compromise"
+      ],
+      "capabilities": [
+        "Industrial Protocol Control",
+        "Cell Zone Segmentation",
+        "Industrial Firewalling"
+      ],
+      "protocols_and_integrations": [
+        "Modbus",
+        "OPC UA",
+        "DNP3",
+        "S7",
+        "BACnet"
+      ],
+      "industries": [
+        "Manufacturing",
+        "Energy",
+        "Water",
+        "Transport"
+      ],
+      "compliance_drivers": [
+        "IEC 62443",
+        "NIS2",
+        "NERC CIP"
+      ],
+      "account_triggers": [
+        "industrial firewall",
+        "cell zone",
+        "PLC",
+        "Modbus"
+      ],
+      "evidence": [
+        {
+          "title": "Double NAT for Client Access to a PLC Across Networks",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdif4p_3_4_x/knowledge_base/429181-double_nat_for_client_access_to_a_plc_across_networks.md",
+          "header_path": "/",
+          "snippet": "## Network Topology - **Devices Involved**: A PLC (acting as a server), Industrial Firewall, and clients on Network B. - **Setup**: - **Network A**: 192.168.10.0/24 (PLC resides here). - **Network B**: 10.10.10.0/24 (HMI or external device). - The firewall has interfaces in both networks and translates traffic between them.",
+          "matched_capabilities": [
+            "OT Asset Visibility"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 60
+        },
+        {
+          "title": "Understanding and Configuring Double VLAN (802.1q Tunneling)",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdif4p_3_4_x/knowledge_base/429182-understanding_and_configuring_double_vlan_802_1q_tunneling.md",
+          "header_path": "/",
+          "snippet": "## Network Topology - **Devices Involved**: A PLC (acting as a server), Industrial Firewall, and clients on Network B. - **Setup**: - **Network A**: 192.168.10.0/24 VLAN 100 (PLC resides here). - **Network B**: 10.10.10.0/24 VLAN 200.100 (HMI or external device). - The firewall has interfaces in both networks and translates traffic between them.",
+          "matched_capabilities": [
+            "OT Asset Visibility"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 50
+        },
+        {
+          "title": "Transparent Mode and Bridge User Cases",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdif4p_3_4_x/knowledge_base/429183-transparent_mode_and_bridge_user_cases.md",
+          "header_path": "/User Cases/",
+          "snippet": "### Transparent Mode Applicable only to LAN and DEVICE interfaces. The Industrial Firewall is placed inline between the network source (e.g., HDMI) and protected assets (e.g., PLC, RTU). Both LAN and DEVICE interfaces must use the same subnet.",
+          "matched_capabilities": [
+            "OT Asset Visibility"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 38
+        },
+        {
+          "title": "OT Access Integration",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdif4p_3_4_x/knowledge_base/429187-ot_access_integration.md",
+          "header_path": "/",
+          "snippet": "## Network Topology In this scenario, OT Access users need to remotely connect to a workstation in order to access a PLC that communicates using Modbus traffic. 1. Enable OT Access Integration: Begin by enabling the OT Access Integration feature on the firewall under the OT Access section (OT Access). 2. Network Flow Overview - The Management IP of the...",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "OT Asset Visibility",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "Modbus",
+            "RDP/SSH",
+            "REST API"
+          ],
+          "score": 32
+        },
+        {
+          "title": "Network Security",
+          "category": "network_security",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdif4p_3_4_x/network_security/429176-global_setting.md",
+          "header_path": "/Transparent Mode/",
+          "snippet": "### Firewall Rules _[Network Security >_ Packet Filtering >_Transparent Mode > Firewall Rules]_ Rule Type Tabs - **Ethernet Rules:** Layer‑2 filtering (MAC‑based traffic). Ethernet Rules are used only when the “Block All L2 Protocols” feature is enabled. - **IP Rules:** Layer‑3/4 filtering (IP, port, protocol) **Filter:** - **Protocol:** Select the protocol...",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "HTTP/HTTPS",
+            "Modbus"
+          ],
+          "score": 29
+        },
+        {
+          "title": "Global Setting",
+          "category": "global_setting",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdif4p_3_4_x/global_setting/429179-global_setting.md",
+          "header_path": "/Settings/",
+          "snippet": "### System Tab **Change password:** update the current account password. **Port Configuration:** Set the mode for each interface. - **Management Port:** The Management Port is used for administrative access. It can also forward network traffic when set to Routing mode. - **Other Ports:** All non-management ports can be individually configured as either: -...",
+          "matched_capabilities": [
+            "Central Management"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "Syslog"
+          ],
+          "score": 27
+        },
+        {
+          "title": "Protocols and Activities",
+          "category": "protocols_and_activities",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdif4p_3_4_x/protocols_and_activities/429174-protocols_and_activities.md",
+          "header_path": "/Modbus/",
+          "snippet": "### Read UMAS: - Unity - INIT COMM - Read Id - Read Project Info - Read Plc Info - Read Card Info - Request For Memory Read - Repeat - Take Plc Reservation - Release Plc Reservation - Keep Alive - Read Memory Block - Read Variable - Read Coils Registers - Initialize Download - Download Block - End Strategy Download - Read Eth Master Data - Monitor Plc -...",
+          "matched_capabilities": [
+            "Industrial Protocol Control",
+            "OT Asset Visibility"
+          ],
+          "matched_protocols": [
+            "Modbus"
+          ],
+          "score": 27
+        },
+        {
+          "title": "Dashboard",
+          "category": "dashboard",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdif4p_3_4_x/dashboard/429175-dashboard.md",
+          "header_path": "/",
+          "snippet": "When you open the MetaDefender Industrial Firewall web interface (https://10.10.10.10), the Dashboard is displayed. The Dashboard provides real-time insights and information about the appliance's performance and status. 10.10.10.10 is the default IP address of the appliance. **Alerts:** Displays events for blocked traffic with destination IP addresses...",
+          "matched_capabilities": [
+            "Storage Scanning"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 26
+        }
+      ]
+    },
+    {
+      "slug": "mdcloud",
+      "product": "MetaDefender Cloud",
+      "family": "Cloud File Analysis",
+      "priority": 3,
+      "confidence": "high",
+      "chunk_count": 537,
+      "what_it_protects": "Cloud-based file and hash reputation workflows.",
+      "deployment_zones": [
+        "Cloud",
+        "API integration",
+        "Security operations"
+      ],
+      "best_fit_use_cases": [
+        "Use cloud APIs for file, hash, and reputation checks",
+        "Prototype or augment file-analysis workflows without hosting every component"
+      ],
+      "buyer_problems": [
+        "Teams need quick access to file reputation and analysis APIs",
+        "Custom applications need a cloud file-analysis integration point"
+      ],
+      "threat_paths": [
+        "Untrusted uploads",
+        "Unknown file reputation",
+        "Custom app file ingress"
+      ],
+      "capabilities": [
+        "Cloud File Analysis",
+        "Reputation Lookup",
+        "File Scanning API"
+      ],
+      "protocols_and_integrations": [
+        "REST API",
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "SaaS",
+        "Finance",
+        "Healthcare",
+        "Government"
+      ],
+      "compliance_drivers": [
+        "SOC 2",
+        "ISO 27001",
+        "NIST CSF"
+      ],
+      "account_triggers": [
+        "API",
+        "cloud scanning",
+        "file reputation",
+        "hash"
+      ],
+      "evidence": [
+        {
+          "title": "Why should I use MetaDefender Cloud instead of a product from another vendor?",
+          "category": "knowledge_base",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdcloud_v_4/knowledge_base/199425-why_metadefender_cloud_and_not_other_vendors.md",
+          "header_path": "/",
+          "snippet": "> This article applies to all active MetaDefender Cloud license holders - whether your product is paid for or issued for evaluation purposes. For more information on our range of licensing and evaluation options, please Read This. While there are numerous free and paid, cloud-based multi-scan security solutions on the market, OPSWAT prides itself on the...",
+          "matched_capabilities": [
+            "Central Management",
+            "Deep CDR",
+            "File Type Verification",
+            "Multiscanning",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 77
+        },
+        {
+          "title": "MetaDefender Cloud - FedRamp APIs",
+          "category": "metadefender_fedcloud",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdcloud_v_4/metadefender_fedcloud/199467-fedramp_apis.md",
+          "header_path": "/",
+          "snippet": "MetaDefender Cloud enables you to leverage our threat detection and prevention platform, MetaDefender. For scanning files, hash lookups, and data sanitization we offer a community account exclusively for demo purposes and personal use. For use of MetaDefender Cloud - FedRamp, please contact our sales team to discuss which licensing model suits your needs. A...",
+          "matched_capabilities": [
+            "Deep CDR",
+            "Multiscanning",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 69
+        },
+        {
+          "title": "Private Scanning and Private Processing",
+          "category": "metadefender_fedcloud",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdcloud_v_4/metadefender_fedcloud/199465-private_scanning_and_private_processing.md",
+          "header_path": "/",
+          "snippet": "## How to Perform an API Request with Private Scanning In order to use the private scanning feature, clients have to send all requests on POST /v4/file endpoint with header samplesharing. This flag is only available to users who have a paid license for MetaDefender Cloud. To scan files privately, the samplesharing header should have a value of 0 so that...",
+          "matched_capabilities": [
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 67
+        },
+        {
+          "title": "Public APIs",
+          "category": "integrations",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdcloud_v_4/integrations/199401-public_apis.md",
+          "header_path": "/",
+          "snippet": "MetaDefender Cloud enables you to leverage our threat detection and prevention platform, MetaDefender. For scanning files, hash lookups, and data sanitization we offer a community account exclusively for demo purposes and personal use. For commercial use, please consult our Licensing page, online store or contact our sales team to discuss which licensing...",
+          "matched_capabilities": [
+            "Deep CDR",
+            "Multiscanning",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 63
+        },
+        {
+          "title": "Explanation of Error Codes",
+          "category": "metadefender_fedcloud",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdcloud_v_4/metadefender_fedcloud/199470-explanation_of_error_codes.md",
+          "header_path": "/",
+          "snippet": "## Error Codes Explained | **Group** | **Error code** | **Description** | **HTTP Code** | | ---- | ---- | ---- | ---- | | **HTTP errors :: 400** | 400000 | Generic Error | **400** | | | | | | | **Generic errors** | 400001 | The caching strategy is not recognized | **400** | | | 400002 | The limit strategy is not supported | **400** | | | 400003 | The limit...",
+          "matched_capabilities": [
+            "Central Management",
+            "Deep CDR",
+            "Email Attachment Security",
+            "Endpoint Posture",
+            "File Type Verification",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API",
+            "SMTP"
+          ],
+          "score": 63
+        },
+        {
+          "title": "Threat Intelligence",
+          "category": "threat_intelligence",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdcloud_v_4/threat_intelligence/231463-threat_intelligence.md",
+          "header_path": "/",
+          "snippet": "Threat Intelligence Search API at OPSWAT has multiple offerings: **Pattern Search (expression search)**: Expression search, involves searching for specific patterns or expressions within threat intelligence data. This approach focuses on finding exact matches of predefined expressions such as malware families, malware threat names, AV detection filtering,...",
+          "matched_capabilities": [
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API"
+          ],
+          "score": 63
+        },
+        {
+          "title": "Private Scanning and Private Processing with MetaDefender Cloud APIs",
+          "category": "operation",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdcloud_v_4/operation/199441-private_scanning_with_metadefender_cloud_apis.md",
+          "header_path": "/",
+          "snippet": "## Private Processing To provide our customers with an additional level of privacy, we offer **private processing** in addition to private scanning. When privateProcessingis set to 1, this feature will not only immediately remove files after analysis is done, but also ensure that the results of those scans will only be available to the owner who submitted...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Multiscanning"
+          ],
+          "matched_protocols": [
+            "REST API"
+          ],
+          "score": 61
+        },
+        {
+          "title": "Errors",
+          "category": "integrations",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdcloud_v_4/integrations/199411-errors.md",
+          "header_path": "/",
+          "snippet": "## Error Codes Explained | **Group** | **Error code** | **Description** | **HTTP Code** | | ---- | ---- | ---- | ---- | | **HTTP errors :: 400** | 400000 | Generic Error | **400** | | | | | | | **Generic errors** | 400001 | The caching strategy is not recognized | **400** | | | 400002 | The limit strategy is not supported | **400** | | | 400003 | The limit...",
+          "matched_capabilities": [
+            "Central Management",
+            "Deep CDR",
+            "Email Attachment Security",
+            "Endpoint Posture",
+            "File Type Verification",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API",
+            "SMTP"
+          ],
+          "score": 57
+        }
+      ]
+    },
+    {
+      "slug": "mdndr",
+      "product": "MetaDefender NDR",
+      "family": "Network Detection and Response",
+      "priority": 3,
+      "confidence": "high",
+      "chunk_count": 531,
+      "what_it_protects": "Network traffic visibility and detection workflows.",
+      "deployment_zones": [
+        "Network sensor",
+        "SOC",
+        "OT or IT network"
+      ],
+      "best_fit_use_cases": [
+        "Monitor network traffic for detection and investigation",
+        "Improve visibility where endpoint controls are insufficient"
+      ],
+      "buyer_problems": [
+        "Security teams need network evidence for threat detection",
+        "Industrial or unmanaged environments may lack endpoint telemetry"
+      ],
+      "threat_paths": [
+        "Lateral movement",
+        "Command and control",
+        "Unusual network behavior"
+      ],
+      "capabilities": [
+        "Network Detection and Response",
+        "Traffic Visibility",
+        "Threat Detection"
+      ],
+      "protocols_and_integrations": [
+        "Syslog",
+        "HTTP/HTTPS"
+      ],
+      "industries": [
+        "Energy",
+        "Manufacturing",
+        "Government",
+        "Finance"
+      ],
+      "compliance_drivers": [
+        "NIST CSF",
+        "ISO 27001",
+        "NIS2"
+      ],
+      "account_triggers": [
+        "NDR",
+        "network detection",
+        "traffic",
+        "sensor"
+      ],
+      "evidence": [
+        {
+          "title": "Introduction to the NDR Platform",
+          "category": "deployment_guide",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdndr_v5_0/deployment_guide/438229-introduction_to_the_ndr_platform.md",
+          "header_path": "/",
+          "snippet": "The NDR platform is a modern, Suricata-powered Network Detection and Response solution consisting of two tightly integrated components: - **Sensor** — A high-performance, passive (IDS) appliance/VM that performs native packet capture using AF_PACKET, deep protocol decoding, file extraction, JA3/JA4 fingerprinting, and multi-layered analysis. Sensors log...",
+          "matched_capabilities": [
+            "Central Management"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS"
+          ],
+          "score": 60
+        },
+        {
+          "title": "MetaDefender Core File Scanning",
+          "category": "operating_guide",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdndr_v5_0/operating_guide/434580-metadefender_core_file_scanning.md",
+          "header_path": "/",
+          "snippet": "## How It Works The pipeline moves a candidate file through seven stages. 1. **Extraction.** Suricata's file-store output, enabled on the sensor, watches HTTP bodies, SMB reads and writes, FTP transfers, and other protocols that carry file content. When a transfer completes and the carved file's hash and type are known, Suricata writes the file to the...",
+          "matched_capabilities": [
+            "Central Management",
+            "Endpoint Posture",
+            "File Type Verification",
+            "Storage Scanning",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "AWS S3",
+            "FTP",
+            "HTTP/HTTPS",
+            "REST API",
+            "SMB/CIFS"
+          ],
+          "score": 58
+        },
+        {
+          "title": "Overview",
+          "category": "overview",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdndr_v5_0/overview/415329-overview.md",
+          "header_path": "/",
+          "snippet": "What MetaDefender NDR Does MetaDefender NDR is a network detection and response (NDR) platform that turns mirrored network traffic into searchable security telemetry and actionable alerts. It continuously observes traffic across monitored network segments, parses protocols and reconstructs sessions, enriches extracted metadata with threat intelligence and...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Central Management",
+            "Threat Intelligence"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API",
+            "Syslog"
+          ],
+          "score": 58
+        },
+        {
+          "title": "Detection Overview",
+          "category": "operating_guide",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdndr_v5_0/operating_guide/434576-detection_overview.md",
+          "header_path": "/",
+          "snippet": "## How Detections Reach the Analyst A detection travels through a fixed pipeline before it becomes an alert on an operator screen. Understanding that pipeline makes the _where_ and _when_ of each detection family predictable. 1. **Sensor.** A MetaDefender NDR sensor observes traffic on a tapped interface. Suricata parses packets, emits session records (DNS,...",
+          "matched_capabilities": [
+            "Adaptive Sandbox",
+            "Email Attachment Security"
+          ],
+          "matched_protocols": [
+            "FTP",
+            "HTTP/HTTPS",
+            "RDP/SSH",
+            "SMB/CIFS",
+            "SMTP"
+          ],
+          "score": 55
+        },
+        {
+          "title": "Manager Configuration",
+          "category": "operating_guide",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdndr_v5_0/operating_guide/434596-manager_configuration.md",
+          "header_path": "/",
+          "snippet": "## Settings Reference The table below enumerates the sixteen Manager Configuration settings defined in the Administration Functional Requirements Document (FRD). \"Required restart\" indicates whether the Manager or an affected service must be restarted for the change to take effect; settings marked \"No\" apply live within seconds of confirmation. | Setting |...",
+          "matched_capabilities": [
+            "Central Management",
+            "Email Attachment Security"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API",
+            "SMTP",
+            "SNMP",
+            "Syslog"
+          ],
+          "score": 55
+        },
+        {
+          "title": "Data Retention",
+          "category": "operating_guide",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdndr_v5_0/operating_guide/434601-data_retention.md",
+          "header_path": "/",
+          "snippet": "## Overview of Data Categories MetaDefender NDR writes every observation it makes to one of six data categories. Each category has distinct retention economics — alerts are dense and cheap to keep, packet captures are sparse per alert but heavy per record, session telemetry sits in between — and each category is independently tunable from the other five. |...",
+          "matched_capabilities": [
+            "Adaptive Sandbox"
+          ],
+          "matched_protocols": [
+            "FTP",
+            "HTTP/HTTPS",
+            "RDP/SSH",
+            "REST API",
+            "SMB/CIFS"
+          ],
+          "score": 54
+        },
+        {
+          "title": "Alert, Flow, and PCAP Pivoting",
+          "category": "operating_guide",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdndr_v5_0/operating_guide/434593-alert_flow_and_pcap_pivoting.md",
+          "header_path": "/Flow → Session Pivot/",
+          "snippet": "### What Each Protocol Reveals Different protocols answer different questions on the same connection. | Protocol | What the session reveals | | ---- | ---- | | **DNS** | Query name, record type, response code, answer data, Time-To-Live (TTL). Answers _what name was resolved_, _whether the resolution succeeded_, _what Internet Protocol (IP) addresses were...",
+          "matched_capabilities": [
+            "Email Attachment Security",
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "FTP",
+            "HTTP/HTTPS",
+            "RDP/SSH",
+            "SMB/CIFS",
+            "SMTP"
+          ],
+          "score": 53
+        },
+        {
+          "title": "Integrations",
+          "category": "operating_guide",
+          "source_path": "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/mdndr_v5_0/operating_guide/434600-integrations.md",
+          "header_path": "/",
+          "snippet": "## Overview of Available Integrations MetaDefender NDR ships four MVP integrations, each of which addresses a distinct operational need: | Integration | Purpose | Direction | Transport | | ---- | ---- | ---- | ---- | | **MetaDefender Core** | Deep multi-AV file analysis of artifacts carved from network traffic, on-premises and air-gappable. | Outbound from...",
+          "matched_capabilities": [
+            "Endpoint Posture"
+          ],
+          "matched_protocols": [
+            "HTTP/HTTPS",
+            "REST API",
+            "Syslog"
+          ],
+          "score": 52
+        }
+      ]
+    }
+  ]
+}

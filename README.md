@@ -1,0 +1,98 @@
+# OPSWAT Account Map Tool
+
+Account mapping prototype for generating source-grounded OPSWAT account plays, use-case diagrams, and partner-facing slide decks.
+
+## What Exists
+
+- `api.py` serves the FastAPI API and browser UI.
+- `ui/` contains the account-manager interface.
+- `scripts/account_map.py` generates sourced account maps with Claude.
+- `scripts/diagram_generator.py` generates OPSWAT-style SVG architecture/data-flow diagrams.
+- `scripts/export_deck.mjs` exports account-map content into PowerPoint.
+- `data/capability_map.json` is the product capability map used for product-fit grounding.
+- `assets/product_icons` and `assets/other_icons` contain diagram icon assets.
+
+Generated account maps, diagrams, decks, and scratch files are intentionally ignored by git under `outputs/` and `work/`.
+
+## Setup
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+```
+
+Add at least:
+
+```text
+ANTHROPIC_API_KEY=...
+ANTHROPIC_MODEL=claude-opus-4-8
+```
+
+Optional environment settings are documented in `.env.example`.
+
+## Run The UI
+
+```bash
+. .venv/bin/activate
+uvicorn api:app --reload --host 127.0.0.1 --port 8010
+```
+
+Open:
+
+```text
+http://127.0.0.1:8010
+```
+
+## Generate A Real Account Map
+
+```bash
+python scripts/account_map.py "SSE energy company"
+```
+
+Outputs are written under:
+
+```text
+outputs/account_maps/
+```
+
+## Generate A Diagram
+
+The reusable diagram endpoint accepts a use-case context and returns a normalized diagram spec plus an SVG artifact:
+
+```bash
+curl -s -X POST http://127.0.0.1:8010/api/diagrams \
+  -H 'Content-Type: application/json' \
+  -d @work/diagram-payload.json
+```
+
+Response fields:
+
+- `id`: generated diagram ID.
+- `spec`: normalized diagram model.
+- `svg`: inline SVG.
+- `svg_url`: reusable SVG URL, for example `/api/diagrams/<id>.svg`.
+- `json_url`: reusable JSON spec URL, for example `/api/diagrams/<id>.json`.
+
+Account-map generation calls the same diagram generator for each `recommended_use_cases` item. Each use case is enriched with:
+
+```json
+{
+  "diagram": {
+    "id": "...",
+    "pattern": "removable_media",
+    "svg_url": "/api/diagrams/....svg",
+    "json_url": "/api/diagrams/....json"
+  }
+}
+```
+
+Saved maps that pre-date this feature are backfilled when opened through `GET /api/account-maps/{map_id}`.
+
+## Notes For Deployment
+
+- Keep the app behind authentication before sharing with the team.
+- Mount or back up `outputs/` if generated maps/decks should persist.
+- Set `PRESENTATION_TEMPLATE_PATH` before using PPTX export.
+- If using deck export outside Codex, install or provide `@oai/artifact-tool` and set `ARTIFACT_TOOL_MODULE` if needed.
