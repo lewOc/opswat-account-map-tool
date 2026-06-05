@@ -143,7 +143,7 @@ class GenerateRequest(BaseModel):
     anthropic_api_key: Optional[str] = Field(default=None, max_length=1000)
     openai_api_key: Optional[str] = Field(default=None, max_length=1000)
     openai_reasoning: str = Field(default="medium", pattern="^(low|medium|high)$")
-    max_tokens: int = Field(default=9000, ge=2000, le=20000)
+    max_tokens: int = Field(default=30000, ge=2000, le=30000)
     diagram_renderer: str = Field(default="svg", pattern="^(svg|gpt_image)$")
     diagram_openai_api_key: Optional[str] = Field(default=None, max_length=1000)
     diagram_image_quality: str = Field(default="high", pattern="^(low|medium|high|auto)$")

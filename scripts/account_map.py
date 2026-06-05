@@ -891,7 +891,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--anthropic-api-key", default=None, help=argparse.SUPPRESS)
     parser.add_argument("--openai-api-key", default=None, help=argparse.SUPPRESS)
     parser.add_argument("--openai-reasoning", default=os.environ.get("OPENAI_REASONING_EFFORT", DEFAULT_OPENAI_REASONING))
-    parser.add_argument("--max-tokens", type=int, default=9000)
+    parser.add_argument("--max-tokens", type=int, default=30000)
     parser.add_argument("--web-search-tool", default="web_search_20250305")
     parser.add_argument("--capability-map", default=str(DEFAULT_CAPABILITY_MAP))
     parser.add_argument("--out-dir", default=str(OUTPUTS_DIR / "account_maps"))
