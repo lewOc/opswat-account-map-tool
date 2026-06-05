@@ -75,6 +75,14 @@ JSON_SHAPE = {
             "title": "short sales-friendly use case title",
             "account_trigger": "why this account needs it",
             "problem": "specific risk or pain",
+            "problem_narrative": "rich account-specific problem paragraph with concrete company signals, named programmes/sites/business units where evidenced, regulations, workflows, and clearly marked inferences",
+            "solution_narrative": "practical deployment narrative explaining how the OPSWAT products work together, where they sit, and what the operator/user workflow looks like",
+            "implementation_flow": [
+                "step-by-step workflow from source/user/system through OPSWAT controls to destination/outcome"
+            ],
+            "stakeholders": [
+                "specific buyer, operator, engineering, security, compliance, procurement, or partner personas likely involved"
+            ],
             "opswat_products": [
                 {
                     "product": "official product name from capability map",
@@ -87,7 +95,12 @@ JSON_SHAPE = {
             ],
             "deployment_hypothesis": "where it would sit in the environment; mark as inference if needed",
             "business_value": "buyer-facing value",
+            "business_value_narrative": "rich paragraph tying value to compliance, auditability, risk reduction, uptime, partner enablement, or operational efficiency",
+            "conversation_starter": "one sharp discovery question or provocative talk track an account manager can say on a call",
             "discovery_questions": ["specific question"],
+            "inferences": [
+                "important unsupported assumptions to validate, each explicitly labelled as inference"
+            ],
             "evidence_refs": ["company source_url and/or product source_path"],
             "confidence": "high|medium|low",
         }
@@ -246,7 +259,16 @@ Task:
 4. Generate exactly {use_cases} recommended use cases.
 5. Cite company web evidence with URLs and product capability evidence with capability-map source_path values.
 6. Mark unsupported environment-specific statements as inference.
-7. When ready, call the write_account_map tool with the completed account map.
+7. For each use case, write it as a mini sales brief for a partner/account manager, not a generic product note:
+   - problem_narrative: 120-180 words, account-specific, grounded in evidence, with named business units, programmes, facilities, regulations, suppliers, or workflows only when evidenced. Clearly label any inference.
+   - solution_narrative: 120-180 words explaining the practical OPSWAT workflow, where the products sit, who uses them, and what is allowed/blocked/reported.
+   - business_value_narrative: 60-100 words connecting the use case to business outcomes such as NIS/NIS2, IEC 62443, audit evidence, outage reduction, project delivery, partner enablement, or incident response.
+   - conversation_starter: one sharp question or talk track the sales person can say verbatim.
+   - implementation_flow: 4-7 concise ordered workflow steps.
+   - stakeholders: 3-6 likely personas involved in buying, operating, or approving the workflow.
+   - inferences: list any important assumptions that must be validated.
+8. Avoid invented precision. Do not invent exact percentages, product model numbers, plant names, incidents, suppliers, regulations, or dates unless backed by a cited source.
+9. When ready, call the write_account_map tool with the completed account map.
 
 The write_account_map tool input must follow this shape:
 {json.dumps(JSON_SHAPE, indent=2)}
@@ -518,6 +540,45 @@ def normalize_account_map(account_map: dict[str, Any], capability_map: dict[str,
             use_case["problem"] = use_case["signal_link"]
         if "business_value" not in use_case and use_case.get("product_fit"):
             use_case["business_value"] = use_case["product_fit"]
+        if not use_case.get("problem_narrative"):
+            use_case["problem_narrative"] = use_case.get("problem") or use_case.get("account_trigger") or ""
+        if not use_case.get("solution_narrative"):
+            product_names = [
+                product.get("product") or product.get("slug")
+                for product in use_case.get("opswat_products") or []
+                if isinstance(product, dict) and (product.get("product") or product.get("slug"))
+            ]
+            product_text = ", ".join(product_names) if product_names else "the mapped OPSWAT controls"
+            use_case["solution_narrative"] = (
+                use_case.get("deployment_hypothesis")
+                or f"Use {product_text} to create a controlled, auditable workflow for this use case."
+            )
+        if not use_case.get("business_value_narrative"):
+            use_case["business_value_narrative"] = use_case.get("business_value") or ""
+        if not use_case.get("conversation_starter"):
+            title = use_case.get("title") or use_case.get("use_case") or "this workflow"
+            use_case["conversation_starter"] = f"Where would {title.lower()} create the most immediate risk reduction or operational value?"
+        if isinstance(use_case.get("implementation_flow"), str):
+            use_case["implementation_flow"] = [use_case["implementation_flow"]]
+        if not isinstance(use_case.get("implementation_flow"), list):
+            use_case["implementation_flow"] = []
+        if not use_case["implementation_flow"]:
+            use_case["implementation_flow"] = [
+                "Identify the current source, owner, and destination for the workflow.",
+                "Route files, media, or traffic through the mapped OPSWAT control point.",
+                "Inspect, sanitize, validate, or monitor the activity using the recommended OPSWAT products.",
+                "Release approved content or activity to the destination and retain evidence for audit or investigation.",
+            ]
+        if isinstance(use_case.get("stakeholders"), str):
+            use_case["stakeholders"] = [use_case["stakeholders"]]
+        if not isinstance(use_case.get("stakeholders"), list):
+            use_case["stakeholders"] = []
+        if not use_case["stakeholders"]:
+            use_case["stakeholders"] = ["CISO / Security Lead", "OT Operations", "Infrastructure / Engineering", "Compliance"]
+        if isinstance(use_case.get("inferences"), str):
+            use_case["inferences"] = [use_case["inferences"]]
+        if not isinstance(use_case.get("inferences"), list):
+            use_case["inferences"] = []
         if "deployment_hypothesis" not in use_case:
             use_case["deployment_hypothesis"] = "Inference: validate the exact deployment point during discovery."
         if not use_case.get("discovery_questions"):
@@ -630,9 +691,25 @@ def account_map_to_markdown(account_map: dict[str, Any]) -> str:
                 "",
                 f"**Problem:** {use_case.get('problem', '')}",
                 "",
+                "#### Problem Narrative",
+                "",
+                use_case.get("problem_narrative", ""),
+                "",
+                "#### Proposed Solution",
+                "",
+                use_case.get("solution_narrative", ""),
+                "",
                 f"**Deployment Hypothesis:** {use_case.get('deployment_hypothesis', '')}",
                 "",
                 f"**Business Value:** {use_case.get('business_value', '')}",
+                "",
+                "#### Business Value Narrative",
+                "",
+                use_case.get("business_value_narrative", ""),
+                "",
+                "#### Conversation Starter",
+                "",
+                f"> {use_case.get('conversation_starter', '')}",
                 "",
                 "**OPSWAT Product Fit:**",
             ]
@@ -646,9 +723,19 @@ def account_map_to_markdown(account_map: dict[str, Any]) -> str:
                     f"  - Product evidence: {', '.join(product.get('capability_evidence_refs', []))}",
                 ]
             )
+        lines.extend(["", "**Implementation Flow:**"])
+        for step in use_case.get("implementation_flow", []):
+            lines.append(f"- {step}")
+        lines.extend(["", "**Stakeholders:**"])
+        for stakeholder in use_case.get("stakeholders", []):
+            lines.append(f"- {stakeholder}")
         lines.extend(["", "**Discovery Questions:**"])
         for question in use_case.get("discovery_questions", []):
             lines.append(f"- {question}")
+        if use_case.get("inferences"):
+            lines.extend(["", "**Inferences To Validate:**"])
+            for inference in use_case.get("inferences", []):
+                lines.append(f"- {inference}")
         diagram = use_case.get("diagram") or {}
         if diagram.get("svg_url"):
             lines.extend(["", f"**Diagram:** [{diagram.get('title') or 'Open diagram'}]({diagram.get('svg_url')})"])

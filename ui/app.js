@@ -162,6 +162,21 @@ function labelize(value) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function renderList(items, className = "compact-list") {
+  const values = Array.isArray(items) ? items.filter(Boolean) : [];
+  if (!values.length) return "";
+  return `<ul class="${className}">${values.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+}
+
+function renderUseCaseSection(label, body, variant = "") {
+  if (!body) return "";
+  return `
+    <section class="brief-section ${variant}">
+      <div class="brief-label">${escapeHtml(label)}</div>
+      <p>${escapeHtml(body)}</p>
+    </section>`;
+}
+
 function disableFileLinks() {
   els.jsonLink.href = "#";
   els.mdLink.href = "#";
@@ -237,11 +252,26 @@ function renderAccountMap(result) {
     els.useCaseList.innerHTML = useCases
       .map((useCase, index) => {
         const products = (useCase.opswat_products || [])
-          .map((product) => `<span class="product-chip">${escapeHtml(product.product || product.slug)}</span>`)
+          .map(
+            (product) => `
+              <article class="product-fit">
+                <div class="product-fit-top">
+                  <strong>${escapeHtml(product.product || product.slug)}</strong>
+                  <span>${escapeHtml(product.confidence || "medium")}</span>
+                </div>
+                <p>${escapeHtml(product.fit_reason || "")}</p>
+                ${renderList(product.capabilities_used || [], "tag-list")}
+              </article>`
+          )
           .join("");
-        const questions = (useCase.discovery_questions || [])
-          .map((question) => `<li>${escapeHtml(question)}</li>`)
-          .join("");
+        const problem = useCase.problem_narrative || useCase.problem || useCase.account_trigger;
+        const solution = useCase.solution_narrative || useCase.deployment_hypothesis;
+        const value = useCase.business_value_narrative || useCase.business_value;
+        const conversationStarter = useCase.conversation_starter;
+        const implementationFlow = renderList(useCase.implementation_flow || [], "numbered-list");
+        const stakeholders = renderList(useCase.stakeholders || [], "stakeholder-list");
+        const questions = renderList(useCase.discovery_questions || [], "question-list");
+        const inferences = renderList(useCase.inferences || [], "compact-list inference-list");
         const diagram = useCase.diagram || {};
         const diagramBlock = diagram.svg_url
           ? `
@@ -264,11 +294,42 @@ function renderAccountMap(result) {
               <div class="use-case-title"><span class="rank">${index + 1}.</span> ${escapeHtml(useCase.title)}</div>
               <span class="confidence">${escapeHtml(useCase.confidence || "medium")}</span>
             </div>
-            <p>${escapeHtml(useCase.account_trigger || useCase.problem)}</p>
-            <p>${escapeHtml(useCase.business_value || "")}</p>
-            <div class="product-row">${products}</div>
             ${diagramBlock}
-            <ul class="question-list">${questions}</ul>
+            ${renderUseCaseSection("Problem", problem, "problem")}
+            ${renderUseCaseSection("Solution", solution, "solution")}
+            ${renderUseCaseSection("Business Value", value, "value")}
+            ${conversationStarter ? `
+              <section class="conversation-card">
+                <div class="brief-label">Conversation Starter</div>
+                <blockquote>${escapeHtml(conversationStarter)}</blockquote>
+              </section>` : ""}
+            <div class="brief-grid">
+              ${implementationFlow ? `
+                <section class="brief-section">
+                  <div class="brief-label">Implementation Flow</div>
+                  ${implementationFlow}
+                </section>` : ""}
+              ${stakeholders ? `
+                <section class="brief-section">
+                  <div class="brief-label">Stakeholders</div>
+                  ${stakeholders}
+                </section>` : ""}
+            </div>
+            ${products ? `
+              <section class="brief-section">
+                <div class="brief-label">Products</div>
+                <div class="product-row">${products}</div>
+              </section>` : ""}
+            ${questions ? `
+              <section class="brief-section">
+                <div class="brief-label">Discovery Questions</div>
+                ${questions}
+              </section>` : ""}
+            ${inferences ? `
+              <section class="brief-section">
+                <div class="brief-label">Inferences To Validate</div>
+                ${inferences}
+              </section>` : ""}
           </article>`;
       })
       .join("");
