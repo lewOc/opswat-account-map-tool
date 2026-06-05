@@ -3,8 +3,10 @@
 
 This creates one record per customer-story folder. It extracts:
 - PDF text with pypdf.
-- PPTX text through the native PPTX zip/XML structure.
 - URLs from .url shortcut files.
+
+PPTX files are ignored by default because the PDF assets are cleaner for RAG.
+Pass --include-pptx if slide text is explicitly needed.
 
 The output is intended as an internal-only RAG source. Some local assets may
 contain non-public or anonymized sales material, so downstream prompts should
@@ -28,7 +30,7 @@ from typing import Iterable
 
 DEFAULT_SOURCE_ROOT = Path("~/Documents/customer_stories/Customer Stories").expanduser()
 DEFAULT_OUTPUT_DIR = Path("outputs/local_customer_stories")
-SUPPORTED_EXTENSIONS = {".pdf", ".pptx", ".url"}
+DEFAULT_SUPPORTED_EXTENSIONS = {".pdf", ".url"}
 
 PRODUCT_ALIASES: tuple[tuple[str, str], ...] = (
     ("MetaDefender Managed File Transfer", "MetaDefender Managed File Transfer"),
@@ -252,11 +254,14 @@ def story_folders(root: Path) -> list[Path]:
     return sorted(path for path in root.iterdir() if path.is_dir())
 
 
-def supported_files(folder: Path) -> list[Path]:
+def supported_files(folder: Path, include_pptx: bool = False) -> list[Path]:
+    supported_extensions = set(DEFAULT_SUPPORTED_EXTENSIONS)
+    if include_pptx:
+        supported_extensions.add(".pptx")
     return sorted(
         path
         for path in folder.rglob("*")
-        if path.is_file() and path.suffix.lower() in SUPPORTED_EXTENSIONS and path.name != ".DS_Store"
+        if path.is_file() and path.suffix.lower() in supported_extensions and path.name != ".DS_Store"
     )
 
 
@@ -289,7 +294,7 @@ def dedupe_preserve_order(values: Iterable[str]) -> list[str]:
     return result
 
 
-def build_story_record(folder: Path, out_dir: Path, fetched_at: str) -> LocalStoryRecord:
+def build_story_record(folder: Path, out_dir: Path, fetched_at: str, include_pptx: bool = False) -> LocalStoryRecord:
     title = folder.name
     story_id = slugify(title)
     text_parts: list[str] = []
@@ -299,7 +304,7 @@ def build_story_record(folder: Path, out_dir: Path, fetched_at: str) -> LocalSto
     assets: list[LocalAsset] = []
     counts: Counter[str] = Counter()
 
-    for path in supported_files(folder):
+    for path in supported_files(folder, include_pptx=include_pptx):
         kind = asset_kind(path)
         counts[kind] += 1
         signal_parts.append(path.name)
@@ -400,6 +405,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-root", default=str(DEFAULT_SOURCE_ROOT), help="Folder containing one subfolder per customer story.")
     parser.add_argument("--out-dir", default=str(DEFAULT_OUTPUT_DIR), help="Output directory for JSONL and extracted text.")
     parser.add_argument("--max-stories", type=int, default=0, help="Limit stories for testing. 0 means no limit.")
+    parser.add_argument("--include-pptx", action="store_true", help="Include PPTX slide text. Off by default for cleaner RAG.")
     return parser.parse_args()
 
 
@@ -415,7 +421,7 @@ def main() -> int:
     records: list[LocalStoryRecord] = []
     print(f"Found {len(folders)} story folders", flush=True)
     for index, folder in enumerate(folders, start=1):
-        record = build_story_record(folder, out_dir, fetched_at)
+        record = build_story_record(folder, out_dir, fetched_at, include_pptx=args.include_pptx)
         records.append(record)
         print(
             f"[{index:03d}] {record.title} "

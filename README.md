@@ -33,6 +33,8 @@ It writes:
 - `outputs/local_customer_stories/summary.json`
 - `outputs/local_customer_stories/text/`
 
+By default this uses PDFs and `.url` files only. PPTX slide extraction is available with `--include-pptx`, but PDF-only text is usually cleaner for RAG.
+
 The public customer-story ingestion script builds a supplemental corpus from public OPSWAT customer pages and case-study sitemaps:
 
 ```bash
