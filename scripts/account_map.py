@@ -27,7 +27,7 @@ DEFAULT_ANTHROPIC_MODEL = "claude-opus-4-8"
 DEFAULT_OPENAI_MODEL = "gpt-5.5"
 DEFAULT_OPENAI_REASONING = "medium"
 DEFAULT_MODEL = DEFAULT_ANTHROPIC_MODEL
-DEFAULT_MODEL_TIMEOUT_SECONDS = int(os.environ.get("MODEL_REQUEST_TIMEOUT_SECONDS", "85"))
+DEFAULT_MODEL_TIMEOUT_SECONDS = int(os.environ.get("MODEL_REQUEST_TIMEOUT_SECONDS", "600"))
 logger = logging.getLogger("opswat_account_map")
 
 
@@ -400,7 +400,7 @@ def generate_with_openai(args: argparse.Namespace, capability_map: dict[str, Any
     except ImportError as exc:
         raise SystemExit("Missing openai package. Run this in a venv with openai installed.") from exc
 
-    client = OpenAI(api_key=api_key, timeout=DEFAULT_MODEL_TIMEOUT_SECONDS)
+    client = OpenAI(api_key=api_key, timeout=DEFAULT_MODEL_TIMEOUT_SECONDS, max_retries=0)
     response = client.responses.create(
         model=args.model,
         input=[
@@ -456,7 +456,7 @@ Allowed OPSWAT capability map:
 
 Create the final complete account map now. Use only the company evidence already in the draft plus clearly marked inferences from that evidence. Use only product slugs and capabilities present in the capability map. Return only the complete final JSON structure.
 """
-    client = OpenAI(api_key=api_key, timeout=DEFAULT_MODEL_TIMEOUT_SECONDS)
+    client = OpenAI(api_key=api_key, timeout=DEFAULT_MODEL_TIMEOUT_SECONDS, max_retries=0)
     response = client.responses.create(
         model=args.model,
         input=[

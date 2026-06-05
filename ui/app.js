@@ -63,7 +63,7 @@ async function api(path, options = {}) {
     });
   } catch (error) {
     if (error.name === "AbortError") {
-      throw new Error("Generation took too long. Try fewer use cases, or try Anthropic while we tune OpenAI generation.");
+      throw new Error("Request timed out. The generation may still be running; check Saved Maps in a minute.");
     }
     throw error;
   } finally {
@@ -74,6 +74,34 @@ async function api(path, options = {}) {
     throw new Error(body.detail || `Request failed: ${response.status}`);
   }
   return response.json();
+}
+
+function delay(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+async function waitForGenerationJob(jobId) {
+  const started = Date.now();
+  const maxWaitMs = 12 * 60 * 1000;
+  while (Date.now() - started < maxWaitMs) {
+    const job = await api(`/api/account-maps/jobs/${jobId}`, { timeoutMs: 30000 });
+    if (job.status === "completed") {
+      return job.result;
+    }
+    if (job.status === "failed") {
+      throw new Error(job.error || "Generation failed");
+    }
+    const elapsedSeconds = Math.max(1, Math.round((Date.now() - started) / 1000));
+    const label = job.status === "queued" ? "Queued" : "Researching";
+    setWorking(true, `${label} · ${elapsedSeconds}s`);
+    setBusy(
+      true,
+      job.status === "queued" ? "Queued" : "Researching account",
+      job.message || "The account map is still generating. You can leave this page open while the job runs."
+    );
+    await delay(job.status === "queued" ? 1500 : 3000);
+  }
+  throw new Error("Generation is still running after 12 minutes. Check Saved Maps shortly, or try again with fewer use cases.");
 }
 
 function toast(message) {
@@ -400,10 +428,13 @@ els.form.addEventListener("submit", async (event) => {
       generationPayload.model = "claude-opus-4-8";
     }
 
-    const result = await api("/api/account-maps", {
+    const job = await api("/api/account-maps/jobs", {
       method: "POST",
       body: JSON.stringify(generationPayload),
+      timeoutMs: 30000,
     });
+    setWorking(true, "Queued");
+    const result = await waitForGenerationJob(job.id);
     renderAccountMap(result);
     await loadLibrary(false);
     setWorking(false, "Complete");

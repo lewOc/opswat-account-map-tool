@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import importlib.util
 import json
 import logging
@@ -14,7 +15,9 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from threading import Lock
 from typing import Any, Optional
+from uuid import uuid4
 
 from fastapi import Body, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,11 +40,58 @@ NODE_BIN = Path(os.environ.get("NODE_BIN") or shutil.which("node") or "node")
 TEMPLATE_PPTX = Path(os.environ.get("PRESENTATION_TEMPLATE_PATH", PROJECT / "templates" / "presentation_template.pptx"))
 logger = logging.getLogger("opswat_account_map_api")
 logger.setLevel(logging.INFO)
+GENERATION_WORKERS = int(os.environ.get("GENERATION_WORKERS", "2"))
+JOB_RETENTION_SECONDS = int(os.environ.get("GENERATION_JOB_RETENTION_SECONDS", "7200"))
+generation_executor = ThreadPoolExecutor(max_workers=GENERATION_WORKERS)
+generation_jobs: dict[str, dict[str, Any]] = {}
+generation_jobs_lock = Lock()
 
 
 def generation_log(event: str, **fields: Any) -> None:
     parts = [f"{key}={value!r}" for key, value in fields.items()]
     print(f"ACCOUNT_MAP {event} {' '.join(parts)}", flush=True)
+
+
+def prune_generation_jobs() -> None:
+    cutoff = time.time() - JOB_RETENTION_SECONDS
+    with generation_jobs_lock:
+        expired = [
+            job_id
+            for job_id, job in generation_jobs.items()
+            if job.get("updated_at", job.get("created_at", 0)) < cutoff and job.get("status") in {"completed", "failed"}
+        ]
+        for job_id in expired:
+            generation_jobs.pop(job_id, None)
+
+
+def update_generation_job(job_id: str, **fields: Any) -> None:
+    with generation_jobs_lock:
+        job = generation_jobs.get(job_id)
+        if not job:
+            return
+        job.update(fields)
+        job["updated_at"] = time.time()
+
+
+def generation_job_snapshot(job_id: str) -> dict[str, Any]:
+    with generation_jobs_lock:
+        job = generation_jobs.get(job_id)
+        if not job:
+            raise HTTPException(status_code=404, detail="Generation job not found")
+        return {
+            key: value
+            for key, value in job.items()
+            if key not in {"future"}
+        }
+
+
+def run_generation_job(job_id: str, payload: GenerateRequest) -> None:
+    update_generation_job(job_id, status="running", message="Researching account and mapping OPSWAT use cases")
+    try:
+        result = run_generation(payload)
+        update_generation_job(job_id, status="completed", message="Complete", result=result)
+    except BaseException as exc:
+        update_generation_job(job_id, status="failed", message="Failed", error=str(exc) or repr(exc))
 
 
 def load_account_map_module() -> Any:
@@ -358,6 +408,39 @@ def list_account_maps() -> dict[str, Any]:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     files = sorted(OUTPUT_DIR.glob("*.json"), key=lambda path: path.stat().st_mtime, reverse=True)
     return {"items": [summarize_map(path) for path in files]}
+
+
+@app.post("/api/account-maps/jobs")
+def create_account_map_job(payload: GenerateRequest) -> dict[str, Any]:
+    if payload.provider == "openai" and not payload.openai_api_key:
+        raise HTTPException(status_code=400, detail="Enter your OpenAI API key before generating.")
+    if payload.provider == "anthropic" and not payload.anthropic_api_key:
+        raise HTTPException(status_code=400, detail="Enter your Anthropic API key before generating.")
+    prune_generation_jobs()
+    job_id = uuid4().hex
+    now = time.time()
+    with generation_jobs_lock:
+        generation_jobs[job_id] = {
+            "id": job_id,
+            "status": "queued",
+            "message": "Queued",
+            "provider": payload.provider,
+            "target": payload.target,
+            "use_cases": payload.use_cases,
+            "dry_run": payload.dry_run,
+            "created_at": now,
+            "updated_at": now,
+        }
+        generation_jobs[job_id]["future"] = generation_executor.submit(run_generation_job, job_id, payload)
+    generation_log("job_created", job_id=job_id, provider=payload.provider, target=payload.target, use_cases=payload.use_cases)
+    return generation_job_snapshot(job_id)
+
+
+@app.get("/api/account-maps/jobs/{job_id}")
+def get_account_map_job(job_id: str) -> dict[str, Any]:
+    if not re.fullmatch(r"[a-f0-9]{32}", job_id):
+        raise HTTPException(status_code=404, detail="Generation job not found")
+    return generation_job_snapshot(job_id)
 
 
 @app.get("/api/account-maps/{map_id}")
