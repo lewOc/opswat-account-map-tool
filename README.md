@@ -49,6 +49,25 @@ It writes:
 - `outputs/customer_story_chunks/index.md`
 - `outputs/customer_story_chunks/summary.json`
 
+Index the chunks into Pinecone:
+
+```bash
+python scripts/index_customer_story_chunks.py \
+  --chunks outputs/customer_story_chunks/customer_story_chunks.jsonl \
+  --index opswat-docs \
+  --namespace customer_stories
+```
+
+The indexing and retrieval scripts need `OPENAI_API_KEY` and `PINECONE_API_KEY`. They load `.env` from this project first, then optionally load the shared docs-pipeline env path. Override that fallback with `OPSWAT_SHARED_ENV=/path/to/.env` if needed.
+
+Run a retrieval smoke test:
+
+```bash
+python scripts/retrieve_customer_stories.py \
+  "energy utility removable media kiosk secure transfer to OT" \
+  --namespace customer_stories
+```
+
 The public customer-story ingestion script builds a supplemental corpus from public OPSWAT customer pages and case-study sitemaps:
 
 ```bash
