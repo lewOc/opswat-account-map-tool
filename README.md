@@ -35,6 +35,20 @@ It writes:
 
 By default this uses PDFs and `.url` files only. PPTX slide extraction is available with `--include-pptx`, but PDF-only text is usually cleaner for RAG.
 
+Chunk the local corpus for embedding/indexing:
+
+```bash
+python scripts/chunk_customer_stories.py \
+  --input outputs/local_customer_stories/local_customer_stories.jsonl \
+  --out-dir outputs/customer_story_chunks
+```
+
+It writes:
+
+- `outputs/customer_story_chunks/customer_story_chunks.jsonl`
+- `outputs/customer_story_chunks/index.md`
+- `outputs/customer_story_chunks/summary.json`
+
 The public customer-story ingestion script builds a supplemental corpus from public OPSWAT customer pages and case-study sitemaps:
 
 ```bash
