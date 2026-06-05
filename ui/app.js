@@ -9,7 +9,8 @@ const els = {
   form: document.querySelector("#generateForm"),
   target: document.querySelector("#target"),
   focus: document.querySelector("#focus"),
-  anthropicKey: document.querySelector("#anthropicKey"),
+  provider: document.querySelector("#provider"),
+  apiKey: document.querySelector("#apiKey"),
   useCases: document.querySelector("#useCases"),
   dryRun: document.querySelector("#dryRun"),
   generateButton: document.querySelector("#generateButton"),
@@ -90,6 +91,12 @@ function setPptxWorking(isWorking) {
   els.pptxButton.textContent = isWorking ? "Exporting" : "Export PPTX";
 }
 
+function updateProviderHint() {
+  const isOpenAI = els.provider.value === "openai";
+  els.apiKey.placeholder = isOpenAI ? "OpenAI key, optional if server key is set" : "Anthropic key, optional if server key is set";
+  els.modelName.textContent = isOpenAI ? "OpenAI GPT-5.5 · Medium reasoning" : "Anthropic Opus 4.8";
+}
+
 function setError(label) {
   els.generationStatus.textContent = label;
   els.generationStatus.classList.add("error");
@@ -131,7 +138,8 @@ function clearWorkspace() {
   state.currentSummary = null;
   els.target.value = "";
   els.focus.value = "";
-  els.anthropicKey.value = "";
+  els.provider.value = "anthropic";
+  els.apiKey.value = "";
   els.useCases.value = "5";
   els.dryRun.checked = false;
   els.accountName.textContent = "New customer workspace";
@@ -329,7 +337,8 @@ async function init() {
     const health = await api("/api/health");
     els.healthText.textContent = "API online";
     els.statusDot.classList.add("ok");
-    els.modelName.textContent = health.model || "Claude Opus";
+    els.modelName.textContent = `${health.anthropic_model || "Opus 4.8"} / ${health.openai_model || "GPT-5.5"}`;
+    updateProviderHint();
   } catch (error) {
     els.healthText.textContent = "API offline";
     setError("API error");
@@ -365,10 +374,18 @@ els.form.addEventListener("submit", async (event) => {
       target: els.target.value,
       focus: els.focus.value,
       use_cases: Number(els.useCases.value || 5),
+      provider: els.provider.value,
       dry_run: els.dryRun.checked,
     };
-    const anthropicKey = els.anthropicKey.value.trim();
-    if (anthropicKey) generationPayload.anthropic_api_key = anthropicKey;
+    const apiKey = els.apiKey.value.trim();
+    if (apiKey && els.provider.value === "openai") {
+      generationPayload.openai_api_key = apiKey;
+      generationPayload.model = "gpt-5.5";
+      generationPayload.openai_reasoning = "medium";
+    } else if (apiKey) {
+      generationPayload.anthropic_api_key = apiKey;
+      generationPayload.model = "claude-opus-4-8";
+    }
 
     const result = await api("/api/account-maps", {
       method: "POST",
@@ -414,6 +431,8 @@ els.newWorkspace.addEventListener("click", () => {
   clearWorkspace();
   toast("New workspace ready");
 });
+
+els.provider.addEventListener("change", updateProviderHint);
 
 els.pptxButton.addEventListener("click", async () => {
   const id = state.currentSummary?.id;

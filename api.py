@@ -72,8 +72,11 @@ class GenerateRequest(BaseModel):
     target: str = Field(..., min_length=2, max_length=200)
     focus: str = Field(default="", max_length=600)
     use_cases: int = Field(default=5, ge=1, le=8)
+    provider: str = Field(default="anthropic", pattern="^(anthropic|openai)$")
     model: Optional[str] = None
     anthropic_api_key: Optional[str] = Field(default=None, max_length=300)
+    openai_api_key: Optional[str] = Field(default=None, max_length=300)
+    openai_reasoning: str = Field(default="medium", pattern="^(low|medium|high)$")
     max_tokens: int = Field(default=9000, ge=2000, le=20000)
     dry_run: bool = False
 
@@ -189,8 +192,11 @@ def run_generation(payload: GenerateRequest) -> dict[str, Any]:
         target=payload.target,
         focus=payload.focus,
         use_cases=payload.use_cases,
-        model=payload.model or generator.DEFAULT_MODEL,
+        provider=payload.provider,
+        model=payload.model,
         anthropic_api_key=payload.anthropic_api_key,
+        openai_api_key=payload.openai_api_key,
+        openai_reasoning=payload.openai_reasoning,
         max_tokens=payload.max_tokens,
         web_search_tool="web_search_20250305",
         capability_map=str(CAPABILITY_MAP),
@@ -270,7 +276,12 @@ def health() -> dict[str, Any]:
         "capability_map_exists": CAPABILITY_MAP.exists(),
         "outputs": str(OUTPUT_DIR),
         "model": generator.DEFAULT_MODEL,
+        "default_provider": generator.DEFAULT_PROVIDER,
+        "anthropic_model": generator.DEFAULT_ANTHROPIC_MODEL,
+        "openai_model": generator.DEFAULT_OPENAI_MODEL,
+        "openai_reasoning": generator.DEFAULT_OPENAI_REASONING,
         "anthropic_configured": bool(os.environ.get("ANTHROPIC_API_KEY")),
+        "openai_configured": bool(os.environ.get("OPENAI_API_KEY")),
         "deck_export_configured": NODE_BIN.exists() and TEMPLATE_PPTX.exists(),
         "template": str(TEMPLATE_PPTX),
     }

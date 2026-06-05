@@ -70,8 +70,15 @@
                 />
               </div>
               <div class="field key-field">
-                <label for="anthropicKey">Anthropic key</label>
-                <input id="anthropicKey" name="anthropicKey" type="password" placeholder="Optional if server key is set" autocomplete="off" />
+                <label for="provider">AI provider</label>
+                <select id="provider" name="provider">
+                  <option value="anthropic">Anthropic Opus 4.8</option>
+                  <option value="openai">OpenAI GPT-5.5</option>
+                </select>
+              </div>
+              <div class="field api-key-field">
+                <label for="apiKey">API key</label>
+                <input id="apiKey" name="apiKey" type="password" placeholder="Optional if server key is set" autocomplete="off" />
               </div>
               <div class="field small-field">
                 <label for="useCases">Use cases</label>

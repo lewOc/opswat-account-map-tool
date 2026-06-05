@@ -205,10 +205,10 @@ select:focus {
 
 .generate-form {
   display: grid;
-  grid-template-columns: minmax(160px, 1fr) minmax(220px, 1.35fr) minmax(180px, 0.9fr) 92px;
+  grid-template-columns: minmax(150px, 0.9fr) minmax(220px, 1.25fr) minmax(150px, 0.75fr) minmax(180px, 0.85fr) 92px;
   grid-template-areas:
-    "target focus key count"
-    ". dry dry action";
+    "target focus key api count"
+    ". dry dry dry action";
   gap: 10px;
   align-items: end;
 }
@@ -223,6 +223,10 @@ select:focus {
 
 .key-field {
   grid-area: key;
+}
+
+.api-key-field {
+  grid-area: api;
 }
 
 .small-field {
@@ -766,6 +770,7 @@ h2 {
       "target"
       "focus"
       "key"
+      "api"
       "count"
       "dry"
       "action";

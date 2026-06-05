@@ -21,7 +21,11 @@ PROJECT = Path(__file__).resolve().parents[1]
 DATA_DIR = PROJECT / "data"
 OUTPUTS_DIR = PROJECT / "outputs"
 DEFAULT_CAPABILITY_MAP = DATA_DIR / "capability_map.json"
-DEFAULT_MODEL = "claude-opus-4-8"
+DEFAULT_PROVIDER = "anthropic"
+DEFAULT_ANTHROPIC_MODEL = "claude-opus-4-8"
+DEFAULT_OPENAI_MODEL = "gpt-5.5"
+DEFAULT_OPENAI_REASONING = "medium"
+DEFAULT_MODEL = DEFAULT_ANTHROPIC_MODEL
 
 
 SYSTEM_PROMPT = """You are an OPSWAT account-mapping analyst for enterprise and critical-infrastructure sales teams.
@@ -272,7 +276,7 @@ def account_map_tool() -> dict[str, Any]:
     }
 
 
-def parse_json_response(text: str) -> dict[str, Any]:
+def parse_json_response(text: str, provider: str = "model") -> dict[str, Any]:
     cleaned = text.strip()
     cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
     cleaned = re.sub(r"\s*```$", "", cleaned).strip()
@@ -283,7 +287,7 @@ def parse_json_response(text: str) -> dict[str, Any]:
         end = cleaned.rfind("}")
         if start >= 0 and end > start:
             return json.loads(cleaned[start : end + 1])
-        raise SystemExit(f"Claude returned non-JSON output: {exc}") from exc
+        raise SystemExit(f"{provider} returned non-JSON output: {exc}") from exc
 
 
 def completeness_gaps(account_map: dict[str, Any], min_use_cases: int) -> list[str]:
@@ -352,6 +356,101 @@ Create the final complete account map now. Use only the company evidence already
     tool_input.setdefault("_raw_text", extract_text(response))
     tool_input.setdefault("_structured_output", "forced_tool_use")
     return tool_input
+
+
+def openai_json_format() -> dict[str, Any]:
+    return {
+        "format": {
+            "type": "json_schema",
+            "name": "opswat_account_map",
+            "schema": ACCOUNT_MAP_SCHEMA,
+            "strict": False,
+        }
+    }
+
+
+def generate_with_openai(args: argparse.Namespace, capability_map: dict[str, Any], prompt: str) -> dict[str, Any]:
+    api_key = getattr(args, "openai_api_key", None) or os.environ.get("OPENAI_API_KEY")
+    if not api_key and not args.dry_run:
+        raise SystemExit("Missing OPENAI_API_KEY. Add it to .env or enter an OpenAI API key in the app.")
+
+    try:
+        from openai import OpenAI
+    except ImportError as exc:
+        raise SystemExit("Missing openai package. Run this in a venv with openai installed.") from exc
+
+    client = OpenAI(api_key=api_key)
+    response = client.responses.create(
+        model=args.model,
+        input=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt},
+        ],
+        tools=[{"type": "web_search_preview"}],
+        reasoning={"effort": args.openai_reasoning},
+        text=openai_json_format(),
+        max_output_tokens=args.max_tokens,
+    )
+    raw_text = getattr(response, "output_text", "") or ""
+    if not raw_text:
+        try:
+            raw_text = response.model_dump_json()
+        except Exception:
+            raw_text = str(response)
+    parsed = parse_json_response(raw_text, "OpenAI")
+    parsed.setdefault("_raw_text", raw_text)
+    parsed.setdefault("_structured_output", "openai_responses")
+    return parsed
+
+
+def finalize_account_map_openai(
+    args: argparse.Namespace,
+    capability_map: dict[str, Any],
+    draft: dict[str, Any],
+    gaps: list[str],
+) -> dict[str, Any]:
+    api_key = getattr(args, "openai_api_key", None) or os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        raise SystemExit("Missing OPENAI_API_KEY. Add it to .env or enter an OpenAI API key in the app.")
+
+    try:
+        from openai import OpenAI
+    except ImportError as exc:
+        raise SystemExit("Missing openai package. Run this in a venv with openai installed.") from exc
+
+    prompt = f"""The first account-map draft was incomplete.
+
+Target account: {args.target}
+Sales focus: {args.focus or "None supplied"}
+Required use cases: {args.use_cases}
+
+Completeness gaps:
+{json.dumps(gaps, indent=2)}
+
+Draft account research and partial output:
+{json.dumps(draft, indent=2, ensure_ascii=False)}
+
+Allowed OPSWAT capability map:
+{json.dumps(capability_map, indent=2, ensure_ascii=False)}
+
+Create the final complete account map now. Use only the company evidence already in the draft plus clearly marked inferences from that evidence. Use only product slugs and capabilities present in the capability map. Return only the complete final JSON structure.
+"""
+    client = OpenAI(api_key=api_key)
+    response = client.responses.create(
+        model=args.model,
+        input=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt},
+        ],
+        reasoning={"effort": args.openai_reasoning},
+        text=openai_json_format(),
+        max_output_tokens=args.max_tokens,
+    )
+    raw_text = getattr(response, "output_text", "") or ""
+    parsed = parse_json_response(raw_text, "OpenAI")
+    parsed.setdefault("_raw_text", raw_text)
+    parsed.setdefault("_structured_output", "openai_repair")
+    return parsed
 
 
 def evidence_refs_for_product(product: dict[str, Any], capability_map: dict[str, Any]) -> list[str]:
@@ -536,20 +635,52 @@ def write_outputs(account_map: dict[str, Any], target: str, out_dir: Path) -> tu
 
 def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
     load_dotenv_files()
-    api_key = getattr(args, "anthropic_api_key", None) or os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key and not args.dry_run:
-        raise SystemExit("Missing ANTHROPIC_API_KEY. Add it to .env or enter an Anthropic API key in the app.")
-
+    provider = (getattr(args, "provider", None) or DEFAULT_PROVIDER).lower()
+    if provider not in {"anthropic", "openai"}:
+        raise SystemExit(f"Unsupported provider: {provider}")
+    if not getattr(args, "model", None):
+        args.model = DEFAULT_OPENAI_MODEL if provider == "openai" else DEFAULT_ANTHROPIC_MODEL
+    if not getattr(args, "openai_reasoning", None):
+        args.openai_reasoning = DEFAULT_OPENAI_REASONING
     capability_map = load_capability_map(Path(args.capability_map))
     prompt = build_user_prompt(args.target, capability_map, args.focus or "", args.use_cases)
 
     if args.dry_run:
         return {
             "dry_run": True,
+            "provider": provider,
             "model": args.model,
+            "openai_reasoning": args.openai_reasoning if provider == "openai" else None,
             "target": args.target,
             "prompt_preview": prompt,
         }
+
+    if provider == "openai":
+        parsed = generate_with_openai(args, capability_map, prompt)
+        parsed = normalize_account_map(parsed, capability_map)
+        gaps = completeness_gaps(parsed, args.use_cases)
+        if gaps:
+            parsed = finalize_account_map_openai(args, capability_map, parsed, gaps)
+            parsed = normalize_account_map(parsed, capability_map)
+            gaps = completeness_gaps(parsed, args.use_cases)
+            if gaps:
+                raise SystemExit(f"OpenAI returned an incomplete account map after repair: {', '.join(gaps)}")
+        parsed.setdefault("_meta", {})
+        parsed["_meta"].update(
+            {
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "provider": provider,
+                "model": args.model,
+                "openai_reasoning": args.openai_reasoning,
+                "capability_map": str(Path(args.capability_map).resolve()),
+                "target_input": args.target,
+            }
+        )
+        return parsed
+
+    api_key = getattr(args, "anthropic_api_key", None) or os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise SystemExit("Missing ANTHROPIC_API_KEY. Add it to .env or enter an Anthropic API key in the app.")
 
     try:
         import anthropic
@@ -584,6 +715,7 @@ def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
     parsed["_meta"].update(
         {
             "generated_at": datetime.now(timezone.utc).isoformat(),
+            "provider": provider,
             "model": args.model,
             "capability_map": str(Path(args.capability_map).resolve()),
             "target_input": args.target,
@@ -597,7 +729,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("target", help="Company name, domain, or URL. Example: 'SSE energy company' or sse.com")
     parser.add_argument("--focus", default="", help="Optional sales focus, pain, product family, or compliance driver.")
     parser.add_argument("--use-cases", type=int, default=5, help="Number of use cases to generate.")
-    parser.add_argument("--model", default=os.environ.get("ANTHROPIC_MODEL", DEFAULT_MODEL))
+    parser.add_argument("--provider", choices=["anthropic", "openai"], default=os.environ.get("ACCOUNT_MAP_PROVIDER", DEFAULT_PROVIDER))
+    parser.add_argument("--model", default=None)
+    parser.add_argument("--anthropic-api-key", default=None, help=argparse.SUPPRESS)
+    parser.add_argument("--openai-api-key", default=None, help=argparse.SUPPRESS)
+    parser.add_argument("--openai-reasoning", default=os.environ.get("OPENAI_REASONING_EFFORT", DEFAULT_OPENAI_REASONING))
     parser.add_argument("--max-tokens", type=int, default=9000)
     parser.add_argument("--web-search-tool", default="web_search_20250305")
     parser.add_argument("--capability-map", default=str(DEFAULT_CAPABILITY_MAP))
