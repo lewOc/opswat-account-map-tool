@@ -205,10 +205,10 @@ select:focus {
 
 .generate-form {
   display: grid;
-  grid-template-columns: minmax(160px, 1fr) minmax(220px, 1.4fr) 92px;
+  grid-template-columns: minmax(160px, 1fr) minmax(220px, 1.35fr) minmax(180px, 0.9fr) 92px;
   grid-template-areas:
-    "target focus count"
-    ". dry action";
+    "target focus key count"
+    ". dry dry action";
   gap: 10px;
   align-items: end;
 }
@@ -219,6 +219,10 @@ select:focus {
 
 .focus-field {
   grid-area: focus;
+}
+
+.key-field {
+  grid-area: key;
 }
 
 .small-field {
@@ -761,6 +765,7 @@ h2 {
     grid-template-areas:
       "target"
       "focus"
+      "key"
       "count"
       "dry"
       "action";

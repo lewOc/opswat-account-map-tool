@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FastAPI wrapper for the OPSWAT account-map prototype."""
+"""FastAPI wrapper for the OPSWAT account-map tool."""
 
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ ACCOUNT_MAP_SCRIPT = PROJECT / "scripts" / "account_map.py"
 DECK_SCRIPT = PROJECT / "scripts" / "export_deck.mjs"
 DIAGRAM_SCRIPT = PROJECT / "scripts" / "diagram_generator.py"
 NODE_BIN = Path(os.environ.get("NODE_BIN") or shutil.which("node") or "node")
-TEMPLATE_PPTX = Path(os.environ.get("PRESENTATION_TEMPLATE_PATH", "/Users/lewis/Documents/presentation_template.pptx"))
+TEMPLATE_PPTX = Path(os.environ.get("PRESENTATION_TEMPLATE_PATH", PROJECT / "templates" / "presentation_template.pptx"))
 
 
 def load_account_map_module() -> Any:
@@ -73,6 +73,7 @@ class GenerateRequest(BaseModel):
     focus: str = Field(default="", max_length=600)
     use_cases: int = Field(default=5, ge=1, le=8)
     model: Optional[str] = None
+    anthropic_api_key: Optional[str] = Field(default=None, max_length=300)
     max_tokens: int = Field(default=9000, ge=2000, le=20000)
     dry_run: bool = False
 
@@ -189,6 +190,7 @@ def run_generation(payload: GenerateRequest) -> dict[str, Any]:
         focus=payload.focus,
         use_cases=payload.use_cases,
         model=payload.model or generator.DEFAULT_MODEL,
+        anthropic_api_key=payload.anthropic_api_key,
         max_tokens=payload.max_tokens,
         web_search_tool="web_search_20250305",
         capability_map=str(CAPABILITY_MAP),
@@ -268,6 +270,9 @@ def health() -> dict[str, Any]:
         "capability_map_exists": CAPABILITY_MAP.exists(),
         "outputs": str(OUTPUT_DIR),
         "model": generator.DEFAULT_MODEL,
+        "anthropic_configured": bool(os.environ.get("ANTHROPIC_API_KEY")),
+        "deck_export_configured": NODE_BIN.exists() and TEMPLATE_PPTX.exists(),
+        "template": str(TEMPLATE_PPTX),
     }
 
 

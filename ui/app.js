@@ -9,6 +9,7 @@ const els = {
   form: document.querySelector("#generateForm"),
   target: document.querySelector("#target"),
   focus: document.querySelector("#focus"),
+  anthropicKey: document.querySelector("#anthropicKey"),
   useCases: document.querySelector("#useCases"),
   dryRun: document.querySelector("#dryRun"),
   generateButton: document.querySelector("#generateButton"),
@@ -130,6 +131,7 @@ function clearWorkspace() {
   state.currentSummary = null;
   els.target.value = "";
   els.focus.value = "";
+  els.anthropicKey.value = "";
   els.useCases.value = "5";
   els.dryRun.checked = false;
   els.accountName.textContent = "New customer workspace";
@@ -359,14 +361,18 @@ els.form.addEventListener("submit", async (event) => {
       : "Searching public signals, mapping OPSWAT products, and creating use-case diagrams. This can take a little while."
   );
   try {
+    const generationPayload = {
+      target: els.target.value,
+      focus: els.focus.value,
+      use_cases: Number(els.useCases.value || 5),
+      dry_run: els.dryRun.checked,
+    };
+    const anthropicKey = els.anthropicKey.value.trim();
+    if (anthropicKey) generationPayload.anthropic_api_key = anthropicKey;
+
     const result = await api("/api/account-maps", {
       method: "POST",
-      body: JSON.stringify({
-        target: els.target.value,
-        focus: els.focus.value,
-        use_cases: Number(els.useCases.value || 5),
-        dry_run: els.dryRun.checked,
-      }),
+      body: JSON.stringify(generationPayload),
     });
     renderAccountMap(result);
     await loadLibrary(false);

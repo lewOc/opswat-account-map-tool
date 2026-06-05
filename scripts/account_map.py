@@ -156,8 +156,8 @@ def load_dotenv_files() -> None:
     """Load simple KEY=VALUE files without requiring python-dotenv."""
     for path in [
         PROJECT / ".env",
-        Path("/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/.env"),
-        Path("/Users/lewis/Documents/rag-pipeline/.env"),
+        Path("opswat_docs_full/opswat_docs_downloads/.env"),
+        Path("rag-pipeline/.env"),
     ]:
         if not path.exists():
             continue
@@ -536,9 +536,9 @@ def write_outputs(account_map: dict[str, Any], target: str, out_dir: Path) -> tu
 
 def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
     load_dotenv_files()
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    api_key = getattr(args, "anthropic_api_key", None) or os.environ.get("ANTHROPIC_API_KEY")
     if not api_key and not args.dry_run:
-        raise SystemExit("Missing ANTHROPIC_API_KEY. Add it to account-map-tool/.env or an existing project .env.")
+        raise SystemExit("Missing ANTHROPIC_API_KEY. Add it to .env or enter an Anthropic API key in the app.")
 
     capability_map = load_capability_map(Path(args.capability_map))
     prompt = build_user_prompt(args.target, capability_map, args.focus or "", args.use_cases)

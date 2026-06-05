@@ -11,13 +11,14 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
 
-ROOT = Path("/Users/lewis/Documents/opswat_docs_full")
+ROOT = Path(os.environ.get("OPSWAT_DOCS_ROOT", "opswat_docs_full"))
 DOWNLOADS = ROOT / "opswat_docs_downloads"
 CHUNKS = DOWNLOADS / "chunks.jsonl"
 FULL_CORE_CHUNKS = DOWNLOADS / "core_mdcore_chunks.jsonl"
