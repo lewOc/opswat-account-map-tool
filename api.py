@@ -74,8 +74,8 @@ class GenerateRequest(BaseModel):
     use_cases: int = Field(default=5, ge=1, le=8)
     provider: str = Field(default="anthropic", pattern="^(anthropic|openai)$")
     model: Optional[str] = None
-    anthropic_api_key: Optional[str] = Field(default=None, max_length=300)
-    openai_api_key: Optional[str] = Field(default=None, max_length=300)
+    anthropic_api_key: Optional[str] = Field(default=None, max_length=1000)
+    openai_api_key: Optional[str] = Field(default=None, max_length=1000)
     openai_reasoning: str = Field(default="medium", pattern="^(low|medium|high)$")
     max_tokens: int = Field(default=9000, ge=2000, le=20000)
     dry_run: bool = False

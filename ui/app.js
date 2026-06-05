@@ -50,10 +50,25 @@ function escapeHtml(value) {
 }
 
 async function api(path, options = {}) {
-  const response = await fetch(path, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
+  const timeoutMs = options.timeoutMs ?? 100000;
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+  const { timeoutMs: _timeoutMs, ...fetchOptions } = options;
+  let response;
+  try {
+    response = await fetch(path, {
+      signal: controller.signal,
+      headers: { "Content-Type": "application/json" },
+      ...fetchOptions,
+    });
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error("Generation took too long. Try fewer use cases, or try Anthropic while we tune OpenAI generation.");
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
+  }
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
     throw new Error(body.detail || `Request failed: ${response.status}`);
