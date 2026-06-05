@@ -28,6 +28,10 @@ DEFAULT_OPENAI_MODEL = "gpt-5.5"
 DEFAULT_OPENAI_REASONING = "medium"
 DEFAULT_MODEL = DEFAULT_ANTHROPIC_MODEL
 DEFAULT_MODEL_TIMEOUT_SECONDS = int(os.environ.get("MODEL_REQUEST_TIMEOUT_SECONDS", "600"))
+CUSTOMER_STORY_INDEX = os.environ.get("CUSTOMER_STORY_INDEX", "opswat-docs")
+CUSTOMER_STORY_NAMESPACE = os.environ.get("CUSTOMER_STORY_NAMESPACE", "customer_stories")
+CUSTOMER_STORY_EMBED_MODEL = os.environ.get("CUSTOMER_STORY_EMBED_MODEL", "text-embedding-3-large")
+DEFAULT_SHARED_ENV = "/Users/lewis/Documents/opswat_docs_full/opswat_docs_downloads/.env"
 logger = logging.getLogger("opswat_account_map")
 
 
@@ -97,6 +101,17 @@ JSON_SHAPE = {
             "business_value": "buyer-facing value",
             "business_value_narrative": "rich paragraph tying value to compliance, auditability, risk reduction, uptime, partner enablement, or operational efficiency",
             "conversation_starter": "one sharp discovery question or provocative talk track an account manager can say on a call",
+            "delivery_experience": [
+                {
+                    "title": "similar OPSWAT customer story or deployment pattern",
+                    "customer_type": "industry/customer type; preserve anonymous status where relevant",
+                    "products": ["OPSWAT products used"],
+                    "relevance": "why this example is relevant to this account/use case",
+                    "outcome": "outcome or value delivered, only if present in the source",
+                    "source_url": "source URL if available",
+                    "confidence": "high|medium|low",
+                }
+            ],
             "discovery_questions": ["specific question"],
             "inferences": [
                 "important unsupported assumptions to validate, each explicitly labelled as inference"
@@ -176,6 +191,7 @@ def load_dotenv_files() -> None:
     """Load simple KEY=VALUE files without requiring python-dotenv."""
     for path in [
         PROJECT / ".env",
+        Path(os.environ.get("OPSWAT_SHARED_ENV", DEFAULT_SHARED_ENV)),
         Path("opswat_docs_full/opswat_docs_downloads/.env"),
         Path("rag-pipeline/.env"),
     ]:
@@ -240,9 +256,142 @@ def compact_capability_map(capability_map: dict[str, Any], max_evidence: int = 5
     return {"products": products}
 
 
-def build_user_prompt(target: str, capability_map: dict[str, Any], focus: str, use_cases: int) -> str:
+def trim_text(text: str, limit: int = 900) -> str:
+    text = " ".join(str(text or "").split())
+    return text if len(text) <= limit else text[: limit - 3].rstrip() + "..."
+
+
+def list_from_metadata(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [str(item) for item in value if item]
+    if isinstance(value, str):
+        stripped = value.strip()
+        if not stripped:
+            return []
+        if stripped.startswith("["):
+            try:
+                parsed = json.loads(stripped)
+                if isinstance(parsed, list):
+                    return [str(item) for item in parsed if item]
+            except json.JSONDecodeError:
+                pass
+        return [stripped]
+    return []
+
+
+def customer_story_query_for_use_case(target: str, focus: str, use_case: dict[str, Any]) -> str:
+    products = [
+        product.get("product") or product.get("slug")
+        for product in use_case.get("opswat_products") or []
+        if isinstance(product, dict) and (product.get("product") or product.get("slug"))
+    ]
+    parts = [
+        target,
+        focus,
+        use_case.get("title"),
+        use_case.get("account_trigger"),
+        use_case.get("problem"),
+        use_case.get("problem_narrative"),
+        use_case.get("solution_narrative"),
+        " ".join(products),
+    ]
+    return trim_text(" ".join(str(part) for part in parts if part), 900)
+
+
+def retrieve_customer_story_examples(
+    query: str,
+    top_k: int = 5,
+    openai_api_key: str | None = None,
+) -> tuple[list[dict[str, Any]], str | None]:
+    if os.environ.get("CUSTOMER_STORY_RAG_DISABLED", "").lower() in {"1", "true", "yes"}:
+        return [], "disabled"
+    openai_key = os.environ.get("OPENAI_API_KEY") or openai_api_key
+    pinecone_key = os.environ.get("PINECONE_API_KEY")
+    if not openai_key or not pinecone_key:
+        return [], "missing OPENAI_API_KEY or PINECONE_API_KEY"
+    try:
+        from openai import OpenAI
+        from pinecone import Pinecone
+    except ImportError as exc:
+        return [], f"missing dependency: {exc}"
+    try:
+        openai_client = OpenAI(api_key=openai_key, timeout=60, max_retries=0)
+        pinecone = Pinecone(api_key=pinecone_key)
+        index = pinecone.Index(CUSTOMER_STORY_INDEX)
+        embedding = openai_client.embeddings.create(model=CUSTOMER_STORY_EMBED_MODEL, input=query).data[0].embedding
+        results = index.query(
+            namespace=CUSTOMER_STORY_NAMESPACE,
+            vector=embedding,
+            top_k=top_k,
+            include_metadata=True,
+        )
+    except Exception as exc:  # noqa: BLE001 - retrieval should never block account-map generation.
+        logger.warning("customer_story_retrieval_failed error=%s", exc)
+        return [], str(exc)
+
+    examples: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for match in getattr(results, "matches", []) or []:
+        metadata = dict(getattr(match, "metadata", None) or {})
+        title = str(metadata.get("title") or "OPSWAT customer story")
+        products = list_from_metadata(metadata.get("products_used"))
+        industries = list_from_metadata(metadata.get("industry_hints"))
+        urls = list_from_metadata(metadata.get("urls"))
+        dedupe_key = "|".join([title, ",".join(urls)])
+        if dedupe_key in seen:
+            continue
+        seen.add(dedupe_key)
+        anonymous = bool(metadata.get("anonymous"))
+        examples.append(
+            {
+                "title": title,
+                "customer_type": ", ".join(industries) if industries else ("Anonymous customer" if anonymous else "Customer story"),
+                "anonymous": anonymous,
+                "products": products,
+                "relevance": trim_text(str(metadata.get("text") or ""), 420),
+                "outcome": "",
+                "source_url": urls[0] if urls else "",
+                "source_urls": urls,
+                "score": round(float(getattr(match, "score", 0.0) or 0.0), 4),
+                "confidence": "high" if float(getattr(match, "score", 0.0) or 0.0) >= 0.55 else "medium",
+            }
+        )
+        if len(examples) >= top_k:
+            break
+    return examples, None
+
+
+def compact_customer_story_context(examples: list[dict[str, Any]], limit: int = 6) -> list[dict[str, Any]]:
+    compact = []
+    for example in examples[:limit]:
+        compact.append(
+            {
+                "title": example.get("title"),
+                "customer_type": example.get("customer_type"),
+                "anonymous": example.get("anonymous"),
+                "products": example.get("products", []),
+                "relevance": trim_text(example.get("relevance", ""), 320),
+                "source_url": example.get("source_url"),
+                "confidence": example.get("confidence"),
+            }
+        )
+    return compact
+
+
+def build_user_prompt(
+    target: str,
+    capability_map: dict[str, Any],
+    focus: str,
+    use_cases: int,
+    customer_story_examples: list[dict[str, Any]] | None = None,
+) -> str:
     compact_map = compact_capability_map(capability_map)
     focus_block = focus.strip() if focus.strip() else "No special focus. Identify the highest-value sales angles."
+    customer_story_block = (
+        json.dumps(compact_customer_story_context(customer_story_examples or []), indent=2)
+        if customer_story_examples
+        else "No similar customer-story examples were retrieved. Do not invent delivery examples."
+    )
     return f"""Target account:
 {target}
 
@@ -252,14 +401,19 @@ User focus:
 Allowed OPSWAT capability map:
 {json.dumps(compact_map, indent=2)}
 
+Relevant OPSWAT customer-story examples:
+{customer_story_block}
+
 Task:
 1. Research the target account using web search.
 2. Extract concrete account signals relevant to cyber, critical infrastructure, OT, IT, cloud, file movement, compliance, third-party access, and operational risk.
 3. Match the strongest signals to OPSWAT products from the capability map only.
 4. Generate exactly {use_cases} recommended use cases.
 5. Cite company web evidence with URLs and product capability evidence with capability-map source_path values.
-6. Mark unsupported environment-specific statements as inference.
-7. For each use case, write it as a mini sales brief for a partner/account manager, not a generic product note:
+6. Use the customer-story examples to sharpen the problem, solution, business value, and conversation starter where they are relevant. Do not claim the target account bought OPSWAT because a different customer story exists.
+7. Add a delivery_experience array to each use case when a retrieved customer story is genuinely similar. Label anonymous examples as anonymous and cite the source_url when present.
+8. Mark unsupported environment-specific statements as inference.
+9. For each use case, write it as a mini sales brief for a partner/account manager, not a generic product note:
    - problem_narrative: 120-180 words, account-specific, grounded in evidence, with named business units, programmes, facilities, regulations, suppliers, or workflows only when evidenced. Clearly label any inference.
    - solution_narrative: 120-180 words explaining the practical OPSWAT workflow, where the products sit, who uses them, and what is allowed/blocked/reported.
    - business_value_narrative: 60-100 words connecting the use case to business outcomes such as NIS/NIS2, IEC 62443, audit evidence, outage reduction, project delivery, partner enablement, or incident response.
@@ -267,8 +421,8 @@ Task:
    - implementation_flow: 4-7 concise ordered workflow steps.
    - stakeholders: 3-6 likely personas involved in buying, operating, or approving the workflow.
    - inferences: list any important assumptions that must be validated.
-8. Avoid invented precision. Do not invent exact percentages, product model numbers, plant names, incidents, suppliers, regulations, or dates unless backed by a cited source.
-9. When ready, call the write_account_map tool with the completed account map.
+10. Avoid invented precision. Do not invent exact percentages, product model numbers, plant names, incidents, suppliers, regulations, or dates unless backed by a cited source.
+11. When ready, call the write_account_map tool with the completed account map.
 
 The write_account_map tool input must follow this shape:
 {json.dumps(JSON_SHAPE, indent=2)}
@@ -519,6 +673,45 @@ def evidence_refs_for_product(product: dict[str, Any], capability_map: dict[str,
     return []
 
 
+def enrich_with_customer_delivery_experience(
+    account_map: dict[str, Any],
+    target: str,
+    focus: str,
+    openai_api_key: str | None = None,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    retrieval_errors = []
+    enriched_count = 0
+    for use_case in account_map.get("recommended_use_cases") or []:
+        existing = use_case.get("delivery_experience")
+        if isinstance(existing, list) and existing:
+            continue
+        query = customer_story_query_for_use_case(target, focus, use_case)
+        examples, error = retrieve_customer_story_examples(query, top_k=3, openai_api_key=openai_api_key)
+        if error:
+            retrieval_errors.append(error)
+            continue
+        if examples:
+            use_case["delivery_experience"] = [
+                {
+                    "title": example.get("title"),
+                    "customer_type": example.get("customer_type"),
+                    "products": example.get("products", []),
+                    "relevance": example.get("relevance"),
+                    "outcome": example.get("outcome") or "",
+                    "source_url": example.get("source_url"),
+                    "confidence": example.get("confidence"),
+                }
+                for example in examples
+            ]
+            enriched_count += 1
+    return account_map, {
+        "namespace": CUSTOMER_STORY_NAMESPACE,
+        "index": CUSTOMER_STORY_INDEX,
+        "enriched_use_cases": enriched_count,
+        "errors": sorted(set(retrieval_errors))[:3],
+    }
+
+
 def normalize_account_map(account_map: dict[str, Any], capability_map: dict[str, Any]) -> dict[str, Any]:
     account_map = json.loads(json.dumps(account_map))
     if not isinstance(account_map.get("recommended_use_cases"), list):
@@ -558,6 +751,27 @@ def normalize_account_map(account_map: dict[str, Any], capability_map: dict[str,
         if not use_case.get("conversation_starter"):
             title = use_case.get("title") or use_case.get("use_case") or "this workflow"
             use_case["conversation_starter"] = f"Where would {title.lower()} create the most immediate risk reduction or operational value?"
+        if isinstance(use_case.get("delivery_experience"), dict):
+            use_case["delivery_experience"] = [use_case["delivery_experience"]]
+        if not isinstance(use_case.get("delivery_experience"), list):
+            use_case["delivery_experience"] = []
+        normalized_delivery = []
+        for item in use_case.get("delivery_experience") or []:
+            if not isinstance(item, dict):
+                continue
+            item.setdefault("title", "Relevant OPSWAT delivery example")
+            item.setdefault("customer_type", "Similar customer environment")
+            item.setdefault("products", [])
+            item.setdefault("relevance", "")
+            item.setdefault("outcome", "")
+            item.setdefault("source_url", "")
+            item.setdefault("confidence", "medium")
+            if isinstance(item.get("products"), str):
+                item["products"] = [item["products"]]
+            if not isinstance(item.get("products"), list):
+                item["products"] = []
+            normalized_delivery.append(item)
+        use_case["delivery_experience"] = normalized_delivery[:3]
         if isinstance(use_case.get("implementation_flow"), str):
             use_case["implementation_flow"] = [use_case["implementation_flow"]]
         if not isinstance(use_case.get("implementation_flow"), list):
@@ -723,6 +937,21 @@ def account_map_to_markdown(account_map: dict[str, Any]) -> str:
                     f"  - Product evidence: {', '.join(product.get('capability_evidence_refs', []))}",
                 ]
             )
+        if use_case.get("delivery_experience"):
+            lines.extend(["", "#### Relevant Delivery Experience"])
+            for item in use_case.get("delivery_experience", []):
+                source_url = item.get("source_url") or ""
+                source = f" - {source_url}" if source_url else ""
+                products = ", ".join(item.get("products") or [])
+                lines.append(
+                    f"- **{item.get('title', '')}** ({item.get('customer_type', '')}, {item.get('confidence', 'medium')}){source}"
+                )
+                if products:
+                    lines.append(f"  - Products: {products}")
+                if item.get("relevance"):
+                    lines.append(f"  - Relevance: {item.get('relevance')}")
+                if item.get("outcome"):
+                    lines.append(f"  - Outcome: {item.get('outcome')}")
         lines.extend(["", "**Implementation Flow:**"])
         for step in use_case.get("implementation_flow", []):
             lines.append(f"- {step}")
@@ -798,7 +1027,19 @@ def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
     if not getattr(args, "openai_reasoning", None):
         args.openai_reasoning = DEFAULT_OPENAI_REASONING
     capability_map = load_capability_map(Path(args.capability_map))
-    prompt = build_user_prompt(args.target, capability_map, args.focus or "", args.use_cases)
+    retrieval_openai_key = os.environ.get("OPENAI_API_KEY") or getattr(args, "openai_api_key", None)
+    initial_customer_examples, initial_customer_error = retrieve_customer_story_examples(
+        f"{args.target} {args.focus or ''} critical infrastructure OPSWAT customer story use case",
+        top_k=6,
+        openai_api_key=retrieval_openai_key,
+    )
+    prompt = build_user_prompt(
+        args.target,
+        capability_map,
+        args.focus or "",
+        args.use_cases,
+        customer_story_examples=initial_customer_examples,
+    )
 
     if args.dry_run:
         return {
@@ -807,6 +1048,8 @@ def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
             "model": args.model,
             "openai_reasoning": args.openai_reasoning if provider == "openai" else None,
             "target": args.target,
+            "customer_story_context": compact_customer_story_context(initial_customer_examples),
+            "customer_story_context_error": initial_customer_error,
             "prompt_preview": prompt,
         }
 
@@ -821,6 +1064,13 @@ def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
             gaps = repair_required_gaps(parsed, args.use_cases)
             if gaps:
                 raise SystemExit(f"OpenAI returned an incomplete account map after repair: {', '.join(gaps)}")
+        parsed, delivery_meta = enrich_with_customer_delivery_experience(
+            parsed,
+            args.target,
+            args.focus or "",
+            openai_api_key=retrieval_openai_key,
+        )
+        parsed = normalize_account_map(parsed, capability_map)
         parsed.setdefault("_meta", {})
         parsed["_meta"].update(
             {
@@ -830,6 +1080,11 @@ def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
                 "openai_reasoning": args.openai_reasoning,
                 "capability_map": str(Path(args.capability_map).resolve()),
                 "target_input": args.target,
+                "customer_story_context": {
+                    "initial_examples": len(initial_customer_examples),
+                    "initial_error": initial_customer_error,
+                    **delivery_meta,
+                },
             }
         )
         return parsed
@@ -868,6 +1123,13 @@ def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
         gaps = repair_required_gaps(parsed, args.use_cases)
         if gaps:
             raise SystemExit(f"Claude returned an incomplete account map after repair: {', '.join(gaps)}")
+    parsed, delivery_meta = enrich_with_customer_delivery_experience(
+        parsed,
+        args.target,
+        args.focus or "",
+        openai_api_key=retrieval_openai_key,
+    )
+    parsed = normalize_account_map(parsed, capability_map)
     parsed.setdefault("_meta", {})
     parsed["_meta"].update(
         {
@@ -876,6 +1138,11 @@ def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
             "model": args.model,
             "capability_map": str(Path(args.capability_map).resolve()),
             "target_input": args.target,
+            "customer_story_context": {
+                "initial_examples": len(initial_customer_examples),
+                "initial_error": initial_customer_error,
+                **delivery_meta,
+            },
         }
     )
     return parsed

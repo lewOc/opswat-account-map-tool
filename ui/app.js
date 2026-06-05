@@ -285,6 +285,30 @@ function renderAccountMap(result) {
         const stakeholders = renderList(useCase.stakeholders || [], "stakeholder-list");
         const questions = renderList(useCase.discovery_questions || [], "question-list");
         const inferences = renderList(useCase.inferences || [], "compact-list inference-list");
+        const deliveryExperience = (useCase.delivery_experience || [])
+          .map((item) => {
+            const products = renderList(item.products || [], "tag-list");
+            const source = item.source_url
+              ? `<a href="${escapeHtml(item.source_url)}" target="_blank" rel="noreferrer">Source</a>`
+              : "";
+            return `
+              <article class="delivery-card">
+                <div class="delivery-top">
+                  <div>
+                    <strong>${escapeHtml(item.title || "Relevant OPSWAT delivery example")}</strong>
+                    <span>${escapeHtml(item.customer_type || "Similar customer environment")}</span>
+                  </div>
+                  <div class="delivery-meta">
+                    <span>${escapeHtml(item.confidence || "medium")}</span>
+                    ${source}
+                  </div>
+                </div>
+                ${products ? `<div class="delivery-products">${products}</div>` : ""}
+                ${item.relevance ? `<p>${escapeHtml(item.relevance)}</p>` : ""}
+                ${item.outcome ? `<p><b>Outcome:</b> ${escapeHtml(item.outcome)}</p>` : ""}
+              </article>`;
+          })
+          .join("");
         const diagram = useCase.diagram || {};
         const diagramUrl = diagram.image_url || diagram.svg_url;
         const diagramLabel = diagram.image_url ? "Open PNG" : "Open SVG";
@@ -334,6 +358,11 @@ function renderAccountMap(result) {
               <section class="brief-section">
                 <div class="brief-label">Products</div>
                 <div class="product-row">${products}</div>
+              </section>` : ""}
+            ${deliveryExperience ? `
+              <section class="brief-section delivery-section">
+                <div class="brief-label">Relevant Delivery Experience</div>
+                <div class="delivery-list">${deliveryExperience}</div>
               </section>` : ""}
             ${questions ? `
               <section class="brief-section">
