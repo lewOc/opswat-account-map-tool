@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import re
 import sys
@@ -27,6 +28,7 @@ DEFAULT_OPENAI_MODEL = "gpt-5.5"
 DEFAULT_OPENAI_REASONING = "medium"
 DEFAULT_MODEL = DEFAULT_ANTHROPIC_MODEL
 DEFAULT_MODEL_TIMEOUT_SECONDS = int(os.environ.get("MODEL_REQUEST_TIMEOUT_SECONDS", "85"))
+logger = logging.getLogger("opswat_account_map")
 
 
 SYSTEM_PROMPT = """You are an OPSWAT account-mapping analyst for enterprise and critical-infrastructure sales teams.
@@ -319,6 +321,24 @@ def completeness_gaps(account_map: dict[str, Any], min_use_cases: int) -> list[s
     return gaps
 
 
+def repair_required_gaps(account_map: dict[str, Any], min_use_cases: int) -> list[str]:
+    """Return only gaps that need another model call rather than local defaults."""
+    gaps = []
+    if not account_map.get("target_account"):
+        gaps.append("missing target_account")
+    if not account_map.get("research_evidence"):
+        gaps.append("missing research_evidence")
+    use_cases = account_map.get("recommended_use_cases") or []
+    if len(use_cases) < min_use_cases:
+        gaps.append(f"only {len(use_cases)} recommended_use_cases; expected at least {min_use_cases}")
+    for idx, use_case in enumerate(use_cases, 1):
+        if not (use_case.get("title") or use_case.get("use_case")):
+            gaps.append(f"use case {idx} missing title/use_case")
+        if not (use_case.get("problem") or use_case.get("signal_link") or use_case.get("account_trigger")):
+            gaps.append(f"use case {idx} missing problem/signal_link")
+    return gaps
+
+
 def finalize_account_map(
     client: Any,
     args: argparse.Namespace,
@@ -479,6 +499,14 @@ def evidence_refs_for_product(product: dict[str, Any], capability_map: dict[str,
 
 def normalize_account_map(account_map: dict[str, Any], capability_map: dict[str, Any]) -> dict[str, Any]:
     account_map = json.loads(json.dumps(account_map))
+    if not isinstance(account_map.get("recommended_use_cases"), list):
+        account_map["recommended_use_cases"] = []
+    if not isinstance(account_map.get("research_evidence"), list):
+        account_map["research_evidence"] = []
+    if not isinstance(account_map.get("account_signals"), list):
+        account_map["account_signals"] = []
+    if not isinstance(account_map.get("buyer_map"), list):
+        account_map["buyer_map"] = []
     account_discovery_questions = (account_map.get("outreach") or {}).get("discovery_questions") or []
     for idx, use_case in enumerate(account_map.get("recommended_use_cases") or [], 1):
         use_case.setdefault("rank", idx)
@@ -500,12 +528,46 @@ def normalize_account_map(account_map: dict[str, Any], capability_map: dict[str,
                 "What evidence would you need to show the control is working for audit or assurance?",
             ]
             use_case["discovery_questions"] = account_discovery_questions[idx - 1 : idx] or fallback_questions
+        if isinstance(use_case.get("discovery_questions"), str):
+            use_case["discovery_questions"] = [use_case["discovery_questions"]]
         use_case.setdefault("evidence_refs", [])
+        if isinstance(use_case.get("evidence_refs"), str):
+            use_case["evidence_refs"] = [use_case["evidence_refs"]]
+        if not isinstance(use_case.get("opswat_products"), list):
+            use_case["opswat_products"] = []
+        normalized_products = []
         for product in use_case.get("opswat_products") or []:
+            if not isinstance(product, dict):
+                continue
             product.setdefault("fit_reason", use_case.get("product_fit", ""))
             product.setdefault("confidence", use_case.get("confidence", "medium"))
             if not product.get("capability_evidence_refs"):
                 product["capability_evidence_refs"] = evidence_refs_for_product(product, capability_map)
+            normalized_products.append(product)
+        use_case["opswat_products"] = normalized_products
+    if not account_map.get("account_signals"):
+        for use_case in account_map.get("recommended_use_cases") or []:
+            signal = use_case.get("account_trigger") or use_case.get("problem")
+            if signal:
+                account_map["account_signals"].append(
+                    {
+                        "signal": signal,
+                        "why_it_matters": use_case.get("business_value") or use_case.get("problem") or "",
+                        "evidence_refs": use_case.get("evidence_refs") or [],
+                        "confidence": use_case.get("confidence", "medium"),
+                    }
+                )
+    if not account_map.get("buyer_map"):
+        account_map["buyer_map"] = [
+            {
+                "persona": "CISO / OT Security Lead",
+                "likely_concerns": [
+                    "Reducing risk from untrusted files, third-party access, and operational disruption",
+                    "Showing evidence that security controls align to critical-infrastructure requirements",
+                ],
+                "message_angle": "Use the mapped OPSWAT controls as a discovery-led way to reduce file and media risk around critical operations.",
+            }
+        ]
     for persona in account_map.get("buyer_map") or []:
         if "persona" not in persona and persona.get("role"):
             persona["persona"] = persona["role"]
@@ -514,6 +576,11 @@ def normalize_account_map(account_map: dict[str, Any], capability_map: dict[str,
         if "message_angle" not in persona:
             persona["message_angle"] = persona.get("why_relevant", "")
     outreach = account_map.setdefault("outreach", {})
+    if not outreach.get("opening_angle"):
+        target_name = (account_map.get("target_account") or {}).get("name", "the account")
+        first_use_case = (account_map.get("recommended_use_cases") or [{}])[0]
+        hook = first_use_case.get("title") or "critical file and media security"
+        outreach["opening_angle"] = f"Explore where {hook.lower()} could reduce operational cyber risk for {target_name}."
     if "first_call_agenda" not in outreach:
         agenda = []
         if outreach.get("recommended_first_meeting"):
@@ -659,11 +726,12 @@ def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
     if provider == "openai":
         parsed = generate_with_openai(args, capability_map, prompt)
         parsed = normalize_account_map(parsed, capability_map)
-        gaps = completeness_gaps(parsed, args.use_cases)
+        gaps = repair_required_gaps(parsed, args.use_cases)
         if gaps:
+            logger.info("openai_account_map_repair_required gaps=%s", "; ".join(gaps))
             parsed = finalize_account_map_openai(args, capability_map, parsed, gaps)
             parsed = normalize_account_map(parsed, capability_map)
-            gaps = completeness_gaps(parsed, args.use_cases)
+            gaps = repair_required_gaps(parsed, args.use_cases)
             if gaps:
                 raise SystemExit(f"OpenAI returned an incomplete account map after repair: {', '.join(gaps)}")
         parsed.setdefault("_meta", {})
@@ -705,11 +773,12 @@ def generate_account_map(args: argparse.Namespace) -> dict[str, Any]:
         raw_text = extract_text(response)
         parsed = parse_json_response(raw_text)
     parsed = normalize_account_map(parsed, capability_map)
-    gaps = completeness_gaps(parsed, args.use_cases)
+    gaps = repair_required_gaps(parsed, args.use_cases)
     if gaps:
+        logger.info("anthropic_account_map_repair_required gaps=%s", "; ".join(gaps))
         parsed = finalize_account_map(client, args, capability_map, parsed, gaps)
         parsed = normalize_account_map(parsed, capability_map)
-        gaps = completeness_gaps(parsed, args.use_cases)
+        gaps = repair_required_gaps(parsed, args.use_cases)
         if gaps:
             raise SystemExit(f"Claude returned an incomplete account map after repair: {', '.join(gaps)}")
     parsed.setdefault("_meta", {})

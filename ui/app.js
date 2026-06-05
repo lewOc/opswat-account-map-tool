@@ -80,7 +80,7 @@ function toast(message) {
   els.toast.textContent = message;
   els.toast.classList.add("show");
   window.clearTimeout(toast.timer);
-  toast.timer = window.setTimeout(() => els.toast.classList.remove("show"), 4200);
+  toast.timer = window.setTimeout(() => els.toast.classList.remove("show"), 8000);
 }
 
 function setWorking(isWorking, label = "Ready") {
@@ -409,7 +409,7 @@ els.form.addEventListener("submit", async (event) => {
     setWorking(false, "Complete");
     toast("Account map generated");
   } catch (error) {
-    setError("Error");
+    setError(`Error: ${error.message}`);
     toast(error.message);
   } finally {
     els.generateButton.disabled = false;

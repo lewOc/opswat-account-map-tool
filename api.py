@@ -6,11 +6,13 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import logging
 import os
 import re
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import Any, Optional
 
@@ -33,6 +35,8 @@ DECK_SCRIPT = PROJECT / "scripts" / "export_deck.mjs"
 DIAGRAM_SCRIPT = PROJECT / "scripts" / "diagram_generator.py"
 NODE_BIN = Path(os.environ.get("NODE_BIN") or shutil.which("node") or "node")
 TEMPLATE_PPTX = Path(os.environ.get("PRESENTATION_TEMPLATE_PATH", PROJECT / "templates" / "presentation_template.pptx"))
+logger = logging.getLogger("opswat_account_map_api")
+logger.setLevel(logging.INFO)
 
 
 def load_account_map_module() -> Any:
@@ -188,6 +192,14 @@ def write_account_map_files(account_map: dict[str, Any], json_path: Path, md_pat
 
 
 def run_generation(payload: GenerateRequest) -> dict[str, Any]:
+    started = time.monotonic()
+    logger.info(
+        "account_map_generation_started provider=%s target=%r use_cases=%s dry_run=%s",
+        payload.provider,
+        payload.target,
+        payload.use_cases,
+        payload.dry_run,
+    )
     if payload.provider == "openai" and not payload.openai_api_key:
         raise ValueError("Enter your OpenAI API key before generating.")
     if payload.provider == "anthropic" and not payload.anthropic_api_key:
@@ -208,15 +220,38 @@ def run_generation(payload: GenerateRequest) -> dict[str, Any]:
         dry_run=payload.dry_run,
         print_json=False,
     )
-    account_map = generator.generate_account_map(args)
-    enrich_account_map_with_diagrams(account_map)
-    json_path, md_path = generator.write_outputs(account_map, args.target, OUTPUT_DIR)
-    return {
-        "summary": summarize_map(json_path),
-        "account_map": account_map,
-        "json_path": str(json_path),
-        "markdown_path": str(md_path),
-    }
+    try:
+        account_map = generator.generate_account_map(args)
+        logger.info(
+            "account_map_model_complete provider=%s target=%r elapsed=%.1fs",
+            payload.provider,
+            payload.target,
+            time.monotonic() - started,
+        )
+        enrich_account_map_with_diagrams(account_map)
+        json_path, md_path = generator.write_outputs(account_map, args.target, OUTPUT_DIR)
+        result = {
+            "summary": summarize_map(json_path),
+            "account_map": account_map,
+            "json_path": str(json_path),
+            "markdown_path": str(md_path),
+        }
+        logger.info(
+            "account_map_generation_completed provider=%s target=%r map_id=%s elapsed=%.1fs",
+            payload.provider,
+            payload.target,
+            result["summary"].get("id"),
+            time.monotonic() - started,
+        )
+        return result
+    except BaseException:
+        logger.exception(
+            "account_map_generation_failed provider=%s target=%r elapsed=%.1fs",
+            payload.provider,
+            payload.target,
+            time.monotonic() - started,
+        )
+        raise
 
 
 def export_deck_for_map(map_id: str) -> dict[str, Any]:
