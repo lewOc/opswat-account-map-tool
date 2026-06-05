@@ -17,9 +17,7 @@ const els = {
   generationStatus: document.querySelector("#generationStatus"),
   healthText: document.querySelector("#healthText"),
   statusDot: document.querySelector(".status-dot"),
-  modelName: document.querySelector("#modelName"),
   newWorkspace: document.querySelector("#newWorkspace"),
-  refreshLibrary: document.querySelector("#refreshLibrary"),
   savedMaps: document.querySelector("#savedMaps"),
   accountName: document.querySelector("#accountName"),
   accountSector: document.querySelector("#accountSector"),
@@ -83,7 +81,6 @@ function setBusy(isBusy, title = "Working", detail = "Please wait while the work
   els.loadingOverlay.classList.toggle("hidden", !isBusy);
   document.body.classList.toggle("is-busy", isBusy);
   els.newWorkspace.disabled = isBusy;
-  els.refreshLibrary.disabled = isBusy;
 }
 
 function setPptxWorking(isWorking) {
@@ -93,8 +90,7 @@ function setPptxWorking(isWorking) {
 
 function updateProviderHint() {
   const isOpenAI = els.provider.value === "openai";
-  els.apiKey.placeholder = isOpenAI ? "OpenAI key, optional if server key is set" : "Anthropic key, optional if server key is set";
-  els.modelName.textContent = isOpenAI ? "OpenAI GPT-5.5 · Medium reasoning" : "Anthropic Opus 4.8";
+  els.apiKey.placeholder = isOpenAI ? "OpenAI key required" : "Anthropic key required";
 }
 
 function setError(label) {
@@ -337,7 +333,6 @@ async function init() {
     const health = await api("/api/health");
     els.healthText.textContent = "API online";
     els.statusDot.classList.add("ok");
-    els.modelName.textContent = `${health.anthropic_model || "Opus 4.8"} / ${health.openai_model || "GPT-5.5"}`;
     updateProviderHint();
   } catch (error) {
     els.healthText.textContent = "API offline";
@@ -370,6 +365,10 @@ els.form.addEventListener("submit", async (event) => {
       : "Searching public signals, mapping OPSWAT products, and creating use-case diagrams. This can take a little while."
   );
   try {
+    const apiKey = els.apiKey.value.trim();
+    if (!apiKey) {
+      throw new Error(`Enter your ${els.provider.value === "openai" ? "OpenAI" : "Anthropic"} API key before generating.`);
+    }
     const generationPayload = {
       target: els.target.value,
       focus: els.focus.value,
@@ -377,12 +376,11 @@ els.form.addEventListener("submit", async (event) => {
       provider: els.provider.value,
       dry_run: els.dryRun.checked,
     };
-    const apiKey = els.apiKey.value.trim();
-    if (apiKey && els.provider.value === "openai") {
+    if (els.provider.value === "openai") {
       generationPayload.openai_api_key = apiKey;
       generationPayload.model = "gpt-5.5";
       generationPayload.openai_reasoning = "medium";
-    } else if (apiKey) {
+    } else {
       generationPayload.anthropic_api_key = apiKey;
       generationPayload.model = "claude-opus-4-8";
     }
@@ -412,18 +410,6 @@ els.savedMaps.addEventListener("click", async (event) => {
     toast("Saved map loaded");
   } catch (error) {
     toast(error.message);
-  }
-});
-
-els.refreshLibrary.addEventListener("click", async () => {
-  setBusy(true, "Refreshing library", "Checking saved account maps.");
-  try {
-    await loadLibrary(false);
-    toast("Library refreshed");
-  } catch (error) {
-    toast(error.message);
-  } finally {
-    setBusy(false);
   }
 });
 

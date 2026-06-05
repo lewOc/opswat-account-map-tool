@@ -188,6 +188,10 @@ def write_account_map_files(account_map: dict[str, Any], json_path: Path, md_pat
 
 
 def run_generation(payload: GenerateRequest) -> dict[str, Any]:
+    if payload.provider == "openai" and not payload.openai_api_key:
+        raise ValueError("Enter your OpenAI API key before generating.")
+    if payload.provider == "anthropic" and not payload.anthropic_api_key:
+        raise ValueError("Enter your Anthropic API key before generating.")
     args = argparse.Namespace(
         target=payload.target,
         focus=payload.focus,
@@ -377,6 +381,8 @@ def get_diagram(filename: str) -> FileResponse:
 async def generate(payload: GenerateRequest) -> dict[str, Any]:
     try:
         return await run_in_threadpool(run_generation, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     except SystemExit as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
     except Exception as exc:

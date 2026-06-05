@@ -134,28 +134,6 @@ a {
   min-width: 0;
 }
 
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 58px;
-  border-bottom: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.96);
-  padding: 0 24px;
-}
-
-.topbar-left,
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
 label,
 .metric-label,
 .eyebrow {
@@ -208,7 +186,7 @@ select:focus {
   grid-template-columns: minmax(150px, 0.9fr) minmax(220px, 1.25fr) minmax(150px, 0.75fr) minmax(180px, 0.85fr) 92px;
   grid-template-areas:
     "target focus key api count"
-    ". dry dry dry action";
+    ". dry dry reset action";
   gap: 10px;
   align-items: end;
 }
@@ -235,6 +213,11 @@ select:focus {
 
 .generate-form .toggle {
   grid-area: dry;
+  justify-self: end;
+}
+
+.generate-form .secondary-button {
+  grid-area: reset;
   justify-self: end;
 }
 
@@ -751,11 +734,6 @@ h2 {
     margin-top: 18px;
   }
 
-  .topbar {
-    position: static;
-    padding: 0 16px;
-  }
-
   .workspace {
     padding: 16px;
   }
@@ -773,6 +751,7 @@ h2 {
       "api"
       "count"
       "dry"
+      "reset"
       "action";
   }
 
