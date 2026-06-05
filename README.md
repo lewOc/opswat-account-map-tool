@@ -9,6 +9,7 @@ Account mapping prototype for generating source-grounded OPSWAT account plays, u
 - `scripts/account_map.py` generates sourced account maps with Claude.
 - `scripts/diagram_generator.py` generates OPSWAT-style SVG architecture/data-flow diagrams.
 - `scripts/ingest_customer_stories.py` downloads public OPSWAT customer stories into a local JSONL corpus.
+- `scripts/ingest_local_customer_stories.py` extracts the local customer-story PDF/PPTX/URL folder into an internal JSONL corpus.
 - `scripts/export_deck.mjs` exports account-map content into PowerPoint.
 - `data/capability_map.json` is the product capability map used for product-fit grounding.
 - `assets/product_icons` and `assets/other_icons` contain diagram icon assets.
@@ -17,7 +18,22 @@ Generated account maps, diagrams, decks, and scratch files are intentionally ign
 
 ## Ingest Customer Stories
 
-The customer-story ingestion script builds a local corpus from public OPSWAT customer pages and case-study sitemaps:
+The local customer-story ingester should be the primary source when the local archive is available:
+
+```bash
+python scripts/ingest_local_customer_stories.py \
+  --source-root ~/Documents/customer_stories/"Customer Stories" \
+  --out-dir outputs/local_customer_stories
+```
+
+It writes:
+
+- `outputs/local_customer_stories/local_customer_stories.jsonl`
+- `outputs/local_customer_stories/index.md`
+- `outputs/local_customer_stories/summary.json`
+- `outputs/local_customer_stories/text/`
+
+The public customer-story ingestion script builds a supplemental corpus from public OPSWAT customer pages and case-study sitemaps:
 
 ```bash
 python scripts/ingest_customer_stories.py --out-dir outputs/customer_stories --delay 1.0

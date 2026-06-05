@@ -420,7 +420,7 @@ def write_outputs(records: list[StoryRecord], out_dir: Path, discovered_count: i
     index_path = out_dir / "index.md"
     with jsonl_path.open("w", encoding="utf-8") as file:
         for record in records:
-            file.write(json.dumps(asdict(record), ensure_ascii=False) + "\n")
+            file.write(json.dumps(asdict(record), ensure_ascii=True) + "\n")
 
     summary = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
