@@ -12,6 +12,9 @@ const els = {
   provider: document.querySelector("#provider"),
   apiKey: document.querySelector("#apiKey"),
   useCases: document.querySelector("#useCases"),
+  diagramRenderer: document.querySelector("#diagramRenderer"),
+  diagramOpenaiKey: document.querySelector("#diagramOpenaiKey"),
+  diagramKeyField: document.querySelector(".diagram-key-field"),
   dryRun: document.querySelector("#dryRun"),
   generateButton: document.querySelector("#generateButton"),
   generationStatus: document.querySelector("#generationStatus"),
@@ -134,6 +137,13 @@ function setPptxWorking(isWorking) {
 function updateProviderHint() {
   const isOpenAI = els.provider.value === "openai";
   els.apiKey.placeholder = isOpenAI ? "OpenAI key required" : "Anthropic key required";
+  updateDiagramControls();
+}
+
+function updateDiagramControls() {
+  const needsSeparateOpenAIKey = els.diagramRenderer.value === "gpt_image" && els.provider.value !== "openai";
+  els.diagramKeyField.classList.toggle("hidden", !needsSeparateOpenAIKey);
+  els.diagramOpenaiKey.required = needsSeparateOpenAIKey && !els.dryRun.checked;
 }
 
 function setError(label) {
@@ -194,6 +204,9 @@ function clearWorkspace() {
   els.focus.value = "";
   els.provider.value = "anthropic";
   els.apiKey.value = "";
+  els.diagramRenderer.value = "svg";
+  els.diagramOpenaiKey.value = "";
+  updateDiagramControls();
   els.useCases.value = "5";
   els.dryRun.checked = false;
   els.accountName.textContent = "New customer workspace";
@@ -273,15 +286,17 @@ function renderAccountMap(result) {
         const questions = renderList(useCase.discovery_questions || [], "question-list");
         const inferences = renderList(useCase.inferences || [], "compact-list inference-list");
         const diagram = useCase.diagram || {};
-        const diagramBlock = diagram.svg_url
+        const diagramUrl = diagram.image_url || diagram.svg_url;
+        const diagramLabel = diagram.image_url ? "Open PNG" : "Open SVG";
+        const diagramBlock = diagramUrl
           ? `
             <div class="diagram-card">
               <div class="diagram-frame">
-                <img src="${escapeHtml(diagram.svg_url)}" alt="${escapeHtml(diagram.title || `${useCase.title} diagram`)}" loading="lazy" />
+                <img src="${escapeHtml(diagramUrl)}" alt="${escapeHtml(diagram.title || `${useCase.title} diagram`)}" loading="lazy" />
               </div>
               <div class="diagram-actions">
                 <span>${escapeHtml(labelize(diagram.pattern))}</span>
-                <a href="${escapeHtml(diagram.svg_url)}" target="_blank" rel="noreferrer">Open SVG</a>
+                <a href="${escapeHtml(diagramUrl)}" target="_blank" rel="noreferrer">${diagramLabel}</a>
                 <a href="${escapeHtml(diagram.json_url || "#")}" target="_blank" rel="noreferrer">Spec</a>
               </div>
             </div>`
@@ -478,6 +493,7 @@ els.form.addEventListener("submit", async (event) => {
       focus: els.focus.value,
       use_cases: Number(els.useCases.value || 5),
       provider: els.provider.value,
+      diagram_renderer: els.diagramRenderer.value,
       dry_run: els.dryRun.checked,
     };
     if (els.provider.value === "openai") {
@@ -487,6 +503,14 @@ els.form.addEventListener("submit", async (event) => {
     } else {
       generationPayload.anthropic_api_key = apiKey;
       generationPayload.model = "claude-opus-4-8";
+    }
+    if (els.diagramRenderer.value === "gpt_image") {
+      const diagramKey = els.provider.value === "openai" ? apiKey : els.diagramOpenaiKey.value.trim();
+      if (!els.dryRun.checked && !diagramKey) {
+        throw new Error("Enter an OpenAI API key for GPT Image diagrams.");
+      }
+      generationPayload.diagram_openai_api_key = diagramKey;
+      generationPayload.diagram_image_quality = "high";
     }
 
     const job = await api("/api/account-maps/jobs", {
@@ -526,6 +550,8 @@ els.newWorkspace.addEventListener("click", () => {
 });
 
 els.provider.addEventListener("change", updateProviderHint);
+els.diagramRenderer.addEventListener("change", updateDiagramControls);
+els.dryRun.addEventListener("change", updateDiagramControls);
 
 els.pptxButton.addEventListener("click", async () => {
   const id = state.currentSummary?.id;

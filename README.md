@@ -75,7 +75,9 @@ Response fields:
 - `svg_url`: reusable SVG URL, for example `/api/diagrams/<id>.svg`.
 - `json_url`: reusable JSON spec URL, for example `/api/diagrams/<id>.json`.
 
-Account-map generation calls the same diagram generator for each `recommended_use_cases` item. Each use case is enriched with:
+Account-map generation can enrich each `recommended_use_cases` item with either the deterministic OPSWAT SVG renderer or GPT Image output. SVG is the default. GPT Image uses the user's OpenAI key, local reference diagrams in `assets/references/diagrams`, and relevant product icons from `assets/product_icons`.
+
+SVG enrichment shape:
 
 ```json
 {
@@ -84,6 +86,21 @@ Account-map generation calls the same diagram generator for each `recommended_us
     "pattern": "removable_media",
     "svg_url": "/api/diagrams/....svg",
     "json_url": "/api/diagrams/....json"
+  }
+}
+```
+
+GPT Image enrichment shape:
+
+```json
+{
+  "diagram": {
+    "id": "...",
+    "pattern": "gpt_image",
+    "renderer": "gpt_image",
+    "image_url": "/api/image-diagrams/....png",
+    "json_url": "/api/image-diagrams/....json",
+    "model": "gpt-image-2"
   }
 }
 ```
