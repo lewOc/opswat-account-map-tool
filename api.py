@@ -39,6 +39,11 @@ logger = logging.getLogger("opswat_account_map_api")
 logger.setLevel(logging.INFO)
 
 
+def generation_log(event: str, **fields: Any) -> None:
+    parts = [f"{key}={value!r}" for key, value in fields.items()]
+    print(f"ACCOUNT_MAP {event} {' '.join(parts)}", flush=True)
+
+
 def load_account_map_module() -> Any:
     spec = importlib.util.spec_from_file_location("account_map_generator", ACCOUNT_MAP_SCRIPT)
     if spec is None or spec.loader is None:
@@ -193,12 +198,12 @@ def write_account_map_files(account_map: dict[str, Any], json_path: Path, md_pat
 
 def run_generation(payload: GenerateRequest) -> dict[str, Any]:
     started = time.monotonic()
-    logger.info(
-        "account_map_generation_started provider=%s target=%r use_cases=%s dry_run=%s",
-        payload.provider,
-        payload.target,
-        payload.use_cases,
-        payload.dry_run,
+    generation_log(
+        "generation_started",
+        provider=payload.provider,
+        target=payload.target,
+        use_cases=payload.use_cases,
+        dry_run=payload.dry_run,
     )
     if payload.provider == "openai" and not payload.openai_api_key:
         raise ValueError("Enter your OpenAI API key before generating.")
@@ -222,11 +227,11 @@ def run_generation(payload: GenerateRequest) -> dict[str, Any]:
     )
     try:
         account_map = generator.generate_account_map(args)
-        logger.info(
-            "account_map_model_complete provider=%s target=%r elapsed=%.1fs",
-            payload.provider,
-            payload.target,
-            time.monotonic() - started,
+        generation_log(
+            "model_complete",
+            provider=payload.provider,
+            target=payload.target,
+            elapsed=round(time.monotonic() - started, 1),
         )
         enrich_account_map_with_diagrams(account_map)
         json_path, md_path = generator.write_outputs(account_map, args.target, OUTPUT_DIR)
@@ -236,21 +241,23 @@ def run_generation(payload: GenerateRequest) -> dict[str, Any]:
             "json_path": str(json_path),
             "markdown_path": str(md_path),
         }
-        logger.info(
-            "account_map_generation_completed provider=%s target=%r map_id=%s elapsed=%.1fs",
-            payload.provider,
-            payload.target,
-            result["summary"].get("id"),
-            time.monotonic() - started,
+        generation_log(
+            "generation_completed",
+            provider=payload.provider,
+            target=payload.target,
+            map_id=result["summary"].get("id"),
+            elapsed=round(time.monotonic() - started, 1),
         )
         return result
-    except BaseException:
-        logger.exception(
-            "account_map_generation_failed provider=%s target=%r elapsed=%.1fs",
-            payload.provider,
-            payload.target,
-            time.monotonic() - started,
+    except BaseException as exc:
+        generation_log(
+            "generation_failed",
+            provider=payload.provider,
+            target=payload.target,
+            elapsed=round(time.monotonic() - started, 1),
+            error=str(exc) or repr(exc),
         )
+        logger.exception("account_map_generation_failed")
         raise
 
 
