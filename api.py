@@ -16,6 +16,8 @@ import shutil
 import subprocess
 import sys
 import time
+import urllib.error as urllib_error
+import urllib.request as urllib_request
 from pathlib import Path
 from threading import Lock
 from typing import Any, Optional
@@ -43,6 +45,7 @@ DECK_SCRIPT = PROJECT / "scripts" / "export_deck.mjs"
 DIAGRAM_SCRIPT = PROJECT / "scripts" / "diagram_generator.py"
 NODE_BIN = Path(os.environ.get("NODE_BIN") or shutil.which("node") or "node")
 TEMPLATE_PPTX = Path(os.environ.get("PRESENTATION_TEMPLATE_PATH", PROJECT / "templates" / "presentation_template.pptx"))
+EXPORT_API_URL = os.environ.get("EXPORT_API_URL", "").rstrip("/")
 DEFAULT_IMAGE_MODEL = os.environ.get("OPENAI_IMAGE_MODEL", "gpt-image-2")
 SUPPORTED_IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
 logger = logging.getLogger("opswat_account_map_api")
@@ -557,6 +560,8 @@ def export_deck_for_map(map_id: str) -> dict[str, Any]:
     data = read_json(json_path)
     if enrich_account_map_with_diagrams(data):
         write_account_map_files(data, json_path, md_path)
+    if EXPORT_API_URL:
+        return export_deck_via_api(map_id, data, json_path)
     if not NODE_BIN.exists():
         raise RuntimeError(f"Node runtime not found: {NODE_BIN}")
     if not TEMPLATE_PPTX.exists():
@@ -584,6 +589,49 @@ def export_deck_for_map(map_id: str) -> dict[str, Any]:
         "summary": summarize_map(json_path),
         "deck_url": f"/api/decks/{deck_path.name}",
         "deck_path": str(deck_path),
+    }
+
+
+def export_deck_via_api(map_id: str, data: dict[str, Any], json_path: Path) -> dict[str, Any]:
+    payload = {
+        "content": data,
+        "options": {
+            "filename_prefix": f"{map_id}-account-map",
+        },
+    }
+    request = urllib_request.Request(
+        f"{EXPORT_API_URL}/api/exports/account-map-deck",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib_request.urlopen(request, timeout=180) as response:
+            export_result = json.loads(response.read().decode("utf-8"))
+        file_url = export_result.get("file_url")
+        if not isinstance(file_url, str) or not file_url:
+            raise RuntimeError("Export API response did not include file_url")
+        download_url = f"{EXPORT_API_URL}{file_url}" if file_url.startswith("/") else file_url
+        with urllib_request.urlopen(download_url, timeout=180) as response:
+            deck_bytes = response.read()
+    except urllib_error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"Export API failed: {detail or exc}") from exc
+    except urllib_error.URLError as exc:
+        raise RuntimeError(f"Export API unavailable: {exc}") from exc
+
+    DECK_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    deck_path = DECK_OUTPUT_DIR / f"{map_id}-account-map.pptx"
+    deck_path.write_bytes(deck_bytes)
+    return {
+        "summary": summarize_map(json_path),
+        "deck_url": f"/api/decks/{deck_path.name}",
+        "deck_path": str(deck_path),
+        "export_api": {
+            "url": EXPORT_API_URL,
+            "export_id": export_result.get("export_id"),
+            "file_url": export_result.get("file_url"),
+        },
     }
 
 
@@ -621,7 +669,9 @@ def health() -> dict[str, Any]:
         "openai_configured": bool(os.environ.get("OPENAI_API_KEY")),
         "image_diagram_references": str(REFERENCE_DIAGRAM_DIR),
         "image_diagram_references_exist": REFERENCE_DIAGRAM_DIR.exists(),
-        "deck_export_configured": NODE_BIN.exists() and TEMPLATE_PPTX.exists(),
+        "deck_export_configured": bool(EXPORT_API_URL) or (NODE_BIN.exists() and TEMPLATE_PPTX.exists()),
+        "export_api_configured": bool(EXPORT_API_URL),
+        "export_api_url": EXPORT_API_URL,
         "template": str(TEMPLATE_PPTX),
     }
 
