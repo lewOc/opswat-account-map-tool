@@ -68,6 +68,14 @@ python scripts/retrieve_customer_stories.py \
   --namespace customer_stories
 ```
 
+To use the standalone Relevant Experience API instead of embedded customer-story retrieval, set:
+
+```bash
+RELEVANT_EXPERIENCE_API_URL=http://127.0.0.1:8030
+```
+
+If the API is unavailable, account-map generation falls back to the embedded Pinecone retrieval path.
+
 The public customer-story ingestion script builds a supplemental corpus from public OPSWAT customer pages and case-study sitemaps:
 
 ```bash

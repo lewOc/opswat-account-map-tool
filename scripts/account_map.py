@@ -16,6 +16,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
+from urllib import error as urllib_error
+from urllib import request as urllib_request
 
 
 PROJECT = Path(__file__).resolve().parents[1]
@@ -298,6 +300,41 @@ def customer_story_query_for_use_case(target: str, focus: str, use_case: dict[st
     return trim_text(" ".join(str(part) for part in parts if part), 900)
 
 
+def relevant_experience_api_url() -> str:
+    return os.environ.get("RELEVANT_EXPERIENCE_API_URL", "").rstrip("/")
+
+
+def retrieve_relevant_experience_from_api(
+    query: str,
+    top_k: int,
+    openai_api_key: str | None = None,
+) -> tuple[list[dict[str, Any]], str | None]:
+    api_url = relevant_experience_api_url()
+    if not api_url:
+        return [], "not configured"
+    payload = {
+        "query": query,
+        "top_k": top_k,
+    }
+    if openai_api_key:
+        payload["openai_api_key"] = openai_api_key
+    request = urllib_request.Request(
+        f"{api_url}/api/relevant-experience/search",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib_request.urlopen(request, timeout=45) as response:
+            data = json.loads(response.read().decode("utf-8"))
+    except (urllib_error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        return [], f"relevant experience API failed: {exc}"
+    matches = data.get("matches")
+    if not isinstance(matches, list):
+        return [], "relevant experience API returned no matches list"
+    return matches, None
+
+
 def retrieve_customer_story_examples(
     query: str,
     top_k: int = 5,
@@ -305,6 +342,11 @@ def retrieve_customer_story_examples(
 ) -> tuple[list[dict[str, Any]], str | None]:
     if os.environ.get("CUSTOMER_STORY_RAG_DISABLED", "").lower() in {"1", "true", "yes"}:
         return [], "disabled"
+    api_examples, api_error = retrieve_relevant_experience_from_api(query, top_k=top_k, openai_api_key=openai_api_key)
+    if api_examples:
+        return api_examples, None
+    if api_error and api_error != "not configured":
+        logger.warning("relevant_experience_api_fallback error=%s", api_error)
     openai_key = os.environ.get("OPENAI_API_KEY") or openai_api_key
     pinecone_key = os.environ.get("PINECONE_API_KEY")
     if not openai_key or not pinecone_key:
