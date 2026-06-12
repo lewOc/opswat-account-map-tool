@@ -30,6 +30,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
 
+from app.api.v2 import router as v2_router
+
 
 PROJECT = Path(__file__).resolve().parent
 UI_DIR = PROJECT / "ui"
@@ -135,6 +137,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.mount("/assets", StaticFiles(directory=UI_DIR), name="assets")
+app.include_router(v2_router)
 
 
 class GenerateRequest(BaseModel):

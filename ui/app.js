@@ -10,12 +10,7 @@ const els = {
   target: document.querySelector("#target"),
   focus: document.querySelector("#focus"),
   provider: document.querySelector("#provider"),
-  apiKey: document.querySelector("#apiKey"),
   useCases: document.querySelector("#useCases"),
-  diagramRenderer: document.querySelector("#diagramRenderer"),
-  diagramOpenaiKey: document.querySelector("#diagramOpenaiKey"),
-  diagramKeyField: document.querySelector(".diagram-key-field"),
-  dryRun: document.querySelector("#dryRun"),
   generateButton: document.querySelector("#generateButton"),
   generationStatus: document.querySelector("#generationStatus"),
   healthText: document.querySelector("#healthText"),
@@ -34,7 +29,7 @@ const els = {
   buyerList: document.querySelector("#buyerList"),
   outreachBlock: document.querySelector("#outreachBlock"),
   evidenceList: document.querySelector("#evidenceList"),
-  pptxButton: document.querySelector("#pptxButton"),
+  pdfButton: document.querySelector("#pdfButton"),
   jsonLink: document.querySelector("#jsonLink"),
   mdLink: document.querySelector("#mdLink"),
   loadingOverlay: document.querySelector("#loadingOverlay"),
@@ -87,7 +82,7 @@ async function waitForGenerationJob(jobId) {
   const started = Date.now();
   const maxWaitMs = 12 * 60 * 1000;
   while (Date.now() - started < maxWaitMs) {
-    const job = await api(`/api/account-maps/jobs/${jobId}`, { timeoutMs: 30000 });
+    const job = await api(`/api/v2/account-maps/jobs/${jobId}`, { timeoutMs: 30000 });
     if (job.status === "completed") {
       return job.result;
     }
@@ -95,12 +90,12 @@ async function waitForGenerationJob(jobId) {
       throw new Error(job.error || "Generation failed");
     }
     const elapsedSeconds = Math.max(1, Math.round((Date.now() - started) / 1000));
-    const label = job.status === "queued" ? "Queued" : "Researching";
+    const label = job.status === "queued" ? "Queued" : job.stage || "Researching";
     setWorking(true, `${label} · ${elapsedSeconds}s`);
     setBusy(
       true,
-      job.status === "queued" ? "Queued" : "Researching account",
-      job.message || "The account map is still generating. You can leave this page open while the job runs."
+      job.status === "queued" ? "Queued" : "Generating v2 account map",
+      job.message || "The v2 account map is still generating. You can leave this page open while the job runs."
     );
     await delay(job.status === "queued" ? 1500 : 3000);
   }
@@ -129,21 +124,32 @@ function setBusy(isBusy, title = "Working", detail = "Please wait while the work
   els.newWorkspace.disabled = isBusy;
 }
 
-function setPptxWorking(isWorking) {
-  els.pptxButton.disabled = isWorking;
-  els.pptxButton.textContent = isWorking ? "Exporting" : "Export PPTX";
+function setPdfWorking(isWorking) {
+  els.pdfButton.disabled = isWorking;
+  els.pdfButton.textContent = isWorking ? "Exporting" : "Export PDF";
 }
 
 function updateProviderHint() {
-  const isOpenAI = els.provider.value === "openai";
-  els.apiKey.placeholder = isOpenAI ? "OpenAI key required" : "Anthropic key required";
-  updateDiagramControls();
+  if (els.generationStatus.textContent === "Ready") {
+    els.generationStatus.textContent = els.provider.value === "openai" ? "Ready · OpenAI" : "Ready · Opus 4.8";
+  }
 }
 
-function updateDiagramControls() {
-  const needsSeparateOpenAIKey = els.diagramRenderer.value === "gpt_image" && els.provider.value !== "openai";
-  els.diagramKeyField.classList.toggle("hidden", !needsSeparateOpenAIKey);
-  els.diagramOpenaiKey.required = needsSeparateOpenAIKey && !els.dryRun.checked;
+async function downloadFile(url, filename) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.detail || `Download failed: ${response.status}`);
+  }
+  const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = objectUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 }
 
 function setError(label) {
@@ -192,9 +198,9 @@ function disableFileLinks() {
   els.mdLink.href = "#";
   els.jsonLink.classList.add("disabled");
   els.mdLink.classList.add("disabled");
-  els.pptxButton.classList.add("disabled");
-  els.pptxButton.disabled = false;
-  els.pptxButton.textContent = "Export PPTX";
+  els.pdfButton.classList.add("disabled");
+  els.pdfButton.disabled = false;
+  els.pdfButton.textContent = "Export PDF";
 }
 
 function clearWorkspace() {
@@ -203,12 +209,8 @@ function clearWorkspace() {
   els.target.value = "";
   els.focus.value = "";
   els.provider.value = "anthropic";
-  els.apiKey.value = "";
-  els.diagramRenderer.value = "svg";
-  els.diagramOpenaiKey.value = "";
-  updateDiagramControls();
-  els.useCases.value = "5";
-  els.dryRun.checked = false;
+  els.useCases.value = "2";
+  updateProviderHint();
   els.accountName.textContent = "New customer workspace";
   els.accountSector.textContent = "Enter an account and focus area to begin.";
   els.accountSummary.textContent = "";
@@ -257,8 +259,8 @@ function renderAccountMap(result) {
     els.mdLink.href = summary.markdown_url;
     els.mdLink.classList.remove("disabled");
   }
-  if (summary.id) {
-    els.pptxButton.classList.remove("disabled");
+  if (summary.pdf_url) {
+    els.pdfButton.classList.remove("disabled");
   }
 
   if (useCases.length) {
@@ -330,7 +332,7 @@ function renderAccountMap(result) {
         return `
           <article class="use-case">
             <div class="use-case-top">
-              <div class="use-case-title"><span class="rank">${index + 1}.</span> ${escapeHtml(useCase.title)}</div>
+              <div class="use-case-title"><span class="rank">${index + 1}.</span> ${escapeHtml(useCase.title || "Untitled use case")}</div>
               <span class="confidence">${escapeHtml(useCase.confidence || "medium")}</span>
             </div>
             ${diagramBlock}
@@ -458,7 +460,7 @@ function renderSavedMaps(items) {
 }
 
 async function loadLibrary(selectLatest = false) {
-  const data = await api("/api/account-maps");
+  const data = await api("/api/v2/account-maps");
   renderSavedMaps(data.items || []);
   if (selectLatest && data.items?.length) {
     await loadMap(data.items[0].id);
@@ -468,7 +470,7 @@ async function loadLibrary(selectLatest = false) {
 async function loadMap(id) {
   setBusy(true, "Opening workspace", "Loading saved account map and evidence.");
   try {
-    const result = await api(`/api/account-maps/${id}`);
+    const result = await api(`/api/v2/account-maps/${id}`);
     renderAccountMap(result);
     renderSavedMaps(state.summaries);
   } finally {
@@ -478,8 +480,8 @@ async function loadMap(id) {
 
 async function init() {
   try {
-    const health = await api("/api/health");
-    els.healthText.textContent = "API online";
+    const health = await api("/api/v2/health");
+    els.healthText.textContent = health.customer_story_retrieval_configured ? "V2 API online" : "V2 API online · retrieval off";
     els.statusDot.classList.add("ok");
     updateProviderHint();
   } catch (error) {
@@ -504,45 +506,28 @@ async function init() {
 
 els.form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  setWorking(true, els.dryRun.checked ? "Building prompt" : "Researching");
+  els.toast.textContent = "";
+  els.toast.classList.remove("show");
+  setWorking(true, "Researching");
   setBusy(
     true,
-    els.dryRun.checked ? "Building prompt" : "Researching account",
-    els.dryRun.checked
-      ? "Preparing the generation request without calling Claude."
-      : "Searching public signals, mapping OPSWAT products, and creating use-case diagrams. This can take a little while."
+    "Generating v2 account map",
+    "Searching public signals, retrieving customer-story examples, grounding OPSWAT products, and writing use-case narratives."
   );
   try {
-    const apiKey = els.apiKey.value.trim();
-    if (!apiKey) {
-      throw new Error(`Enter your ${els.provider.value === "openai" ? "OpenAI" : "Anthropic"} API key before generating.`);
-    }
     const generationPayload = {
       target: els.target.value,
       focus: els.focus.value,
       use_cases: Number(els.useCases.value || 5),
       provider: els.provider.value,
-      diagram_renderer: els.diagramRenderer.value,
-      dry_run: els.dryRun.checked,
     };
     if (els.provider.value === "openai") {
-      generationPayload.openai_api_key = apiKey;
       generationPayload.model = "gpt-5.5";
-      generationPayload.openai_reasoning = "medium";
     } else {
-      generationPayload.anthropic_api_key = apiKey;
       generationPayload.model = "claude-opus-4-8";
     }
-    if (els.diagramRenderer.value === "gpt_image") {
-      const diagramKey = els.provider.value === "openai" ? apiKey : els.diagramOpenaiKey.value.trim();
-      if (!els.dryRun.checked && !diagramKey) {
-        throw new Error("Enter an OpenAI API key for GPT Image diagrams.");
-      }
-      generationPayload.diagram_openai_api_key = diagramKey;
-      generationPayload.diagram_image_quality = "high";
-    }
 
-    const job = await api("/api/account-maps/jobs", {
+    const job = await api("/api/v2/account-maps/jobs", {
       method: "POST",
       body: JSON.stringify(generationPayload),
       timeoutMs: 30000,
@@ -579,25 +564,23 @@ els.newWorkspace.addEventListener("click", () => {
 });
 
 els.provider.addEventListener("change", updateProviderHint);
-els.diagramRenderer.addEventListener("change", updateDiagramControls);
-els.dryRun.addEventListener("change", updateDiagramControls);
 
-els.pptxButton.addEventListener("click", async () => {
+els.pdfButton.addEventListener("click", async () => {
   const id = state.currentSummary?.id;
-  if (!id) return;
-  setPptxWorking(true);
-  setBusy(true, "Building slide deck", "Formatting partner-facing slides from this account map.");
+  const pdfUrl = state.currentSummary?.pdf_url || (id ? `/api/v2/account-maps/${id}/pdf` : "");
+  if (!id || !pdfUrl) {
+    toast("Load or generate an account map before exporting.");
+    return;
+  }
+  setPdfWorking(true);
+  setBusy(true, "Building PDF", "Formatting a customer-ready OPSWAT account map.");
   try {
-    const result = await api(`/api/account-maps/${id}/deck`, { method: "POST" });
-    state.currentSummary = result.summary || state.currentSummary;
-    if (result.deck_url) {
-      window.location.href = result.deck_url;
-      toast("Slide deck exported");
-    }
+    await downloadFile(pdfUrl, `${id}-opswat-account-map.pdf`);
+    toast("PDF exported");
   } catch (error) {
     toast(error.message);
   } finally {
-    setPptxWorking(false);
+    setPdfWorking(false);
     setBusy(false);
   }
 });

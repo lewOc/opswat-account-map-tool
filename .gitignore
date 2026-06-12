@@ -14,6 +14,9 @@ outputs/account_maps/*
 outputs/decks/*
 outputs/diagrams/*
 work/*
+var/
+data/app.db
+data/app.db-*
 
 !outputs/account_maps/.gitkeep
 !outputs/decks/.gitkeep

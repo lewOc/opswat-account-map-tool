@@ -183,10 +183,9 @@ select:focus {
 
 .generate-form {
   display: grid;
-  grid-template-columns: minmax(150px, 0.9fr) minmax(220px, 1.25fr) minmax(150px, 0.75fr) minmax(180px, 0.85fr) 92px;
+  grid-template-columns: minmax(120px, 1fr) minmax(180px, 1.35fr) minmax(130px, 0.8fr) 76px 106px;
   grid-template-areas:
-    "target focus key api count"
-    "diagram diagramKey diagramKey dry action"
+    "target focus key count action"
     ". . . reset reset";
   gap: 10px;
   align-items: end;
@@ -204,25 +203,8 @@ select:focus {
   grid-area: key;
 }
 
-.api-key-field {
-  grid-area: api;
-}
-
 .small-field {
   grid-area: count;
-}
-
-.diagram-field {
-  grid-area: diagram;
-}
-
-.diagram-key-field {
-  grid-area: diagramKey;
-}
-
-.generate-form .toggle {
-  grid-area: dry;
-  justify-self: end;
 }
 
 .generate-form .secondary-button {
@@ -967,11 +949,7 @@ h2 {
       "target"
       "focus"
       "key"
-      "api"
       "count"
-      "diagram"
-      "diagramKey"
-      "dry"
       "reset"
       "action";
   }

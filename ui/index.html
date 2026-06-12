@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>OPSWAT Account Map</title>
-    <link rel="stylesheet" href="/assets/styles.css?v=11" />
+    <link rel="stylesheet" href="/assets/styles.css?v=15" />
   </head>
   <body>
     <div class="shell">
@@ -50,29 +50,10 @@
                   <option value="openai">OpenAI GPT-5.5</option>
                 </select>
               </div>
-              <div class="field api-key-field">
-                <label for="apiKey">API key</label>
-                <input id="apiKey" name="apiKey" type="password" placeholder="Required for generation" autocomplete="off" required />
-              </div>
               <div class="field small-field">
                 <label for="useCases">Use cases</label>
-                <input id="useCases" name="useCases" type="number" min="1" max="8" value="5" />
+                <input id="useCases" name="useCases" type="number" min="1" max="8" value="2" />
               </div>
-              <div class="field diagram-field">
-                <label for="diagramRenderer">Diagrams</label>
-                <select id="diagramRenderer" name="diagramRenderer">
-                  <option value="svg">OPSWAT SVG</option>
-                  <option value="gpt_image">GPT Image</option>
-                </select>
-              </div>
-              <div class="field diagram-key-field hidden">
-                <label for="diagramOpenaiKey">Diagram OpenAI key</label>
-                <input id="diagramOpenaiKey" name="diagramOpenaiKey" type="password" placeholder="Required for GPT Image with Anthropic" autocomplete="off" />
-              </div>
-              <label class="toggle">
-                <input id="dryRun" type="checkbox" />
-                <span>Dry run</span>
-              </label>
               <button id="newWorkspace" class="secondary-button" type="button">New Workspace</button>
               <button id="generateButton" class="primary-button" type="submit">Generate</button>
             </form>
@@ -104,7 +85,7 @@
               <p id="accountSector" class="sector"></p>
             </div>
             <div class="account-actions">
-              <button id="pptxButton" class="secondary-button disabled" type="button">Export PPTX</button>
+              <button id="pdfButton" class="secondary-button disabled" type="button">Export PDF</button>
               <a id="jsonLink" class="secondary-button disabled" href="#" target="_blank" rel="noreferrer">JSON</a>
               <a id="mdLink" class="secondary-button disabled" href="#" target="_blank" rel="noreferrer">Markdown</a>
             </div>
@@ -172,6 +153,6 @@
     </div>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script src="/assets/app.js?v=11"></script>
+    <script src="/assets/app.js?v=15"></script>
   </body>
 </html>
