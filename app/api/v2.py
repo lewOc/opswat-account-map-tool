@@ -20,6 +20,7 @@ from app.config import Settings, load_settings
 from app.models.account_map import AccountMap
 from app.services.capability_map import CapabilityMap
 from app.services.pipeline.orchestrator import PipelineRequest, run_pipeline
+from app.services.pdf_export import export_account_map_pdf
 from app.services.providers import AnthropicProvider, LLMProvider, OpenAIProvider
 from app.services.retrieval import customer_story_retriever_from_settings
 
@@ -69,6 +70,10 @@ def account_map_path(map_id: str, settings: Optional[Settings] = None) -> Path:
     return artifact_dir_from_settings(settings) / map_id / "account_map.json"
 
 
+def account_map_pdf_path(map_id: str, settings: Optional[Settings] = None) -> Path:
+    return account_map_path(map_id, settings).with_name("account_map.pdf")
+
+
 def read_account_map_payload(path: Path) -> dict[str, Any]:
     if not path.exists():
         raise HTTPException(status_code=404, detail="Account map not found")
@@ -96,6 +101,7 @@ def summarize_account_map_payload(payload: dict[str, Any], path: Optional[Path] 
         "evidence_count": len(evidence),
         "retrieval_count": len(retrieval) if isinstance(retrieval, dict) else 0,
         "json_url": f"/api/v2/account-maps/{map_id}/artifact",
+        "pdf_url": f"/api/v2/account-maps/{map_id}/pdf",
         "markdown_url": None,
         "deck_url": None,
     }
@@ -314,3 +320,19 @@ def get_account_map_artifact(map_id: str) -> FileResponse:
     if not path.exists():
         raise HTTPException(status_code=404, detail="Account map not found")
     return FileResponse(path, media_type="application/json", filename=f"{map_id}.json")
+
+
+@router.get("/account-maps/{map_id}/pdf")
+def get_account_map_pdf(map_id: str) -> FileResponse:
+    json_path = account_map_path(map_id)
+    if not json_path.exists():
+        raise HTTPException(status_code=404, detail="Account map not found")
+    pdf_path = account_map_pdf_path(map_id)
+    if not pdf_path.exists() or pdf_path.stat().st_mtime < json_path.stat().st_mtime:
+        account_map = AccountMap.model_validate_json(json_path.read_text(encoding="utf-8"))
+        export_account_map_pdf(account_map, pdf_path)
+    return FileResponse(
+        pdf_path,
+        media_type="application/pdf",
+        filename=f"{map_id}-opswat-account-map.pdf",
+    )

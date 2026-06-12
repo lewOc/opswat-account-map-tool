@@ -16,6 +16,10 @@ Account mapping prototype for generating source-grounded OPSWAT account plays, u
 
 Generated account maps, diagrams, decks, and scratch files are intentionally ignored by git under `outputs/` and `work/`.
 
+The v2 API also exports customer-ready PDF account briefs from saved v2 maps. The browser UI uses
+`GET /api/v2/account-maps/{map_id}/pdf`, which renders a branded OPSWAT PDF beside the generated JSON artifact under
+`var/artifacts/`.
+
 ## Ingest Customer Stories
 
 The local customer-story ingester should be the primary source when the local archive is available:

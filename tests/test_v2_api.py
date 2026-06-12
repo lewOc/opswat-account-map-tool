@@ -41,6 +41,7 @@ class V2ApiTests(unittest.TestCase):
         self.assertEqual(summary["evidence_count"], 1)
         self.assertEqual(summary["retrieval_count"], 2)
         self.assertEqual(summary["json_url"], "/api/v2/account-maps/example-energy-20260612T120000Z/artifact")
+        self.assertEqual(summary["pdf_url"], "/api/v2/account-maps/example-energy-20260612T120000Z/pdf")
         self.assertIsNone(summary["deck_url"])
 
     def test_safe_map_id_rejects_path_traversal(self) -> None:

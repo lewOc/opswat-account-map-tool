@@ -29,7 +29,7 @@ const els = {
   buyerList: document.querySelector("#buyerList"),
   outreachBlock: document.querySelector("#outreachBlock"),
   evidenceList: document.querySelector("#evidenceList"),
-  pptxButton: document.querySelector("#pptxButton"),
+  pdfButton: document.querySelector("#pdfButton"),
   jsonLink: document.querySelector("#jsonLink"),
   mdLink: document.querySelector("#mdLink"),
   loadingOverlay: document.querySelector("#loadingOverlay"),
@@ -124,15 +124,32 @@ function setBusy(isBusy, title = "Working", detail = "Please wait while the work
   els.newWorkspace.disabled = isBusy;
 }
 
-function setPptxWorking(isWorking) {
-  els.pptxButton.disabled = isWorking;
-  els.pptxButton.textContent = isWorking ? "Exporting" : "Export PPTX";
+function setPdfWorking(isWorking) {
+  els.pdfButton.disabled = isWorking;
+  els.pdfButton.textContent = isWorking ? "Exporting" : "Export PDF";
 }
 
 function updateProviderHint() {
   if (els.generationStatus.textContent === "Ready") {
     els.generationStatus.textContent = els.provider.value === "openai" ? "Ready · OpenAI" : "Ready · Opus 4.8";
   }
+}
+
+async function downloadFile(url, filename) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.detail || `Download failed: ${response.status}`);
+  }
+  const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = objectUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 }
 
 function setError(label) {
@@ -181,9 +198,9 @@ function disableFileLinks() {
   els.mdLink.href = "#";
   els.jsonLink.classList.add("disabled");
   els.mdLink.classList.add("disabled");
-  els.pptxButton.classList.add("disabled");
-  els.pptxButton.disabled = false;
-  els.pptxButton.textContent = "Export PPTX";
+  els.pdfButton.classList.add("disabled");
+  els.pdfButton.disabled = false;
+  els.pdfButton.textContent = "Export PDF";
 }
 
 function clearWorkspace() {
@@ -242,8 +259,8 @@ function renderAccountMap(result) {
     els.mdLink.href = summary.markdown_url;
     els.mdLink.classList.remove("disabled");
   }
-  if (summary.deck_url) {
-    els.pptxButton.classList.remove("disabled");
+  if (summary.pdf_url) {
+    els.pdfButton.classList.remove("disabled");
   }
 
   if (useCases.length) {
@@ -548,25 +565,22 @@ els.newWorkspace.addEventListener("click", () => {
 
 els.provider.addEventListener("change", updateProviderHint);
 
-els.pptxButton.addEventListener("click", async () => {
+els.pdfButton.addEventListener("click", async () => {
   const id = state.currentSummary?.id;
-  if (!id || !state.currentSummary?.deck_url) {
-    toast("Deck export is not available for v2 maps yet.");
+  const pdfUrl = state.currentSummary?.pdf_url || (id ? `/api/v2/account-maps/${id}/pdf` : "");
+  if (!id || !pdfUrl) {
+    toast("Load or generate an account map before exporting.");
     return;
   }
-  setPptxWorking(true);
-  setBusy(true, "Building slide deck", "Formatting partner-facing slides from this account map.");
+  setPdfWorking(true);
+  setBusy(true, "Building PDF", "Formatting a customer-ready OPSWAT account map.");
   try {
-    const result = await api(`/api/account-maps/${id}/deck`, { method: "POST" });
-    state.currentSummary = result.summary || state.currentSummary;
-    if (result.deck_url) {
-      window.location.href = result.deck_url;
-      toast("Slide deck exported");
-    }
+    await downloadFile(pdfUrl, `${id}-opswat-account-map.pdf`);
+    toast("PDF exported");
   } catch (error) {
     toast(error.message);
   } finally {
-    setPptxWorking(false);
+    setPdfWorking(false);
     setBusy(false);
   }
 });
